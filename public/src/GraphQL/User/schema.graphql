@@ -1,0 +1,17 @@
+type User {
+  id: ID!
+  email: String!
+  bcrypt_hash: String!
+  registered_at: String!
+}
+
+input CreateUserInput {
+  email: String!
+  password: String!
+}
+
+input UpdateUserInput {
+  id: ID!
+  email: String
+  password: String
+}
