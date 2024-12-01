@@ -1,0 +1,36 @@
+input CreateEventScheduleInput {
+  event_title: String!
+  event_color: String!
+  start_datetime: String!
+  end_datetime: String
+  all_day: Boolean!
+}
+
+type EventSchedule {
+  id: ID!
+  create_user: String!
+  event_title: String!
+  event_color: String!
+  start_datetime: String!
+  end_datetime: String
+  all_day: Boolean!
+  registered_at: String!
+}
+
+input UpdateEventScheduleInput {
+  id: ID!
+  all_day: Boolean!
+}
+
+# === Query ==============================
+extend type Query {
+  eventschedule(id: ID!): EventSchedule!
+  allEventSchedules: [EventSchedule!]!
+}
+
+# === Mutation ===========================
+extend type Mutation {
+  createEventSchedule(createEventScheduleInput: CreateEventScheduleInput): EventSchedule!
+  updateEventSchedule(updateEventScheduleInput: UpdateEventScheduleInput): EventSchedule!
+  deleteEventSchedule(id: ID!): EventSchedule!
+}
