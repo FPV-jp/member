@@ -37,7 +37,7 @@ jobs:
           username: fpv
           port: 22
           key: ${{ secrets.KEY }}
-          source: dist/*
+          source: private_html
           target: /home/fpv/domains/member.fpv.jp/
           overwrite: true
 
@@ -49,6 +49,6 @@ jobs:
           username: fpv
           port: 22
           key: ${{ secrets.KEY }}
-          source: dist/*
+          source: private_html
           target: /home/fpv/domains/fpv.v2008.coreserver.jp/
           overwrite: true
