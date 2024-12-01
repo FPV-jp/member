@@ -1,0 +1,43 @@
+input CreateMediaLibraryInput {
+  file_name: String!
+  file_type: String!
+  file_size: Int!
+  file_width: Int
+  file_height: Int
+  file_duration: Float
+  file_last_modified: String!
+  wasabi_file_key: String!
+}
+
+type MediaLibrary {
+  id: ID!
+  owner: String!
+  is_public: Boolean!
+  file_name: String!
+  file_type: String!
+  file_size: Int!
+  file_width: Int
+  file_height: Int
+  file_duration: Float
+  file_last_modified: String!
+  wasabi_file_key: String!
+  registered_at: String!
+}
+
+input UpdateMediaLibraryInput {
+  id: ID!
+  is_public: Boolean!
+}
+
+# === Query ==============================
+extend type Query {
+  medialibrary(id: ID!): MediaLibrary!
+  allMediaLibraries: [MediaLibrary!]!
+}
+
+# === Mutation ===========================
+extend type Mutation {
+  createMediaLibrary(createMediaLibraryInput: CreateMediaLibraryInput): MediaLibrary!
+  updateMediaLibrary(updateMediaLibraryInput: UpdateMediaLibraryInput): MediaLibrary!
+  deleteMediaLibrary(id: ID!): MediaLibrary!
+}
