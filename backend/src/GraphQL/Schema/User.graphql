@@ -1,0 +1,30 @@
+type User {
+  id: ID!
+  email: String!
+  bcrypt_hash: String!
+  registered_at: String!
+}
+
+input CreateUserInput {
+  email: String!
+  password: String!
+}
+
+input UpdateUserInput {
+  id: ID!
+  email: String
+  password: String
+}
+
+# === Query ==============================
+extend type Query {
+  user(id: ID!): User!
+  users: [User!]!
+}
+
+# === Mutation ===========================
+extend type Mutation {
+  createUser(user: CreateUserInput): User!
+  updateUser(user: UpdateUserInput): User!
+  deleteUser(id: ID!): User!
+}
