@@ -25,7 +25,9 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Validate composer.json and composer.lock
-        run: composer validate --strict
+        run: |
+          cd public
+          composer validate --strict
 
       - name: Cache Composer packages
         id: composer-cache
@@ -36,8 +38,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-php-
 
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress
+      - name: Install PHP dependencies
+        run: |
+          cd public
+          composer install --prefer-dist --no-progress
       
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
