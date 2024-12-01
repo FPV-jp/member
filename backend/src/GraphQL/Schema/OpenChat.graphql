@@ -1,0 +1,19 @@
+type OpenChat {
+  id: ID!
+  email: String!
+  bcrypt_hash: String!
+  registered_at: String!
+}
+
+# === Query ==============================
+extend type Query {
+  openchat(id: ID!): OpenChat!
+  allOpenChats: [OpenChat!]!
+}
+
+# === Mutation ===========================
+extend type Mutation {
+  createOpenChat(email: String!, password: String!): OpenChat!
+  updateOpenChat(id: ID!, email: String, password: String): OpenChat!
+  deleteOpenChat(id: ID!): OpenChat!
+}

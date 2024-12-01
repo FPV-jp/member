@@ -1,0 +1,5 @@
+# backend
+vendor/
+local-data/
+.env
+doctrine/

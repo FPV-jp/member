@@ -1,0 +1,38 @@
+input CreateFlightPointInput {
+  latitude: Float!
+  longitude: Float!
+  title: String!
+  marker_image: String!
+}
+
+type FlightPoint {
+  id: ID!
+  latitude: Float!
+  longitude: Float!
+  title: String!
+  create_user: String!
+  marker_image: String!
+  registered_at: String!
+}
+
+input UpdateFlightPointInput {
+  id: ID!
+  latitude: Float
+  longitude: Float
+  title: String
+  create_user: String
+  marker_image: String
+}
+
+# === Query ==============================
+extend type Query {
+  flightPoint(id: ID!): FlightPoint!
+  allFlightPoints: [FlightPoint!]!
+}
+
+# === Mutation ===========================
+extend type Mutation {
+  createFlightPoint(createFlightPointInput: CreateFlightPointInput): FlightPoint!
+  updateFlightPoint(updateFlightPointInput: UpdateFlightPointInput): FlightPoint!
+  deleteFlightPoint(id: ID!): FlightPoint!
+}
