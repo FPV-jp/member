@@ -1,0 +1,76 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Node.js CI
+
+on:
+  push:
+    branches: ["main", dev]
+  pull_request:
+    branches: ["main", dev]
+
+# permissions:
+#   contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate composer.json and composer.lock
+        run: |
+          cd backend
+          composer validate --strict
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+
+      - name: Install PHP dependencies
+        run: |
+          cd backend
+          composer install --prefer-dist --no-progress
+      
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+      - run: npm ci
+      - run: npm run build
+
+      - name: (Deploy prod) Copy file via ssh member.fpv.jp
+        if: github.ref == 'refs/heads/main'
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: v2008.coreserver.jp
+          username: fpv
+          port: 22
+          key: ${{ secrets.KEY }}
+          source: private_html
+          target: /home/fpv/domains/member.fpv.jp/
+          overwrite: true
+
+      - name: (Deploy dev) Copy file via ssh fpv.v2008.coreserver.jp
+        if: github.ref == 'refs/heads/dev'
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: v2008.coreserver.jp
+          username: fpv
+          port: 22
+          key: ${{ secrets.KEY }}
+          source: private_html
+          target: /home/fpv/domains/fpv.v2008.coreserver.jp/
+          overwrite: true

@@ -1,0 +1,23 @@
+input CreateEventScheduleInput {
+  event_title: String!
+  event_color: String!
+  start_datetime: String!
+  end_datetime: String
+  all_day: Boolean!
+}
+
+type EventSchedule {
+  id: ID!
+  create_user: String!
+  event_title: String!
+  event_color: String!
+  start_datetime: String!
+  end_datetime: String
+  all_day: Boolean!
+  registered_at: String!
+}
+
+input UpdateEventScheduleInput {
+  id: ID!
+  all_day: Boolean!
+}

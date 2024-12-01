@@ -1,0 +1,58 @@
+{
+    "name": "fpv-jp/menber.fpv.jp",
+    "type": "project",
+    "license": "MIT",
+    "description": "Backend api fpr menber.fpv.jp",
+    "autoload": {
+        "psr-4": {
+            "Fpv\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\Fpv\\": "tests/"
+        }
+    },
+    "require": {
+        "php": "~8.1.0",
+        "ext-json": "*",
+        "auth0/auth0-php": "^8.10",
+        "aws/aws-sdk-php": "^3.298",
+        "calcinai/php-imagick": "^0.1.2",
+        "cloudinary/cloudinary_php": "^2.12",
+        "doctrine/orm": "^2.17",
+        "fakerphp/faker": "^1.23",
+        "guzzlehttp/guzzle": "^7.8",
+        "monolog/monolog": "^3.5",
+        "nyholm/psr7": "^1.8",
+        "nyholm/psr7-server": "^1.1",
+        "phpmailer/phpmailer": "^6.9",
+        "slim/slim": "^4.12",
+        "symfony/cache": "^6.4",
+        "uma/dic": "^3.0",
+        "vlucas/phpdotenv": "^5.6",
+        "webonyx/graphql-php": "^15.9"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.6",
+        "roave/security-advisories": "dev-master"
+    },
+    "scripts": {
+        "serve": [
+            "@composer install",
+            "./mariadb/doctrine orm:schema:update --force --complete",
+            "php -S localhost:8000 -t . index.php"
+        ],
+        "test": [
+            "php vendor/bin/phpunit"
+        ]
+    },
+    "config": {
+        "process-timeout": 0,
+        "sort-packages": true,
+        "allow-plugins": {
+            "composer/package-versions-deprecated": true,
+            "php-http/discovery": true
+        }
+    }
+}

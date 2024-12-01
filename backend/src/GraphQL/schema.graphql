@@ -1,0 +1,68 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Query {
+  user(id: ID!): User!
+  allUsers: [User!]!
+
+  eventschedule(id: ID!): EventSchedule!
+  allEventSchedules: [EventSchedule!]!
+
+  flightPoint(id: ID!): FlightPoint!
+  allFlightPoints: [FlightPoint!]!
+
+  openchat(id: ID!): OpenChat!
+  allOpenChats: [OpenChat!]!
+
+  medialibrary(id: ID!): MediaLibrary!
+  allMediaLibraries: [MediaLibrary!]!
+
+  # Cloudinary
+  assets: CloudinaryAssets!
+
+  # Wasabi
+  listObjectsV2(Name: String!, Marker: Int!, MaxKeys: Int!): S3Contents!
+  postObjectV4(names: [String!]!): PostObjects!
+  createPresignedRequest(fileNames: [String!]!, command: String!, expires: String!): [PresignedUrl!]!
+
+}
+
+type Mutation {
+  createUser(user: CreateUserInput): User!
+  updateUser(user: UpdateUserInput): User!
+  deleteUser(id: ID!): User!
+
+  createEventSchedule(createEventScheduleInput: CreateEventScheduleInput): EventSchedule!
+  updateEventSchedule(updateEventScheduleInput: UpdateEventScheduleInput): EventSchedule!
+  deleteEventSchedule(id: ID!): EventSchedule!
+
+  createFlightPoint(createFlightPointInput: CreateFlightPointInput): FlightPoint!
+  updateFlightPoint(updateFlightPointInput: UpdateFlightPointInput): FlightPoint!
+  deleteFlightPoint(id: ID!): FlightPoint!
+
+  createOpenChat(email: String!, password: String!): OpenChat!
+  updateOpenChat(id: ID!, email: String, password: String): OpenChat!
+  deleteOpenChat(id: ID!): OpenChat!
+
+  createMediaLibrary(createMediaLibraryInput: CreateMediaLibraryInput): MediaLibrary!
+  updateMediaLibrary(updateMediaLibraryInput: UpdateMediaLibraryInput): MediaLibrary!
+  deleteMediaLibrary(id: ID!): MediaLibrary!
+}
+
+# interface Character {
+#   id: ID!
+#   name: String!
+#   friends: [Character]
+#   appearsIn: [Episode]!
+# }
+
+# type Human implements Character {
+#   id: ID!
+#   name: String!
+#   friends: [Character]
+#   appearsIn: [Episode]!
+#   starships: [Starship]
+#   totalCredits: Int
+# }
