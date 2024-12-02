@@ -2,19 +2,16 @@ init:
 	cat .env.example > .env
 	composer install
 
-run:
+run-app:
 	composer serve
 
-db:
-	docker compose up --build
-
-dbd:
+run-db:
 	docker compose up -d --build
 
-down:
+down-db:
 	docker compose down
 
 destroy:
 	docker system prune --all --force --volumes
 
-restart-api: down up
+restart: down-db run-db
