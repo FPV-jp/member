@@ -2,23 +2,24 @@
 
 // bootstrap.php
 
-use Doctrine\Common\Cache\Psr6\DoctrineProvider;
+use UMA\DIC\Container;
+
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\ORMSetup;
 use Doctrine\DBAL\DriverManager;
-use Psr\Container\ContainerInterface;
+
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
-use UMA\DIC\Container;
-use FpvJp\Logger\EchoSQLLogger;
-// use Cloudinary\Configuration\Configuration;
+
+use Fpv\Logger\MonologLogger;
+use Fpv\Logger\DoctrineLoggingMiddleware;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
 $container = new Container(require __DIR__ . '/settings.php');
 
 $container->set(EntityManager::class, static function (Container $c): EntityManager {
+
     /** @var array $settings */
     $settings = $c->get('settings');
 
@@ -31,10 +32,13 @@ $container->set(EntityManager::class, static function (Container $c): EntityMana
         new FilesystemAdapter(directory: $settings['doctrine']['cache_dir']),
         true
     );
+
     if ($settings['doctrine']['dev_mode']) {
-        $config->setSQLLogger(new EchoSQLLogger());
+        $config->setMiddlewares([new DoctrineLoggingMiddleware(new MonologLogger("bootstrap"))]);
     }
+    
     $connection = DriverManager::getConnection($settings['doctrine']['connection'], $config);
+
     return new EntityManager($connection, $config);
 });
 
