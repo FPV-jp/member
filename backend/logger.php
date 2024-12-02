@@ -1,5 +1,7 @@
 <?php declare(strict_types=1);
 
+// logger.php
+
 namespace Fpv\Logger;
 
 use Monolog\Logger;

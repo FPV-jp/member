@@ -1,5 +1,7 @@
 <?php declare(strict_types=1);
 
+// middleware.php
+
 namespace Fpv\Middleware;
 
 use Psr\Http\Message\ResponseInterface;
