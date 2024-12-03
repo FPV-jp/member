@@ -113,20 +113,20 @@ final class Slim implements ServiceProvider
             // $app->post('/api/users', CreateUser::class);
             $app->post('/gql', SchemaHandler::class)->add(PermissionMiddleware::class);
 
-            $monologLogger = new MonologLogger('app');
-            $errorMiddleware = $app->addErrorMiddleware(
-                $settings['slim']['displayErrorDetails'],
-                $settings['slim']['logErrors'],
-                $settings['slim']['logErrorDetails'],
-                $monologLogger,
-            );
+            // $monologLogger = new MonologLogger('app');
+            // $errorMiddleware = $app->addErrorMiddleware(
+            //     $settings['slim']['displayErrorDetails'],
+            //     $settings['slim']['logErrors'],
+            //     $settings['slim']['logErrorDetails'],
+            //     $monologLogger,
+            // );
 
-            $defaultErrorHandler = new DefaultErrorHandler($app->getCallableResolver(), $app->getResponseFactory());
-            $errorMiddleware->setDefaultErrorHandler($defaultErrorHandler);
-            $errorMiddleware->setErrorHandler(HttpInternalServerErrorException::class, function (ServerRequestInterface $request, Throwable $exception, bool $displayErrorDetails): ResponseInterface {
-                $body = Stream::create(json_encode(['message' => $exception->getMessage()], JSON_PRETTY_PRINT) . PHP_EOL);
-                return new Response(500, ['Content-Type' => 'application/json'], $body);
-            });
+            // $defaultErrorHandler = new DefaultErrorHandler($app->getCallableResolver(), $app->getResponseFactory());
+            // $errorMiddleware->setDefaultErrorHandler($defaultErrorHandler);
+            // $errorMiddleware->setErrorHandler(HttpInternalServerErrorException::class, function (ServerRequestInterface $request, Throwable $exception, bool $displayErrorDetails): ResponseInterface {
+            //     $body = Stream::create(json_encode(['message' => $exception->getMessage()], JSON_PRETTY_PRINT) . PHP_EOL);
+            //     return new Response(500, ['Content-Type' => 'application/json'], $body);
+            // });
             return $app;
         });
     }
