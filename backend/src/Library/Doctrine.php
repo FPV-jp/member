@@ -31,22 +31,24 @@ final class Doctrine implements ServiceProvider
             /** @var array $settings */
             $settings = $c->get('settings');
 
+            $metadata_dirs = $settings['doctrine']['metadata_dirs'];
+            $dev_mode = $settings['doctrine']['dev_mode'];
+            $cache_dir = $settings['doctrine']['cache_dir'];
+            $connect = $settings['doctrine']['connection'];
+
+            // CacheItemPoolInterface
+            
             $config = ORMSetup::createAttributeMetadataConfiguration(
-                $settings['doctrine']['metadata_dirs'],
-                $settings['doctrine']['dev_mode'],
+                $metadata_dirs,
+                $dev_mode,
                 null,
-                $settings['doctrine']['dev_mode'] ?
-                    new ArrayAdapter() :
-                    new FilesystemAdapter(directory: $settings['doctrine']['cache_dir']),
+                $dev_mode ? new ArrayAdapter() : new FilesystemAdapter(directory: $cache_dir),
                 true
             );
-
-            if ($settings['doctrine']['dev_mode']) {
+            if ($dev_mode) {
                 $config->setMiddlewares([new DoctrineLoggingMiddleware()]);
             }
-
-            $connection = DriverManager::getConnection($settings['doctrine']['connection'], $config);
-
+            $connection = DriverManager::getConnection($connect, $config);
             return new EntityManager($connection, $config);
         });
     }
