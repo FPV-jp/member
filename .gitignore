@@ -26,3 +26,4 @@ private_html-ssr
 vendor/
 local-data/
 .env
+doctrine/

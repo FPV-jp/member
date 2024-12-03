@@ -23,7 +23,7 @@ use Slim\Exception\HttpInternalServerErrorException;
 
 use function json_encode;
 
-final class SchemaHandler implements RequestHandlerInterface
+final class GraphQLHandler implements RequestHandlerInterface
 {
     private EntityManager $em;
     private AdminApi $cloudinary;

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Fpv\Library;
 
@@ -30,7 +32,7 @@ use Fpv\Middleware\CorsMiddleware;
 use Fpv\Middleware\PermissionMiddleware;
 
 use Fpv\Logger\MonologLogger;
-use Fpv\GraphQL\SchemaHandler;
+use Fpv\GraphQL\GraphQLHandler;
 
 use Throwable;
 
@@ -78,12 +80,12 @@ final class Slim implements ServiceProvider
         //     return new WasabiDownloader($c->get(S3Client::class));
         // });
 
-        $c->set(SchemaHandler::class, static function (ContainerInterface $c): RequestHandlerInterface {
-            return new SchemaHandler(
-                $c->get(EntityManager::class), 
-                $c->get(AdminApi::class), 
-                $c->get(PHPMailer::class), 
-                $c->get(S3Client::class), 
+        $c->set(GraphQLHandler::class, static function (ContainerInterface $c): RequestHandlerInterface {
+            return new GraphQLHandler(
+                $c->get(EntityManager::class),
+                $c->get(AdminApi::class),
+                $c->get(PHPMailer::class),
+                $c->get(S3Client::class),
                 Factory::create()
             );
         });
@@ -98,20 +100,30 @@ final class Slim implements ServiceProvider
             $app->addRoutingMiddleware();
             $app->add(new ContentLengthMiddleware());
             $app->add(new CorsMiddleware());
-
             $app->options('/{routes:.+}', function ($request, $response, $args) {
                 return $response;
             });
 
+            // GraphQLHandler
+            // ------------------------------------------------------------------
+            $app->post('/gql', GraphQLHandler::class);
+
+            // PHP Info
+            // ------------------------------------------------------------------
             $app->get('/api/phpinfo', function ($request, $response, $args) {
                 $response->getBody()->write(json_encode(phpinfo()));
                 return $response;
             });
+
+            // ListUsers
+            // ------------------------------------------------------------------
+            $app->get('/api/users', ListUsers::class);
+
             // $app->post('/api/wasabi', WasabiUploader::class)->add(PermissionMiddleware::class);
             // $app->post('/api/wasabi2', WasabiDownloader::class)->add(PermissionMiddleware::class);
-            $app->get('/api/users', ListUsers::class);
-            // $app->post('/api/users', CreateUser::class);
-            $app->post('/gql', SchemaHandler::class)->add(PermissionMiddleware::class);
+            // $app->get('/api/users', ListUsers::class);
+            // // $app->post('/api/users', CreateUser::class);
+            // $app->post('/gql', SchemaHandler::class)->add(PermissionMiddleware::class);
 
             // $monologLogger = new MonologLogger('app');
             // $errorMiddleware = $app->addErrorMiddleware(
@@ -127,6 +139,7 @@ final class Slim implements ServiceProvider
             //     $body = Stream::create(json_encode(['message' => $exception->getMessage()], JSON_PRETTY_PRINT) . PHP_EOL);
             //     return new Response(500, ['Content-Type' => 'application/json'], $body);
             // });
+
             return $app;
         });
     }
