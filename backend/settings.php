@@ -25,7 +25,7 @@ return [
 
         'doctrine' => [
             // Enables or disables Doctrine metadata caching for either performance or convenience during development.
-            'dev_mode' => true,
+            'dev_mode' => false,
 
             // Path where Doctrine will cache the processed metadata when 'dev_mode' is false.
             'cache_dir' => APP_ROOT . '/src/doctrine',

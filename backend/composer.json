@@ -14,7 +14,7 @@
         }
     },
     "require": {
-        "php": "~8.1.0",
+        "php": "~8.1.29",
         "ext-json": "*",
         "auth0/auth0-php": "^8.10",
         "aws/aws-sdk-php": "^3.298",
