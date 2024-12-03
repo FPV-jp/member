@@ -14,8 +14,7 @@ use Doctrine\ORM\ORMSetup;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
-// use Fpv\Logger\DoctrineLoggingMiddleware;
-// use Fpv\Logger\MonologLogger;
+use Fpv\Logger\DoctrineLoggingMiddleware;
 
 // --------------------------------------------------------------------
 // object–relational mapper
@@ -42,9 +41,9 @@ final class Doctrine implements ServiceProvider
                 true
             );
 
-            // if ($settings['doctrine']['dev_mode']) {
-            //     $config->setMiddlewares([new DoctrineLoggingMiddleware(new MonologLogger("index"))]);
-            // }
+            if ($settings['doctrine']['dev_mode']) {
+                $config->setMiddlewares([new DoctrineLoggingMiddleware()]);
+            }
 
             $connection = DriverManager::getConnection($settings['doctrine']['connection'], $config);
 

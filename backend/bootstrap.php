@@ -11,8 +11,7 @@ use Doctrine\DBAL\DriverManager;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
-// use Fpv\Logger\MonologLogger;
-// use Fpv\Logger\DoctrineLoggingMiddleware;
+use Fpv\Logger\DoctrineLoggingMiddleware;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -33,9 +32,9 @@ $container->set(EntityManager::class, static function (Container $c): EntityMana
         true
     );
 
-    // if ($settings['doctrine']['dev_mode']) {
-    //     $config->setMiddlewares([new DoctrineLoggingMiddleware(new MonologLogger("bootstrap"))]);
-    // }
+    if ($settings['doctrine']['dev_mode']) {
+        $config->setMiddlewares([new DoctrineLoggingMiddleware()]);
+    }
     
     $connection = DriverManager::getConnection($settings['doctrine']['connection'], $config);
 

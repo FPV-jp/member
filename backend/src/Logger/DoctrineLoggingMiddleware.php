@@ -14,9 +14,9 @@ class DoctrineLoggingMiddleware implements Middleware
 {
     private MonologLogger $logger;
 
-    public function __construct(MonologLogger $logger)
+    public function __construct()
     {
-        $this->logger = $logger;
+        $this->logger = new DoctrineLoggingMiddleware(new MonologLogger("Doctrine"));
     }
 
     public function wrap(Driver $driver): Driver
