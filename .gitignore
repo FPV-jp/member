@@ -8,8 +8,8 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-private_html
-private_html-ssr
+dist
+dist-ssr
 *.local
 
 # Editor directories and files
@@ -22,8 +22,3 @@ private_html-ssr
 *.njsproj
 *.sln
 *.sw?
-
-vendor/
-local-data/
-.env
-doctrine/
