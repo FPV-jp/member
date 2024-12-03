@@ -1,4 +1,4 @@
-import FullCalendarReducer from './EventSchedule2/redux/reducer'
+import EventSchedule2 from './EventSchedule2/reducer'
 import { combineReducers } from 'redux'
 
-export default combineReducers({ FullCalendarReducer })
+export default combineReducers({ EventSchedule2 })
