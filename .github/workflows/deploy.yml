@@ -27,12 +27,12 @@ jobs:
       - name: (Env) Fix .env for production
         if: github.ref == 'refs/heads/main'
         run: |
-          echo "${{ secrets.PROD_ENV }}" > .env
+          echo "${{ secrets.PROD_ENV }}" > backend/.env
 
       - name: (Env) Fix .env for development
         if: github.ref == 'refs/heads/dev'
         run: |
-          echo "${{ secrets.DEV_ENV }}" > .env
+          echo "${{ secrets.DEV_ENV }}" > backend/.env
 
       - name: Validate composer.json and composer.lock
         run: |
