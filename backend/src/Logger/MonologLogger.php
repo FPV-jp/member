@@ -7,8 +7,6 @@ use Monolog\Handler\StreamHandler;
 
 use Psr\Log\LoggerInterface;
 
-use Stringable;
-
 // --------------------------------------------------------------------
 // 
 // --------------------------------------------------------------------
@@ -30,7 +28,7 @@ class MonologLogger implements LoggerInterface
         }
     }
 
-    public function emergency(Stringable|string $message, array $context = []): void
+    public function emergency($message, array $context = []): void
     {
         $this->logger->emergency($message, $context);
     }
