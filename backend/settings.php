@@ -28,7 +28,7 @@ return [
             'dev_mode' => true,
 
             // Path where Doctrine will cache the processed metadata when 'dev_mode' is false.
-            'cache_dir' => APP_ROOT . '/mariadb/doctrine',
+            'cache_dir' => APP_ROOT . '/src/doctrine',
 
             // List of paths where Doctrine will search for metadata. 
             // Metadata can be either YML/XML files or annotated PHP classes.

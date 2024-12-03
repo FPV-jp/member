@@ -29,7 +29,7 @@ use Cloudinary\Api\Admin\AdminApi;
 use Fpv\Middleware\CorsMiddleware;
 use Fpv\Middleware\PermissionMiddleware;
 
-// use Fpv\Logger\MonologLogger;
+use Fpv\Logger\MonologLogger;
 use Fpv\GraphQL\SchemaHandler;
 
 use Throwable;
@@ -113,12 +113,12 @@ final class Slim implements ServiceProvider
             // $app->post('/api/users', CreateUser::class);
             $app->post('/gql', SchemaHandler::class)->add(PermissionMiddleware::class);
 
-            // $monologLogger = new MonologLogger('app');
+            $monologLogger = new MonologLogger('app');
             $errorMiddleware = $app->addErrorMiddleware(
                 $settings['slim']['displayErrorDetails'],
                 $settings['slim']['logErrors'],
                 $settings['slim']['logErrorDetails'],
-                null,
+                $monologLogger,
             );
 
             $defaultErrorHandler = new DefaultErrorHandler($app->getCallableResolver(), $app->getResponseFactory());
