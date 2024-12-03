@@ -28,7 +28,7 @@ class MonologLogger implements LoggerInterface
         }
     }
 
-    public function emergency($message, array $context = []): void
+    public function emergency(string|\Stringable $message, array $context = []): void
     {
         $this->logger->emergency($message, $context);
     }
