@@ -11,8 +11,8 @@ use Doctrine\DBAL\DriverManager;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
-use Fpv\Logger\MonologLogger;
-use Fpv\Logger\DoctrineLoggingMiddleware;
+// use Fpv\Logger\MonologLogger;
+// use Fpv\Logger\DoctrineLoggingMiddleware;
 
 require_once __DIR__ . '/vendor/autoload.php';
 

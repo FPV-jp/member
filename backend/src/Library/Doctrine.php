@@ -14,8 +14,8 @@ use Doctrine\ORM\ORMSetup;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
-use Fpv\Logger\DoctrineLoggingMiddleware;
-use Fpv\Logger\MonologLogger;
+// use Fpv\Logger\DoctrineLoggingMiddleware;
+// use Fpv\Logger\MonologLogger;
 
 // --------------------------------------------------------------------
 // object–relational mapper
