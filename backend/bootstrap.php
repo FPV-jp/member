@@ -33,9 +33,9 @@ $container->set(EntityManager::class, static function (Container $c): EntityMana
         true
     );
 
-    if ($settings['doctrine']['dev_mode']) {
-        $config->setMiddlewares([new DoctrineLoggingMiddleware(new MonologLogger("bootstrap"))]);
-    }
+    // if ($settings['doctrine']['dev_mode']) {
+    //     $config->setMiddlewares([new DoctrineLoggingMiddleware(new MonologLogger("bootstrap"))]);
+    // }
     
     $connection = DriverManager::getConnection($settings['doctrine']['connection'], $config);
 

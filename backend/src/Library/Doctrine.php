@@ -42,9 +42,9 @@ final class Doctrine implements ServiceProvider
                 true
             );
 
-            if ($settings['doctrine']['dev_mode']) {
-                $config->setMiddlewares([new DoctrineLoggingMiddleware(new MonologLogger("index"))]);
-            }
+            // if ($settings['doctrine']['dev_mode']) {
+            //     $config->setMiddlewares([new DoctrineLoggingMiddleware(new MonologLogger("index"))]);
+            // }
 
             $connection = DriverManager::getConnection($settings['doctrine']['connection'], $config);
 
