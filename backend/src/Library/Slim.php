@@ -81,6 +81,20 @@ final class Slim implements ServiceProvider
             /** @var array $settings */
             $settings = $c->get('settings');
 
+            // Auth0 middleware
+            // ------------------------------------------------------------------
+            $config = new SdkConfiguration([
+                'domain' => $settings['auth0']['domain'],
+                'clientId' => $settings['auth0']['clientId'],
+                'audience' => [
+                    $settings['auth0']['audience'],
+                    'https://fpv.jp.auth0.com/userinfo',
+                ],
+                'tokenAlgorithm' => 'RS256',
+                'cookieSecret' => bin2hex(random_bytes(32)),
+            ]);
+            $requiresAuth = new PermissionMiddleware($config, ['read:users']);
+
             $app = AppFactory::create(null, $c);
 
             $app->addRoutingMiddleware();
@@ -117,21 +131,10 @@ final class Slim implements ServiceProvider
                 return $response;
             });
 
-            $config = new SdkConfiguration([
-                'domain' => $settings['auth0']['domain'],
-                'clientId' => $settings['auth0']['clientId'],
-                'audience' => [
-                    $settings['auth0']['audience'],
-                    'https://fpv.jp.auth0.com/userinfo',
-                ],
-                'tokenAlgorithm' => 'RS256',
-                'cookieSecret' => bin2hex(random_bytes(32)),
-            ]);
-
             // UserHandler
             // ------------------------------------------------------------------
             $app->get('/api/users', UserHandler::class);
-            $app->post('/api/user', UserHandler::class)->add(new PermissionMiddleware($config, ['read:users']));
+            $app->post('/api/user', UserHandler::class)->add($requiresAuth);
 
             // $em = $c->get(EntityManager::class);
             // $app->get('/api/users', function ($request, $response, $args) use ($em) {
