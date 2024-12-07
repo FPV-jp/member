@@ -42,7 +42,7 @@ export const Auth0ProviderWithRedirectCallback = ({ children }) => {
     <Auth0Provider
       onRedirectCallback={onRedirectCallback}
       domain={env.domain}
-      clientId={env.clientid}
+      clientId={env.clientId}
       authorizationParams={{
         audience: env.audience,
         scope: env.scope,

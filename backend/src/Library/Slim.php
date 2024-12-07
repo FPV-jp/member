@@ -15,6 +15,8 @@ use Slim\Factory\AppFactory;
 use Slim\Middleware\ContentLengthMiddleware;
 use Slim\Handlers\ErrorHandler;
 
+use Auth0\SDK\Configuration\SdkConfiguration;
+
 use Doctrine\ORM\EntityManager;
 
 use Faker\Factory;
@@ -87,7 +89,7 @@ final class Slim implements ServiceProvider
             // CORS
             // ------------------------------------------------------------------
             if ($settings['appEnv'] == 'loclhost:8000') {
-               $app->add(new CorsMiddleware());
+                $app->add(new CorsMiddleware());
             }
 
             // OPTIONS
@@ -115,10 +117,21 @@ final class Slim implements ServiceProvider
                 return $response;
             });
 
+            $config = new SdkConfiguration([
+                'domain' => $settings['auth0']['domain'],
+                'clientId' => $settings['auth0']['clientId'],
+                'audience' => [
+                    $settings['auth0']['audience'],
+                    'https://fpv.jp.auth0.com/userinfo',
+                ],
+                'tokenAlgorithm' => 'RS256',
+                'cookieSecret' => bin2hex(random_bytes(32)),
+            ]);
+
             // UserHandler
             // ------------------------------------------------------------------
             $app->get('/api/users', UserHandler::class);
-            $app->post('/api/user', UserHandler::class)->add(new PermissionMiddleware(['read:users']));
+            $app->post('/api/user', UserHandler::class)->add(new PermissionMiddleware($config, ['read:users']));
 
             // $em = $c->get(EntityManager::class);
             // $app->get('/api/users', function ($request, $response, $args) use ($em) {

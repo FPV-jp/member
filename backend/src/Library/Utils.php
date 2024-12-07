@@ -26,6 +26,7 @@ class Utils
 
     public static function toErrorMessage(int $status, string $message): ResponseInterface
     {
+        error_log($message);
         $headers = ['Content-Type' => 'application/json'];
         return new Response($status, $headers, ['error' => $message]);
     }
