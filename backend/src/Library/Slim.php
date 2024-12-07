@@ -38,7 +38,7 @@ class DefaultErrorHandler extends ErrorHandler
 {
     protected function logError(string $error): void
     {
-        // Insert custom error logging function.
+        error_log($error);
     }
 }
 
@@ -133,15 +133,11 @@ final class Slim implements ServiceProvider
 
             // UserHandler
             // ------------------------------------------------------------------
-            $app->get('/api/users', UserHandler::class);
-            $app->post('/api/user', UserHandler::class)->add($requiresAuth);
-
-            // $em = $c->get(EntityManager::class);
-            // $app->get('/api/users', function ($request, $response, $args) use ($em) {
-            //     $users = $em->getRepository(User::class)->findAll();
-            //     $response->getBody()->write(json_encode($users));
-            //     return $response;
-            // });
+            $app->get   ('/api/user' , UserHandler::class);
+            $app->get   ('/api/users', UserHandler::class);
+            $app->post  ('/api/user' , UserHandler::class)->add($requiresAuth);
+            $app->put   ('/api/user' , UserHandler::class)->add($requiresAuth);
+            $app->delete('/api/user' , UserHandler::class)->add($requiresAuth);
 
             // $app->post('/api/wasabi', WasabiUploader::class)->add(PermissionMiddleware::class);
             // $app->post('/api/wasabi2', WasabiDownloader::class)->add(PermissionMiddleware::class);
@@ -156,18 +152,6 @@ final class Slim implements ServiceProvider
             );
             $defaultErrorHandler = new DefaultErrorHandler($app->getCallableResolver(), $app->getResponseFactory());
             $errorMiddleware->setDefaultErrorHandler($defaultErrorHandler);
-            // $errorMiddleware->setErrorHandler(HttpInternalServerErrorException::class, function (ServerRequestInterface $request, Throwable $exception, bool $displayErrorDetails): ResponseInterface {
-            //     $body = Stream::create(json_encode(['message' => $exception->getMessage()], JSON_PRETTY_PRINT) . PHP_EOL);
-            //     return new Response(500, ['Content-Type' => 'application/json'], $body);
-            // });
-
-            // // Error handling middleware
-            // $errorMiddleware = $app->addErrorMiddleware(true, true, true);
-            // $errorMiddleware->setDefaultErrorHandler(null);
-
-            // // Set log level (optional)
-            // $app->getContainer()->get('logger')->setLevel(LogLevel::ERROR);
-
             return $app;
         });
     }
