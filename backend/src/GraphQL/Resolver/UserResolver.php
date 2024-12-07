@@ -2,6 +2,8 @@
 
 use Fpv\Domain\User;
 
+use Fpv\Library\Utils;
+
 return [
     // user =================================
     'user' => function ($rootValue, $args, $context) {
@@ -10,9 +12,6 @@ return [
     },
     // users =================================
     'users' => function ($rootValue, $args, $context) {
-        // $token = $context['token'];
-        // error_log(print_r($token, true));
-
         $users = $this->em->getRepository(User::class)->findAll();
         $userArray = [];
         foreach ($users as $user) {
@@ -22,15 +21,15 @@ return [
     },
     // createUser =================================
     'createUser' => function ($rootValue, $args, $context) {
+        Utils::argsDump($args);
         $newUser = new User($args['user']['email'], $args['user']['password']);
-        $newUser = new User($this->faker->email(), $this->faker->password());
-        // error_log(print_r($newUser, true));
         $this->em->persist($newUser);
         $this->em->flush();
         return $newUser->jsonSerialize();
     },
     // updateUser =================================
     'updateUser' => function ($rootValue, $args, $context) {
+        Utils::argsDump($args);
         $user = $this->em->getRepository(User::class)->find($args['id']);
         $user->updateParameters($args);
         $this->em->flush();
@@ -38,6 +37,7 @@ return [
     },
     // deleteUser =================================
     'deleteUser' => function ($rootValue, $args, $context) {
+        Utils::argsDump($args);
         $user = $this->em->getRepository(User::class)->find($args['id']);
         $this->em->remove($user);
         $this->em->flush();

@@ -3,13 +3,15 @@
 namespace Fpv\Domain;
 
 use DateTimeImmutable;
+use JsonSerializable;
+
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\DBAL\Types\Types;
-use JsonSerializable;
+
 use function password_hash;
 
 // The User class demonstrates how to annotate a simple PHP class to act as a Doctrine entity.
@@ -59,9 +61,6 @@ final class User implements JsonSerializable
 
     public function updateParameters($args)
     {
-        // if (isset($args['name'])) {
-        //     $this->name = $args['name'];
-        // }
         if (isset($args['email'])) {
             $this->email = $args['email'];
         }

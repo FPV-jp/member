@@ -29,4 +29,9 @@ class Utils
         // error_log(json_encode($_SERVER, JSON_PRETTY_PRINT) . PHP_EOL, 0);
         error_log($_SERVER['REQUEST_METHOD'] . ' ' . $_SERVER['REQUEST_URI'], 0);
     }
+
+    public static function argsDump($args): void
+    {
+        error_log(print_r($args, true));
+    }
 }
