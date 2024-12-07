@@ -54,7 +54,7 @@ final class MediaLibrary implements JsonSerializable
 
     public function __construct(array $mediaLibrary, array $token)
     {
-        error_log(print_r($mediaLibrary, true));
+        // error_log(print_r($mediaLibrary, true));
         $this->owner = $token['email'];
         $this->is_public = false;
         $this->file_name = $mediaLibrary['file_name'];

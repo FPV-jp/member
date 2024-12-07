@@ -8,22 +8,14 @@ use UMA\DIC\Container;
 use UMA\DIC\ServiceProvider;
 
 use Psr\Container\ContainerInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-
-use Nyholm\Psr7\Response;
-use Nyholm\Psr7\Stream;
 
 use Slim\App;
 use Slim\Factory\AppFactory;
 use Slim\Middleware\ContentLengthMiddleware;
 use Slim\Handlers\ErrorHandler;
-use Slim\Exception\HttpInternalServerErrorException;
 
-// use Monolog\Logger;
-// use Monolog\Handler\StreamHandler;
-// use Monolog\Level;
+use Auth0\SDK\Configuration\SdkConfiguration;
 
 use Doctrine\ORM\EntityManager;
 
@@ -37,15 +29,8 @@ use Fpv\Middleware\PermissionMiddleware;
 
 use Fpv\GraphQL\GraphQLHandler;
 
-use Throwable;
-
-use Fpv\API\ListUsers;
-use Fpv\Domain\User;
-
-use Doctrine\ORM\ORMSetup;
-
-use Symfony\Component\Cache\Adapter\ArrayAdapter;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Fpv\API\UserHandler;
+use Fpv\API\WasabiHandler;
 
 // --------------------------------------------------------------------
 // 
@@ -54,7 +39,7 @@ class DefaultErrorHandler extends ErrorHandler
 {
     protected function logError(string $error): void
     {
-        // Insert custom error logging function.
+        error_log($error);
     }
 }
 
@@ -73,8 +58,8 @@ final class Slim implements ServiceProvider
      */
     public function provide(Container $c): void
     {
-        $c->set(ListUsers::class, static function (ContainerInterface $c): RequestHandlerInterface {
-            return new ListUsers(
+        $c->set(UserHandler::class, static function (ContainerInterface $c): RequestHandlerInterface {
+            return new UserHandler(
                 $c->get(EntityManager::class),
                 $c->get(AdminApi::class),
                 $c->get(PHPMailer::class),
@@ -85,7 +70,6 @@ final class Slim implements ServiceProvider
         $c->set(GraphQLHandler::class, static function (ContainerInterface $c): RequestHandlerInterface {
             return new GraphQLHandler(
                 $c->get(EntityManager::class),
-                $c->get(AdminApi::class),
                 $c->get(PHPMailer::class),
                 $c->get(S3Client::class),
                 Factory::create(),
@@ -97,6 +81,20 @@ final class Slim implements ServiceProvider
             /** @var array $settings */
             $settings = $c->get('settings');
 
+            // Auth0 middleware
+            // ------------------------------------------------------------------
+            $config = new SdkConfiguration([
+                'domain' => $settings['auth0']['domain'],
+                'clientId' => $settings['auth0']['clientId'],
+                'audience' => [
+                    $settings['auth0']['audience'],
+                    $settings['auth0']['base'],
+                ],
+                'tokenAlgorithm' => 'RS256',
+                'cookieSecret' => bin2hex(random_bytes(32)),
+            ]);
+            $requiresAuth = new PermissionMiddleware($settings, $config, ['read:users']);
+
             $app = AppFactory::create(null, $c);
 
             $app->addRoutingMiddleware();
@@ -105,7 +103,7 @@ final class Slim implements ServiceProvider
             // CORS
             // ------------------------------------------------------------------
             if ($settings['appEnv'] == 'loclhost:8000') {
-               $app->add(new CorsMiddleware());
+                $app->add(new CorsMiddleware());
             }
 
             // OPTIONS
@@ -116,7 +114,7 @@ final class Slim implements ServiceProvider
 
             // GraphQLHandler
             // ------------------------------------------------------------------
-            $app->post('/graphql', GraphQLHandler::class);
+            $app->post('/graphql', GraphQLHandler::class)->add($requiresAuth);
 
             // PHP Info
             // ------------------------------------------------------------------
@@ -132,23 +130,19 @@ final class Slim implements ServiceProvider
                 return $response;
             });
 
-            // ListUsers
+            // UserHandler
             // ------------------------------------------------------------------
-            $app->get('/api/users', ListUsers::class);
-            $app->post('/api/user', ListUsers::class);
+            $app->get('/api/user', UserHandler::class);
+            $app->get('/api/users', UserHandler::class);
+            $app->post('/api/createUser', UserHandler::class)->add($requiresAuth);
+            $app->post('/api/updateUser', UserHandler::class)->add($requiresAuth);
+            $app->post('/api/deleteUser', UserHandler::class)->add($requiresAuth);
 
-            // $em = $c->get(EntityManager::class);
-            // $app->get('/api/users', function ($request, $response, $args) use ($em) {
-            //     $users = $em->getRepository(User::class)->findAll();
-            //     $response->getBody()->write(json_encode($users));
-            //     return $response;
-            // });
-
-            // $app->post('/api/wasabi', WasabiUploader::class)->add(PermissionMiddleware::class);
-            // $app->post('/api/wasabi2', WasabiDownloader::class)->add(PermissionMiddleware::class);
-            // $app->get('/api/users', ListUsers::class);
-            // $app->post('/api/users', CreateUser::class);
-            // $app->post('/graphql', SchemaHandler::class)->add(PermissionMiddleware::class);
+            // WasabiHandler
+            // ------------------------------------------------------------------
+            $app->get('/api/wasabi', WasabiHandler::class);
+            $app->get('/api/wasabi/user', WasabiHandler::class)->add($requiresAuth);
+            $app->post('/api/wasabi/upload', WasabiHandler::class)->add($requiresAuth);
 
             $errorMiddleware = $app->addErrorMiddleware(
                 $settings['slim']['displayErrorDetails'],
@@ -157,18 +151,6 @@ final class Slim implements ServiceProvider
             );
             $defaultErrorHandler = new DefaultErrorHandler($app->getCallableResolver(), $app->getResponseFactory());
             $errorMiddleware->setDefaultErrorHandler($defaultErrorHandler);
-            // $errorMiddleware->setErrorHandler(HttpInternalServerErrorException::class, function (ServerRequestInterface $request, Throwable $exception, bool $displayErrorDetails): ResponseInterface {
-            //     $body = Stream::create(json_encode(['message' => $exception->getMessage()], JSON_PRETTY_PRINT) . PHP_EOL);
-            //     return new Response(500, ['Content-Type' => 'application/json'], $body);
-            // });
-
-            // // Error handling middleware
-            // $errorMiddleware = $app->addErrorMiddleware(true, true, true);
-            // $errorMiddleware->setDefaultErrorHandler(null);
-
-            // // Set log level (optional)
-            // $app->getContainer()->get('logger')->setLevel(LogLevel::ERROR);
-
             return $app;
         });
     }

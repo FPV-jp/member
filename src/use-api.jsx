@@ -42,7 +42,7 @@ export const Auth0ProviderWithRedirectCallback = ({ children }) => {
     <Auth0Provider
       onRedirectCallback={onRedirectCallback}
       domain={env.domain}
-      clientId={env.clientid}
+      clientId={env.clientId}
       authorizationParams={{
         audience: env.audience,
         scope: env.scope,
@@ -66,6 +66,14 @@ export const ApolloProviderWithToken = ({ children }) => {
     const accessToken = await getAccessTokenSilently({
       authorizationParams: { audience: env.audience, scope: env.scope },
     })
+    // const response = await fetch('https://fpv.jp.auth0.com/userinfo', {
+    //   method: 'GET',
+    //   headers: {
+    //     Authorization: `Bearer ${accessToken}`,
+    //   },
+    // });
+    // const userInfo = await response.json();
+    // console.log(userInfo);
     return { headers: { ...headers, authorization: `Bearer ${accessToken}` } }
   })
   const client = useRef()

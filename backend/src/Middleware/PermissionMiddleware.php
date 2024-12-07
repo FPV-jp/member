@@ -1,60 +1,81 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Fpv\Middleware;
 
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
-use Auth0\SDK\Exception\Auth0Exception;
 use Auth0\SDK\Configuration\SdkConfiguration;
 use Auth0\SDK\Token;
-use Nyholm\Psr7\Response;
+use Auth0\SDK\Exception\Auth0Exception;
+
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+
+use GuzzleHttp\Client;
+
+use Fpv\Library\Utils;
 
 // --------------------------------------------------------------------
 // 
 // --------------------------------------------------------------------
 class PermissionMiddleware
 {
+    private SdkConfiguration $config;
+    private array $requiredScopes;
+    private mixed $settings;
+
+    public function __construct(mixed $settings, SdkConfiguration $config, array $requiredScopes = [])
+    {
+        $this->settings = $settings;
+        $this->config = $config;
+        $this->requiredScopes = $requiredScopes;
+    }
+
     public function __invoke(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $bearer = $this->getBearer($request);
-        if ($bearer == null) {
-            return new Response(403, ['Content-Type' => 'application/json'], json_encode(['error' => 'Authorization token required']));
+        $authHeader = $request->getHeaderLine('Authorization');
+        if (!$authHeader || !str_starts_with($authHeader, 'Bearer ')) {
+            return Utils::toErrorMessage(401, 'Missing or invalid Authorization header');
         }
+        $bearer = substr($authHeader, 7);
+
         try {
-            $token = $this->validateToken($bearer, Token::TYPE_ACCESS_TOKEN);
-            // $token = $this->validateToken($bearer, Token::TYPE_ID_TOKEN);
-            $request = $request->withAttribute('token', $token->toArray());
+
+            // Validate token ------------------------------------------
+            $token = new Token($this->config, $bearer, Token::TYPE_ACCESS_TOKEN);
+            $token->verify();
+            $token->validate();
+
+            // Check required scope ------------------------------------
+            $decodedToken = $token->toArray();
+            $userScopes = explode(' ', $decodedToken['scope'] ?? '');
+            foreach ($this->requiredScopes as $scope) {
+                if (!in_array($scope, $userScopes, true)) {
+                    return Utils::toErrorMessage(403, 'Missing required scope: ' . $scope);
+                }
+            }
+
+            // Get user info --------------------------------------------
+            $client = new Client([
+                'base_uri' => $this->settings['auth0']['base'],
+            ]);
+            $response = $client->request('GET', '/userinfo', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $bearer,
+                ]
+            ]);
+            $responseBody = $response->getBody()->getContents();
+            $userinfo = json_decode($responseBody, true);
+
+            // Set request ----------------------------------------------
+            $request = $request->withAttribute('token', $decodedToken);
+            $request = $request->withAttribute('userinfo', $userinfo);
+
         } catch (Auth0Exception $e) {
-            return new Response(403, ['Content-Type' => 'application/json'], json_encode(['error' => 'Auth0 Token Validation Error: ' . $e->getMessage()]));
+            return Utils::toErrorMessage(403, 'Invalid: ' . $e->getMessage());
         }
+
         return $handler->handle($request);
     }
-
-    public function getBearer(ServerRequestInterface $request): ?string
-    {
-        if ($request->hasHeader('Authorization')) {
-            $authorizationHeader = $request->getHeaderLine('Authorization');
-            $tokenParts = explode(' ', $authorizationHeader);
-            if (count($tokenParts) === 2 && $tokenParts[0] === 'Bearer') {
-                return $tokenParts[1];
-            }
-        }
-        return null;
-    }
-
-    public function validateToken(string $jwt, int $type)
-    {
-        $auth0Configuration = [
-            'domain' => $_ENV['AUTH0_DOMAIN'],
-            'clientId' => $_ENV['AUTH0_CLIENT_ID'],
-            'cookieSecret' => bin2hex(random_bytes(32)),
-        ];
-        $config = new SdkConfiguration($auth0Configuration);
-        $token = new Token($config, $jwt, $type);
-        $token->verify();
-        $token->validate();
-        return $token;
-    }
-
 }

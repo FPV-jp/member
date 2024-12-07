@@ -3,44 +3,45 @@ import { Loading, Error } from './Components'
 
 export function Users() {
   const { loading, error, data: users = [] } = useApi('/api/users', {})
-  const { loadingx, errox, datax } = useApi('/api/user', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      name: 'John Doe',
-      email: 'john.doe@example.com',
-    }),
-  })
+  //   const { loadingx, errox, datax } = useApi('/api/createUser', {
+  //   method: 'POST',
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //   },
+  //   body: JSON.stringify({
+  //     password: 'password',
+  //     email: 'john.doe@example.com',
+  //   }),
+  // })
 
   if (loading) {
     return <Loading />
   }
-
   if (error) {
     return <Error message={error.message} />
   }
-
-return (
-  <>
-    {/* <CreateUserComponent /> */}
-    <table className='table'>
-      <thead>
-        <tr>
-          <th scope='col'>Name</th>
-          <th scope='col'>Email</th>
-        </tr>
-      </thead>
-      <tbody>
-        {users.map(({ name, email }, i) => (
-          <tr key={i}>
-            <td>{name}</td>
-            <td>{email}</td>
+  return (
+    <>
+      <table className='table'>
+        <thead>
+          <tr>
+            <th scope='col'>ID</th>
+            <th scope='col'>Name</th>
+            <th scope='col'>Email</th>
+            <th scope='col'>RegisteredAt</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
-  </>
-)
+        </thead>
+        <tbody>
+          {users.map(({ id, name, email, registered_at }, i) => (
+            <tr key={i}>
+              <td>{id}</td>
+              <td>{name}</td>
+              <td>{email}</td>
+              <td>{registered_at}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
+  )
 }

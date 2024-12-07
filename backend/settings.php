@@ -50,8 +50,9 @@ return [
 
         'auth0' => [
             'domain'   => $_ENV['AUTH0_DOMAIN'],
-            'clientid' => $_ENV['AUTH0_CLIENT_ID'],
+            'clientId' => $_ENV['AUTH0_CLIENT_ID'],
             'audience' => $_ENV['AUTH0_AUDIENCE'],
+            'base'     => $_ENV['AUTH0_BASE'],
             'scope'    => 'profile email read:users',
         ],
 

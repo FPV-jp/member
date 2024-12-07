@@ -2,39 +2,33 @@
 
 namespace Fpv\Middleware;
 
+use Doctrine\DBAL\Platforms;
 use Doctrine\DBAL\Driver;
-use Doctrine\DBAL\Driver\Middleware as MiddlewareInterface;
-
-// use Monolog\Logger;
-// use Monolog\Handler\StreamHandler;
-// use Monolog\Level;
+use Doctrine\DBAL\ServerVersionProvider;
 
 // --------------------------------------------------------------------
 // 
 // --------------------------------------------------------------------
-class DoctrineMiddleware implements MiddlewareInterface
+class MariaDBPlatform extends Platforms\MariaDB1060Platform {}
+
+// --------------------------------------------------------------------
+// 
+// --------------------------------------------------------------------
+class DoctrineMariaDBDriver extends Driver\Middleware\AbstractDriverMiddleware implements Driver
 {
-    // private Logger $logger;
-
-    public function __construct()
+    public function getDatabasePlatform(ServerVersionProvider $versionProvider): Platforms\AbstractPlatform
     {
-        // $this->logger = new Logger("db");
-        // $this->logger->pushHandler(new StreamHandler('php://stdout', Level::Info));
+        return new MariaDBPlatform();
     }
+}
 
+// --------------------------------------------------------------------
+// 
+// --------------------------------------------------------------------
+class DoctrineMiddleware implements Driver\Middleware
+{
     public function wrap(Driver $driver): Driver
     {
-        // $this->logger->info("wrap");
-        return $driver;
+        return new DoctrineMariaDBDriver($driver);
     }
-
-    // public function startQuery($sql, ?array $params = null, ?array $types = null)
-    // {
-    //     $this->logger->info($sql);
-    // }
-
-    // public function stopQuery()
-    // {
-
-    // }
 }

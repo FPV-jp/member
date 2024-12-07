@@ -1,19 +1,17 @@
-import { useApi } from './use-api'
-import { Loading, Error } from './Components'
-
-import { USERS_QUERY, CREATE_USER_MUTATION } from './User'
+import { USERS_QUERY, CREATE_USER_MUTATION } from './gql/User'
 import { useMutation, useQuery } from '@apollo/client'
 
 function DisplayUsers() {
   const { loading, error, data } = useQuery(USERS_QUERY)
   if (loading) return <div>Loading...</div>
   if (error) return <div>Error: {error.message}</div>
-
-  return data?.users.map(({ id, email, registered_at }) => (
-    <div key={id}>
-      <p>Email: {email}</p>
-      <p>Registered At: {registered_at}</p>
-    </div>
+  return data?.users.map(({ id, email, registered_at }, i) => (
+    <tr key={i}>
+      <td>{id}</td>
+      <td>{name}</td>
+      <td>{email}</td>
+      <td>{registered_at}</td>
+    </tr>
   ))
 }
 
@@ -39,7 +37,19 @@ export function Users2() {
   return (
     <>
       <CreateUserComponent />
-      <DisplayUsers />
+      <table className='table'>
+        <thead>
+          <tr>
+            <th scope='col'>ID</th>
+            <th scope='col'>Name</th>
+            <th scope='col'>Email</th>
+            <th scope='col'>RegisteredAt</th>
+          </tr>
+        </thead>
+        <tbody>
+          <DisplayUsers />
+        </tbody>
+      </table>
     </>
   )
 }

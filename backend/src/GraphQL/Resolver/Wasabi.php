@@ -15,7 +15,7 @@ return [
             'MaxKeys' => $args['MaxKeys'],
         ];
 
-        error_log(print_r($args, true));
+        // error_log(print_r($args, true));
 
         try {
             $result = $this->wasabi->listObjectsV2($args);
@@ -51,7 +51,7 @@ return [
             }
             return $presignedUrls;
         } catch (S3Exception $e) {
-            error_log(print_r($e, true));
+            // error_log(print_r($e, true));
             return $presignedUrls;
         }
     },
@@ -90,7 +90,7 @@ return [
                 'Objects' => $postObjectArray,
             ];
         } catch (S3Exception $e) {
-            error_log(print_r($e, true));
+            // error_log(print_r($e, true));
             return [
                 'Objects' => [],
             ];

@@ -43,7 +43,7 @@ final class EventSchedule implements JsonSerializable
 
     public function __construct(array $eventSchedule, array $token)
     {
-        error_log(print_r($eventSchedule, true));
+        // error_log(print_r($eventSchedule, true));
         $this->create_user = $token['email'];
         $this->event_title = $eventSchedule['event_title'];
         $this->event_color = $eventSchedule['event_color'];
