@@ -8,22 +8,12 @@ use UMA\DIC\Container;
 use UMA\DIC\ServiceProvider;
 
 use Psr\Container\ContainerInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-
-use Nyholm\Psr7\Response;
-use Nyholm\Psr7\Stream;
 
 use Slim\App;
 use Slim\Factory\AppFactory;
 use Slim\Middleware\ContentLengthMiddleware;
 use Slim\Handlers\ErrorHandler;
-use Slim\Exception\HttpInternalServerErrorException;
-
-// use Monolog\Logger;
-// use Monolog\Handler\StreamHandler;
-// use Monolog\Level;
 
 use Doctrine\ORM\EntityManager;
 
@@ -37,15 +27,7 @@ use Fpv\Middleware\PermissionMiddleware;
 
 use Fpv\GraphQL\GraphQLHandler;
 
-use Throwable;
-
 use Fpv\API\UserHandler;
-use Fpv\Domain\User;
-
-use Doctrine\ORM\ORMSetup;
-
-use Symfony\Component\Cache\Adapter\ArrayAdapter;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 // --------------------------------------------------------------------
 // 
@@ -136,7 +118,7 @@ final class Slim implements ServiceProvider
             // UserHandler
             // ------------------------------------------------------------------
             $app->get('/api/users', UserHandler::class);
-            $app->post('/api/user', UserHandler::class);
+            $app->post('/api/user', UserHandler::class)->add(new PermissionMiddleware(['read:users']));
 
             // $em = $c->get(EntityManager::class);
             // $app->get('/api/users', function ($request, $response, $args) use ($em) {

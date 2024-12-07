@@ -24,6 +24,12 @@ class Utils
         return new Response($status, $headers, $body);
     }
 
+    public static function toErrorMessage(int $status, string $message): ResponseInterface
+    {
+        $headers = ['Content-Type' => 'application/json'];
+        return new Response($status, $headers, ['error' => $message]);
+    }
+
     public static function requestLog(): void
     {
         // error_log(json_encode($_SERVER, JSON_PRETTY_PRINT) . PHP_EOL, 0);
