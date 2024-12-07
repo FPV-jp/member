@@ -68,7 +68,7 @@ final class GraphQLHandler implements RequestHandlerInterface
         $schema = BuildSchema::build($schemaString);
         $source = $input['query'];
         error_log($source, 0);
-        
+
         $rootValue = [];
         foreach ($files as $resolver) {
             $rootValue = array_merge($rootValue, require_once __DIR__ . '/Resolver//' . $resolver . 'Resolver.php');

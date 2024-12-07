@@ -43,19 +43,41 @@ final class UserHandler implements RequestHandlerInterface
     {
         Utils::requestLog();
 
-        if ($_SERVER['REQUEST_METHOD'] == "GET") {
-            $users = $this->em->getRepository(User::class)->findAll();
-            return Utils::toResponse(200, $users);
-        }
+        $userRepo = $this->em->getRepository(User::class);
 
-        if ($_SERVER['REQUEST_METHOD'] == "POST") {
-            $newRandomUser = new User($this->faker->email(), $this->faker->password());
-            $this->em->persist($newRandomUser);
-            $this->em->flush();
-            return Utils::toResponse(200, $newRandomUser);
-        }
+        switch ($_SERVER['REQUEST_URI']) {
+            case '/api/user':
+                $id = htmlspecialchars($_GET["id"]);
+                $user = $userRepo->find($id);
+                return Utils::toResponse(200, $user);
 
-        $users = $this->em->getRepository(User::class)->findAll();
-        return Utils::toResponse(200, $users);
+            case '/api/users':
+                $users = $userRepo->findAll();
+                return Utils::toResponse(200, $users);
+
+            case '/api/createUser':
+                $email = htmlspecialchars($_POST['email']);
+                $password = htmlspecialchars($_POST['password']);
+                $newRandomUser = new User($email, $password);
+                $this->em->persist($newRandomUser);
+                $this->em->flush();
+                return Utils::toResponse(200, $newRandomUser);
+
+            case '/api/updateUser':
+                $id = htmlspecialchars($_POST["id"]);
+                $user = $userRepo->find($id);
+                $user->updateParameters($_POST);
+                $this->em->flush();
+                break;
+
+            case '/api/deleteUser':
+                $id = htmlspecialchars($_POST["id"]);
+                $user = $userRepo->find($id);
+                $this->em->remove($user);
+                $this->em->flush();
+                break;
+            default:
+                return Utils::toErrorMessage(501, 'x');
+        }
     }
 }

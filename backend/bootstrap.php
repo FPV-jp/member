@@ -29,7 +29,7 @@ $container->set(EntityManager::class, static function (Container $c): EntityMana
 
     $middleware = new DoctrineMiddleware();
     $config->setMiddlewares([$middleware]);
-    
+
     $config->setProxyDir(sys_get_temp_dir());
     $config->setProxyNamespace('DoctrineProxies');
     $config->setAutoGenerateProxyClasses($isDevMode);

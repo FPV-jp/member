@@ -33,12 +33,22 @@ class Utils
 
     public static function requestLog(): void
     {
-        // error_log(json_encode($_SERVER, JSON_PRETTY_PRINT) . PHP_EOL, 0);
-        error_log($_SERVER['REQUEST_METHOD'] . ' ' . $_SERVER['REQUEST_URI'], 0);
+        switch ($_SERVER['REQUEST_METHOD']) {
+            case 'GET':
+                error_log($_SERVER['REQUEST_METHOD'] . ' ' . $_SERVER['REQUEST_URI'], 0);
+                Utils::argsDump($_GET);
+                break;
+            case 'POST':
+                error_log($_SERVER['REQUEST_METHOD'] . ' ' . $_SERVER['REQUEST_URI'], 0);
+                Utils::argsDump($_POST);
+                break;
+            default:
+        }
     }
 
     public static function argsDump($args): void
     {
-        error_log(print_r($args, true));
+        // error_log(print_r($args, true));
+        error_log(json_encode($args, JSON_PRETTY_PRINT) . PHP_EOL, 0);
     }
 }

@@ -126,24 +126,17 @@ final class Slim implements ServiceProvider
             // .env file
             // ------------------------------------------------------------------
             $app->get('/api/env', function ($request, $response, $args) use ($settings) {
-                // error_log('---- env');
                 $response->getBody()->write(json_encode($settings['auth0']));
                 return $response;
             });
 
             // UserHandler
             // ------------------------------------------------------------------
-            $app->get   ('/api/user' , UserHandler::class);
-            $app->get   ('/api/users', UserHandler::class);
-            $app->post  ('/api/user' , UserHandler::class)->add($requiresAuth);
-            $app->put   ('/api/user' , UserHandler::class)->add($requiresAuth);
-            $app->delete('/api/user' , UserHandler::class)->add($requiresAuth);
-
-            // $app->post('/api/wasabi', WasabiUploader::class)->add(PermissionMiddleware::class);
-            // $app->post('/api/wasabi2', WasabiDownloader::class)->add(PermissionMiddleware::class);
-            // $app->get('/api/users', UserHandler::class);
-            // $app->post('/api/users', CreateUser::class);
-            // $app->post('/graphql', SchemaHandler::class)->add(PermissionMiddleware::class);
+            $app->get('/api/user', UserHandler::class);
+            $app->get('/api/users', UserHandler::class);
+            $app->post('/api/createUser', UserHandler::class)->add($requiresAuth);
+            $app->post('/api/updateUser', UserHandler::class)->add($requiresAuth);
+            $app->post('/api/deleteUser', UserHandler::class)->add($requiresAuth);
 
             $errorMiddleware = $app->addErrorMiddleware(
                 $settings['slim']['displayErrorDetails'],

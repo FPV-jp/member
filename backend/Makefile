@@ -8,6 +8,9 @@ run-app:
 run-db:
 	docker compose up -d --build
 
+init-db:
+	mariadb/doctrine orm:schema:update --dump-sql --force
+
 down-db:
 	docker compose down
 
