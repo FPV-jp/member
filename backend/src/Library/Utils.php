@@ -36,11 +36,16 @@ class Utils
         switch ($_SERVER['REQUEST_METHOD']) {
             case 'GET':
                 error_log($_SERVER['REQUEST_METHOD'] . ' ' . $_SERVER['REQUEST_URI'], 0);
-                Utils::argsDump($_GET);
+                // Utils::argsDump($_GET);
                 break;
             case 'POST':
                 error_log($_SERVER['REQUEST_METHOD'] . ' ' . $_SERVER['REQUEST_URI'], 0);
-                Utils::argsDump($_POST);
+                $input = json_decode(file_get_contents('php://input'), true);
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    Utils::argsDump($input);
+                } else{
+                    error_log('Invalid JSON body :' . json_last_error());
+                }
                 break;
             default:
         }

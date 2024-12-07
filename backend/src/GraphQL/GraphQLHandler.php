@@ -65,24 +65,19 @@ final class GraphQLHandler implements RequestHandlerInterface
         foreach ($files as $schema) {
             $schemaString .= file_get_contents(__DIR__ . '/Schema//' . $schema . '.graphql') . PHP_EOL;
         }
-        $schema = BuildSchema::build($schemaString);
-        $source = $input['query'];
-        error_log($source, 0);
 
         $rootValue = [];
         foreach ($files as $resolver) {
             $rootValue = array_merge($rootValue, require_once __DIR__ . '/Resolver//' . $resolver . 'Resolver.php');
         }
-        $contextValue = ['token' => $request->getAttribute('token')];
-        $variableValues = $input['variables'] ?? null;
 
         try {
             $result = GraphQL::executeQuery(
-                $schema,
-                $source,
+                BuildSchema::build($schemaString),
+                $input['query'],
                 $rootValue,
-                $contextValue,
-                $variableValues,
+                ['token' => $request->getAttribute('token')],
+                $input['variables'] ?? null,
                 // string $operationName = null,
                 // callable $fieldResolver = null,
                 // array $validationRules = null

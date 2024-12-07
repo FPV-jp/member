@@ -56,9 +56,8 @@ final class UserHandler implements RequestHandlerInterface
                 return Utils::toResponse(200, $users);
 
             case '/api/createUser':
-                $email = htmlspecialchars($_POST['email']);
-                $password = htmlspecialchars($_POST['password']);
-                $newRandomUser = new User($email, $password);
+                $input = json_decode(file_get_contents('php://input'), true);
+                $newRandomUser = new User($input['email'], $input['password']);
                 $this->em->persist($newRandomUser);
                 $this->em->flush();
                 return Utils::toResponse(200, $newRandomUser);
@@ -77,7 +76,7 @@ final class UserHandler implements RequestHandlerInterface
                 $this->em->flush();
                 break;
             default:
-                return Utils::toErrorMessage(501, 'x');
+                return Utils::toErrorMessage(501, '?');
         }
     }
 }

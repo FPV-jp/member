@@ -3,16 +3,16 @@ import { Loading, Error } from './Components'
 
 export function Users() {
   const { loading, error, data: users = [] } = useApi('/api/users', {})
-  const { loadingx, errox, datax } = useApi('/api/user', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      name: 'John Doe',
-      email: 'john.doe@example.com',
-    }),
-  })
+  // const { loadingx, errox, datax } = useApi('/api/createUser', {
+  //   method: 'POST',
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //   },
+  //   body: JSON.stringify({
+  //     password: 'password',
+  //     email: 'john.doe@example.com',
+  //   }),
+  // })
 
   if (loading) {
     return <Loading />

@@ -21,7 +21,7 @@ return [
     },
     // createUser =================================
     'createUser' => function ($rootValue, $args, $context) {
-        Utils::argsDump($args);
+        Utils::argsDump($context);
         $newUser = new User($args['user']['email'], $args['user']['password']);
         $this->em->persist($newUser);
         $this->em->flush();
@@ -29,7 +29,6 @@ return [
     },
     // updateUser =================================
     'updateUser' => function ($rootValue, $args, $context) {
-        Utils::argsDump($args);
         $user = $this->em->getRepository(User::class)->find($args['id']);
         $user->updateParameters($args);
         $this->em->flush();
@@ -37,7 +36,6 @@ return [
     },
     // deleteUser =================================
     'deleteUser' => function ($rootValue, $args, $context) {
-        Utils::argsDump($args);
         $user = $this->em->getRepository(User::class)->find($args['id']);
         $this->em->remove($user);
         $this->em->flush();

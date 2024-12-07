@@ -53,6 +53,8 @@ class PermissionMiddleware
                 return Utils::toErrorMessage(403, 'Missing required scope: ' . $scope);
             }
         }
+
+        $request = $request->withAttribute('token', $decodedToken);
         return $handler->handle($request);
     }
 }

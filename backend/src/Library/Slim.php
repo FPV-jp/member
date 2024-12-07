@@ -114,7 +114,7 @@ final class Slim implements ServiceProvider
 
             // GraphQLHandler
             // ------------------------------------------------------------------
-            $app->post('/graphql', GraphQLHandler::class);
+            $app->post('/graphql', GraphQLHandler::class)->add($requiresAuth);
 
             // PHP Info
             // ------------------------------------------------------------------
