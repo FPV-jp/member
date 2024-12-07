@@ -8,9 +8,6 @@ use Doctrine\ORM\EntityManager;
 
 use Slim\Exception\HttpInternalServerErrorException;
 
-use Nyholm\Psr7\Response;
-use Nyholm\Psr7\Stream;
-
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -24,7 +21,7 @@ use Cloudinary\Api\Admin\AdminApi;
 use PHPMailer\PHPMailer\PHPMailer;
 use Faker\Generator;
 
-use function json_encode;
+use Fpv\Library\Utils;
 
 final class GraphQLHandler implements RequestHandlerInterface
 {
@@ -46,7 +43,7 @@ final class GraphQLHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        error_log($_SERVER['REQUEST_METHOD'] . ' ' . $_SERVER['REQUEST_URI'], 0);
+        Utils::requestLog();
 
         $rawInput = file_get_contents('php://input');
         if ($rawInput === false) {
@@ -88,18 +85,10 @@ final class GraphQLHandler implements RequestHandlerInterface
                 // callable $fieldResolver = null,
                 // array $validationRules = null
             );
-            return $this->toResponse(200, $result);
+            return Utils::toResponse(200, $result);
         } catch (\Exception $e) {
             $err = ['errors' => [FormattedError::createFromException($e)]];
-            return $this->toResponse(500, $err);
+            return Utils::toResponse(500, $err);
         }
-    }   
-     
-    public function toResponse($status, $result): ResponseInterface
-    {
-        $headers = ['Content-Type' => 'application/json'];
-        $body = Stream::create(json_encode($result, JSON_PRETTY_PRINT) . PHP_EOL);
-        return new Response($status, $headers, $body);
     }
-
 }

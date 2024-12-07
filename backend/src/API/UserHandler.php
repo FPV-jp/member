@@ -6,9 +6,6 @@ namespace Fpv\API;
 
 use Doctrine\ORM\EntityManager;
 
-use Nyholm\Psr7\Response;
-use Nyholm\Psr7\Stream;
-
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -22,7 +19,7 @@ use Cloudinary\Api\Admin\AdminApi;
 
 use Fpv\Domain\User;
 
-use function json_encode;
+use Fpv\Library\Utils;
 
 // --------------------------------------------------------------------
 // 
@@ -44,30 +41,21 @@ final class UserHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        // error_log(json_encode($_SERVER, JSON_PRETTY_PRINT) . PHP_EOL, 0);
-        error_log($_SERVER['REQUEST_METHOD'] . ' ' . $_SERVER['REQUEST_URI'], 0);
-
- 
+        Utils::requestLog();
 
         if ($_SERVER['REQUEST_METHOD'] == "GET") {
-            /** @var User[] $users */
             $users = $this->em->getRepository(User::class)->findAll();
-            $body = Stream::create(json_encode($users, JSON_PRETTY_PRINT) . PHP_EOL);
-            return new Response(200, ['Content-Type' => 'application/json'], $body);
+            return Utils::toResponse(200, $users);
         }
 
         if ($_SERVER['REQUEST_METHOD'] == "POST") {
-            /** @var User $user */
             $newRandomUser = new User($this->faker->email(), $this->faker->password());
             $this->em->persist($newRandomUser);
             $this->em->flush();
-            $body = Stream::create(json_encode($newRandomUser, JSON_PRETTY_PRINT) . PHP_EOL);
-            return new Response(201, ['Content-Type' => 'application/json'], $body);
+            return Utils::toResponse(200, $newRandomUser);
         }
 
-        /** @var User[] $users */
         $users = $this->em->getRepository(User::class)->findAll();
-        $body = Stream::create(json_encode($users, JSON_PRETTY_PRINT) . PHP_EOL);
-        return new Response(200, ['Content-Type' => 'application/json'], $body);
+        return Utils::toResponse(200, $users);
     }
 }
