@@ -35,6 +35,16 @@ final class GraphQLHandler implements RequestHandlerInterface
 
     private Generator $faker;
 
+    private array $files = [
+        'User',
+        // 'Cloudinary',
+        // 'Wasabi',
+        // 'EventSchedule',
+        // 'FlightPoint',
+        // 'MediaLibrary',
+        // 'OpenChat',
+    ];
+
     public function __construct(EntityManager $em, AdminApi $cloudinary, PHPMailer $mailer, S3Client $wasabi, Generator $faker)
     {
         $this->em = $em;
@@ -44,47 +54,34 @@ final class GraphQLHandler implements RequestHandlerInterface
         $this->faker = $faker;
     }
 
-    private function buildSchema(array $schemas)
-    {
-        $schemaString = file_get_contents(__DIR__ . '/schema.graphql') . PHP_EOL;
-        foreach ($schemas as $schema) {
-            $schemaString .= file_get_contents(__DIR__ . '/Schema//' . $schema . '.graphql') . PHP_EOL;
-        }
-        return BuildSchema::build($schemaString);
-    }
-
-    private function rootValue(array $resolvers)
-    {
-        $rootValue = [];
-        foreach ($resolvers as $resolver) {
-            $rootValue = array_merge($rootValue, require_once __DIR__ . '/Resolver//' . $resolver . 'Resolver.php');
-        }
-        return $rootValue;
-    }
-
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-
         $rawInput = file_get_contents('php://input');
         if ($rawInput === false) {
             throw new HttpInternalServerErrorException($request, 'Failed to get php://input');
         }
 
-        $files = [
-            'User',
-            // 'Cloudinary',
-            // 'Wasabi',
-            // 'EventSchedule',
-            // 'FlightPoint',
-            // 'MediaLibrary',
-            // 'OpenChat',
-        ];
+        $headers = ['Content-Type' => 'application/json'];
 
         try {
             $input = json_decode($rawInput, true);
-            $schema = $this->buildSchema($files);
+
+            // schema ------------------------------------
+            $schemaString = file_get_contents(__DIR__ . '/schema.graphql') . PHP_EOL;
+            foreach ($this->files as $schema) {
+                $schemaString .= file_get_contents(__DIR__ . '/Schema//' . $schema . '.graphql') . PHP_EOL;
+            }
+            $schema = BuildSchema::build($schemaString);
+
             $source = $input['query'];
-            $rootValue = $this->rootValue($files);
+
+            // Resolver ----------------------------------
+            $rootValue = [];
+            foreach ($this->files as $resolver) {
+                $rootValue = array_merge($rootValue, require_once __DIR__ . '/Resolver//' . $resolver . 'Resolver.php');
+            }
+            return $rootValue;
+
             $contextValue = ['token' => $request->getAttribute('token')];
             $variableValues = $input['variables'] ?? null;
 
@@ -99,13 +96,13 @@ final class GraphQLHandler implements RequestHandlerInterface
                 // array $validationRules = null
             );
 
-            $body = Stream::create(json_encode($result, JSON_PRETTY_PRINT) . PHP_EOL);
-            return new Response(200, ['Content-Type' => 'application/json'], $body);
+            $body = json_encode($result, JSON_PRETTY_PRINT) . PHP_EOL;
+            return new Response(200, $headers, Stream::create($body));
         } catch (\Exception $e) {
-
             $err = ['errors' => [FormattedError::createFromException($e)]];
-            $body = Stream::create(json_encode($err, JSON_PRETTY_PRINT) . PHP_EOL);
-            return new Response(500, ['Content-Type' => 'application/json'], $body);
+
+            $body = json_encode($err, JSON_PRETTY_PRINT) . PHP_EOL;
+            return new Response(500, $headers, Stream::create($body));
         }
     }
 }
