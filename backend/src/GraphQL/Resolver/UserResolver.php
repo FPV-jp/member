@@ -3,12 +3,12 @@
 use Fpv\Domain\User;
 
 return [
-    // =================================
+    // user =================================
     'user' => function ($rootValue, $args, $context) {
         $user = $this->em->getRepository(User::class)->find($args['id']);
         return $user->jsonSerialize();
     },
-    // =================================
+    // users =================================
     'users' => function ($rootValue, $args, $context) {
         // $token = $context['token'];
         // error_log(print_r($token, true));
@@ -20,7 +20,7 @@ return [
         }
         return $userArray;
     },
-    // =================================
+    // createUser =================================
     'createUser' => function ($rootValue, $args, $context) {
         $newUser = new User($args['user']['email'], $args['user']['password']);
         $newUser = new User($this->faker->email(), $this->faker->password());
@@ -29,14 +29,14 @@ return [
         $this->em->flush();
         return $newUser->jsonSerialize();
     },
-    // =================================
+    // updateUser =================================
     'updateUser' => function ($rootValue, $args, $context) {
         $user = $this->em->getRepository(User::class)->find($args['id']);
         $user->updateParameters($args);
         $this->em->flush();
         return $user->jsonSerialize();
     },
-    // =================================
+    // deleteUser =================================
     'deleteUser' => function ($rootValue, $args, $context) {
         $user = $this->em->getRepository(User::class)->find($args['id']);
         $this->em->remove($user);

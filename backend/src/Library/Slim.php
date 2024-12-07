@@ -128,6 +128,7 @@ final class Slim implements ServiceProvider
             // .env file
             // ------------------------------------------------------------------
             $app->get('/api/env', function ($request, $response, $args) use ($settings) {
+                // error_log('---- env');
                 $response->getBody()->write(json_encode($settings['auth0']));
                 return $response;
             });

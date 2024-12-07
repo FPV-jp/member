@@ -21,7 +21,6 @@ return [
         $newMediaLibrary = new MediaLibrary($args['createMediaLibraryInput'], $context['token']);
         $this->em->persist($newMediaLibrary);
         $this->em->flush();
-        // error_log('XXXXXXXXXXXXXXXXXXX');
         // error_log(print_r($newMediaLibrary->jsonSerialize(), true));
         return $newMediaLibrary->jsonSerialize();
     },

@@ -44,16 +44,19 @@ final class UserHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $requestMethod = $_SERVER['REQUEST_METHOD'];
+        // error_log(json_encode($_SERVER, JSON_PRETTY_PRINT) . PHP_EOL, 0);
+        error_log($_SERVER['REQUEST_METHOD'] . ' ' . $_SERVER['REQUEST_URI'], 0);
 
-        if ($requestMethod == "GET") {
+ 
+
+        if ($_SERVER['REQUEST_METHOD'] == "GET") {
             /** @var User[] $users */
             $users = $this->em->getRepository(User::class)->findAll();
             $body = Stream::create(json_encode($users, JSON_PRETTY_PRINT) . PHP_EOL);
             return new Response(200, ['Content-Type' => 'application/json'], $body);
-        } 
+        }
 
-        if ($requestMethod == "POST") {
+        if ($_SERVER['REQUEST_METHOD'] == "POST") {
             /** @var User $user */
             $newRandomUser = new User($this->faker->email(), $this->faker->password());
             $this->em->persist($newRandomUser);
