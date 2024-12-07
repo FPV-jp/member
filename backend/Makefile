@@ -14,4 +14,7 @@ down-db:
 destroy:
 	docker system prune --all --force --volumes
 
+git-clear:
+	git branch | xargs git branch -D
+
 restart: down-db run-db

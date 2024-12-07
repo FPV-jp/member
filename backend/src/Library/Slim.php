@@ -39,7 +39,7 @@ use Fpv\GraphQL\GraphQLHandler;
 
 use Throwable;
 
-use Fpv\API\ListUsers;
+use Fpv\API\UserHandler;
 use Fpv\Domain\User;
 
 use Doctrine\ORM\ORMSetup;
@@ -73,8 +73,8 @@ final class Slim implements ServiceProvider
      */
     public function provide(Container $c): void
     {
-        $c->set(ListUsers::class, static function (ContainerInterface $c): RequestHandlerInterface {
-            return new ListUsers(
+        $c->set(UserHandler::class, static function (ContainerInterface $c): RequestHandlerInterface {
+            return new UserHandler(
                 $c->get(EntityManager::class),
                 $c->get(AdminApi::class),
                 $c->get(PHPMailer::class),
@@ -132,10 +132,10 @@ final class Slim implements ServiceProvider
                 return $response;
             });
 
-            // ListUsers
+            // UserHandler
             // ------------------------------------------------------------------
-            $app->get('/api/users', ListUsers::class);
-            $app->post('/api/user', ListUsers::class);
+            $app->get('/api/users', UserHandler::class);
+            $app->post('/api/user', UserHandler::class);
 
             // $em = $c->get(EntityManager::class);
             // $app->get('/api/users', function ($request, $response, $args) use ($em) {
@@ -146,7 +146,7 @@ final class Slim implements ServiceProvider
 
             // $app->post('/api/wasabi', WasabiUploader::class)->add(PermissionMiddleware::class);
             // $app->post('/api/wasabi2', WasabiDownloader::class)->add(PermissionMiddleware::class);
-            // $app->get('/api/users', ListUsers::class);
+            // $app->get('/api/users', UserHandler::class);
             // $app->post('/api/users', CreateUser::class);
             // $app->post('/graphql', SchemaHandler::class)->add(PermissionMiddleware::class);
 

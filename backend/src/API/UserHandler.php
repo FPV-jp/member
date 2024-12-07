@@ -27,7 +27,7 @@ use function json_encode;
 // --------------------------------------------------------------------
 // 
 // --------------------------------------------------------------------
-final class ListUsers implements RequestHandlerInterface
+final class UserHandler implements RequestHandlerInterface
 {
     private EntityManager $em;
     private AdminApi $api;

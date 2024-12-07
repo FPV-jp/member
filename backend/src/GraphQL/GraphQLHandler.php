@@ -57,7 +57,7 @@ final class GraphQLHandler implements RequestHandlerInterface
     {
         $rootValue = [];
         foreach ($resolvers as $resolver) {
-            $rootValue = array_merge($rootValue, require_once __DIR__ . '/Resolver//' . $resolver . '.php');
+            $rootValue = array_merge($rootValue, require_once __DIR__ . '/Resolver//' . $resolver . 'Resolver.php');
         }
         return $rootValue;
     }
