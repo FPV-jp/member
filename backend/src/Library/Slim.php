@@ -88,12 +88,12 @@ final class Slim implements ServiceProvider
                 'clientId' => $settings['auth0']['clientId'],
                 'audience' => [
                     $settings['auth0']['audience'],
-                    'https://fpv.jp.auth0.com/userinfo',
+                    $settings['auth0']['base'],
                 ],
                 'tokenAlgorithm' => 'RS256',
                 'cookieSecret' => bin2hex(random_bytes(32)),
             ]);
-            $requiresAuth = new PermissionMiddleware($config, ['read:users']);
+            $requiresAuth = new PermissionMiddleware($settings, $config, ['read:users']);
 
             $app = AppFactory::create(null, $c);
 

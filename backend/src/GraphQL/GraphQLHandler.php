@@ -76,7 +76,7 @@ final class GraphQLHandler implements RequestHandlerInterface
                 BuildSchema::build($schemaString),
                 $input['query'],
                 $rootValue,
-                ['token' => $request->getAttribute('token')],
+                ['token' => $request->getAttribute('token'), 'userinfo' => $request->getAttribute('userinfo')],
                 $input['variables'] ?? null,
                 // string $operationName = null,
                 // callable $fieldResolver = null,

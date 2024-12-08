@@ -4,10 +4,15 @@ import './App.css'
 import { Loading, Error } from './Components'
 import { Users } from './Users'
 import { Users2 } from './Users2'
+import { useEffect } from 'react'
 
 export function Nav() {
   const { isAuthenticated, user, loginWithRedirect, logout } = useAuth0()
   const { pathname } = useLocation()
+
+  useEffect(() => {
+    console.log(user)
+  }, [user])
 
   return (
     <nav className='navbar navbar-expand-lg navbar-light bg-light'>
@@ -28,7 +33,7 @@ export function Nav() {
 
       {isAuthenticated ? (
         <div>
-          <span id='hello'>Hello, {user?.name}!</span>{' '}
+          <span id='hello'>Hello, {user?.name}!</span>
           <button className='btn btn-outline-secondary' id='logout' onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}>
             logout
           </button>

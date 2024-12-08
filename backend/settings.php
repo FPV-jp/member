@@ -52,6 +52,7 @@ return [
             'domain'   => $_ENV['AUTH0_DOMAIN'],
             'clientId' => $_ENV['AUTH0_CLIENT_ID'],
             'audience' => $_ENV['AUTH0_AUDIENCE'],
+            'base'     => $_ENV['AUTH0_BASE'],
             'scope'    => 'profile email read:users',
         ],
 

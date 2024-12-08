@@ -2,6 +2,8 @@
 
 use Fpv\Domain\User;
 
+// use Fpv\Library\Utils;
+
 return [
     // user =================================
     'user' => function ($rootValue, $args, $context) {
@@ -19,6 +21,7 @@ return [
     },
     // createUser =================================
     'createUser' => function ($rootValue, $args, $context) {
+        // Utils::argsDump($context);
         $newUser = new User($args['user']['email'], $args['user']['password']);
         $this->em->persist($newUser);
         $this->em->flush();

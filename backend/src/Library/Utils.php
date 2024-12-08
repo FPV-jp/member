@@ -53,7 +53,6 @@ class Utils
 
     public static function argsDump($args): void
     {
-        // error_log(print_r($args, true));
-        error_log(json_encode($args, JSON_PRETTY_PRINT) . PHP_EOL, 0);
+        error_log(json_encode($args, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . PHP_EOL, 0);
     }
 }
