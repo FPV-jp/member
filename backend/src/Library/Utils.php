@@ -7,8 +7,7 @@ namespace Fpv\Library;
 use Nyholm\Psr7\Response;
 use Nyholm\Psr7\Stream;
 use Psr\Http\Message\ResponseInterface;
-use Aws\Result ;
-// @var \Aws\Result $result
+use Aws\Result;
 
 use Exception;
 
@@ -21,16 +20,21 @@ class Utils
      * @param mixed $result Data to be included in the response body.
      * @return ResponseInterface
      */
-    public static function toResponse(int $status, $result): ResponseInterface
+    public static function toResponse(int $status, mixed $result): ResponseInterface
     {
         $headers = ['Content-Type' => 'application/json'];
         $body = Stream::create(json_encode($result, JSON_PRETTY_PRINT) . PHP_EOL);
         return new Response($status, $headers, $body);
     }
 
-    public static function toResourceResponse($result): ResponseInterface
+    public static function toResourceResponse(Result $result): ResponseInterface
     {
-        $headers = ['Content-Type' => $result['ContentType']];
+        $fileKey = $result->get('@metadata')['effectiveUri'] ?? '';
+        $fileName = basename($fileKey);
+        $headers = [
+            'Content-Type' => $result['ContentType'] ?? 'application/octet-stream',
+            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+        ];
         $stream = Stream::create($result['Body']->getContents());
         return new Response(200, $headers, $stream);
     }
@@ -51,13 +55,6 @@ class Utils
                 break;
             case 'POST':
                 error_log($_SERVER['REQUEST_METHOD'] . ' ' . $_SERVER['REQUEST_URI'], 0);
-                // $input = json_decode(file_get_contents('php://input'), true);
-                // if (json_last_error() === JSON_ERROR_NONE) {
-                //     Utils::argsDump($input);
-                // } else {
-                //     error_log('Invalid JSON body :' . json_last_error());
-                // }
-                break;
             default:
         }
     }
@@ -83,5 +80,4 @@ class Utils
         }
         return $template;
     }
-
 }

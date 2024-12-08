@@ -8,6 +8,7 @@ function isLocalhost() {
 
 const FileUpload = () => {
   const [files, setFiles] = useState([])
+  const [uploadedFiles, setUploadedFiles] = useState([]);
   const { getAccessTokenSilently } = useAuth0()
   const env = useEnv()
 
@@ -22,10 +23,9 @@ const FileUpload = () => {
 
   const uploadFiles = async () => {
     const formData = new FormData()
-    files.forEach((file) => {
-      formData.append('file', file)
+    files.forEach((file, i) => {
+      formData.append('file' + i, file)
     })
-
     try {
       var url = '/api/wasabi/upload/user'
       const accessToken = await getAccessTokenSilently({
@@ -36,8 +36,8 @@ const FileUpload = () => {
         body: formData,
         headers: { Authorization: `Bearer ${accessToken}` },
       })
-
       if (response.ok) {
+        setUploadedFiles(await response.json())
         console.log('Files uploaded successfully')
       } else {
         console.error('Upload failed')
@@ -50,16 +50,14 @@ const FileUpload = () => {
   return (
     <div>
       <input id='file-input' type='file' multiple onChange={fileInputChange} />
-      <button type='button' onClick={() => document.getElementById('file-input').click()}>
-        Choose Files
-      </button>
       <button type='button' onClick={uploadFiles}>
         Upload
       </button>
       <ul>
-        {files.map((file, index) => (
-          <li key={index}>{file.name}</li>
-        ))}
+        {files.map((file, index) => <li key={index}>{file.name}</li>)}
+      </ul>
+      <ul>
+        {uploadedFiles.map((file, index) => <li key={index}><a href={file} download>{file}</a></li>)}
       </ul>
     </div>
   )

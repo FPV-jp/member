@@ -147,8 +147,8 @@ final class Slim implements ServiceProvider
 
             // WasabiHandler
             // ------------------------------------------------------------------
-            $app->get('/api/wasabi', WasabiHandler::class);
-            $app->get('/api/wasabi/user', WasabiHandler::class)->add($requiresAuth);
+            $app->get('/api/wasabi/public/{fileName}', WasabiHandler::class);
+            $app->get('/api/wasabi/user/{fileName}', WasabiHandler::class)->add($requiresAuth);
             $app->post('/api/wasabi/upload/user', WasabiHandler::class)->add($requiresAuth);
 
             $errorMiddleware = $app->addErrorMiddleware(

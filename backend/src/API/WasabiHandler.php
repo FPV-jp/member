@@ -35,88 +35,87 @@ final class WasabiHandler implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         Utils::requestLog();
-
-        $userinfo = $request->getAttribute('userinfo');
         // Utils::argsDump($userinfo);
 
-        $data = $request->getParsedBody();
-        // Utils::argsDump($data);
+        $uriPath = $request->getUri()->getPath();
+        if (str_starts_with($uriPath, '/api/wasabi/public')) {
 
-        // return Utils::toResponse(200, ['userinfo' => 'xxxxx']);
+            // Public access -------------------------
+            $fileName = $request->getAttribute('fileName');
+            $result = $this->wasabi->getObject([
+                'Bucket' => 'fpv.jp',
+                'Key' => 'public/' . $fileName,
+            ]);
+            return Utils::toResourceResponse($result);
+        } elseif (str_starts_with($uriPath, '/api/wasabi/user')) {
 
-        switch ($_SERVER['REQUEST_URI']) {
-                // Public access -------------------------
-            case '/api/wasabi':
-                $result = $this->wasabi->getObject([
+            // Private access -------------------------
+            $userinfo = $request->getAttribute('userinfo');
+            $fileName = $request->getAttribute('fileName');
+            $result = $this->wasabi->getObject([
+                'Bucket' => 'fpv.jp',
+                'Key' => 'user/' . $userinfo['email'] . '/' . $fileName,
+            ]);
+            return Utils::toResourceResponse($result);
+        } elseif (str_starts_with($uriPath, '/api/wasabi/upload/user')) {
+
+            // Private upload -------------------------
+            $userinfo = $request->getAttribute('userinfo');
+            $files = $request->getUploadedFiles();
+            $fileKeyNames = [];
+            foreach ($files as $file) {
+                $fileKeyName = 'user/' . $userinfo['email'] . '/' . $file->getClientFilename();
+                $fileKeyNames[] = '/api/wasabi/user/' . $file->getClientFilename();
+                $this->upload($file, $fileKeyName);
+            }
+            return Utils::toResponse(200, $fileKeyNames);
+        }
+        return Utils::toErrorMessage(501, '?');
+    }
+
+    private function upload($file, string $fileKeyName)
+    {
+        if ($file->getError() === UPLOAD_ERR_OK) {
+            $mediaType = $file->getClientMediaType();
+            if (strpos($mediaType, 'video/') === 0 || strpos($mediaType, 'image/') === 0) {
+                // $thumbnailFile = $files['thumbnail'];
+                // $tempThumbnailFileName = $thumbnailFile->getStream()->getMetadata('uri');
+                // $this->uploadWasabi($tempThumbnailFileName, $bucket, $fileKey . '_thumbnail');
+            }
+            // 100MB
+            if ($file->getSize() < 100 * 1024 * 1024) {
+                // Upload -------------------------
+                $this->wasabi->putObject([
                     'Bucket' => 'fpv.jp',
-                    'Key' => 'public/' . $data['fileName'],
+                    'Key' => $fileKeyName,
+                    'Body' => file_get_contents($file->getStream()->getMetadata('uri')),
                 ]);
-                return Utils::toResourceResponse($result);
-                // Private access -------------------------
-            case '/api/wasabi/user':
-                $result = $this->wasabi->getObject([
-                    'Bucket' => 'fpv.jp',
-                    'Key' => 'user/' . $userinfo['email'] . '/' . $data['fileName'],
-                ]);
-                return Utils::toResourceResponse($result);
+            } else {
+                // Upload (Multipart) -------------------------
+                $uploader = new MultipartUploader(
+                    $this->wasabi,
+                    $file->getStream()->getMetadata('uri'),
+                    [
+                        'Bucket' => 'fpv.jp',
+                        'Key' => $fileKeyName,
+                    ]
+                );
 
-                // Private upload -------------------------
-            case '/api/wasabi/upload/user':
-                $files = $request->getUploadedFiles();
-                $file = $files['file'];
-                if ($file->getError() === UPLOAD_ERR_OK) {
-
-                    $fileKeyName = 'user/' . $userinfo['email'] . '/' . $file->getClientFilename();
-
-                    error_log($fileKeyName);
-
-                    $mediaType = $file->getClientMediaType();
-                    if (strpos($mediaType, 'video/') === 0 || strpos($mediaType, 'image/') === 0) {
-                        // $thumbnailFile = $files['thumbnail'];
-                        // $tempThumbnailFileName = $thumbnailFile->getStream()->getMetadata('uri');
-                        // $this->uploadWasabi($tempThumbnailFileName, $bucket, $fileKey . '_thumbnail');
-                    }
-
-                    // 100MB
-                    if ($file->getSize() < 100 * 1024 * 1024) {
-                        // Upload -------------------------
-                        $this->wasabi->putObject([
-                            'Bucket' => 'fpv.jp',
-                            'Key' => $fileKeyName,
-                            'Body' => file_get_contents($file->getStream()->getMetadata('uri')),
-                        ]);
-                    } else {
-                        // Upload (Multipart) -------------------------
+                $result = $uploader->upload();
+                do {
+                    try {
+                        $result = $uploader->upload();
+                    } catch (MultipartUploadException $e) {
                         $uploader = new MultipartUploader(
                             $this->wasabi,
                             $file->getStream()->getMetadata('uri'),
                             [
-                                'Bucket' => 'fpv.jp',
-                                'Key' => $fileKeyName,
+                                'state' => $e->getState(),
                             ]
                         );
-
-                        $result = $uploader->upload();
-                        do {
-                            try {
-                                $result = $uploader->upload();
-                            } catch (MultipartUploadException $e) {
-                                $uploader = new MultipartUploader(
-                                    $this->wasabi,
-                                    $file->getStream()->getMetadata('uri'),
-                                    [
-                                        'state' => $e->getState(),
-                                    ]
-                                );
-                            }
-                        } while (!isset($result));
                     }
-                    return Utils::toResponse(200, ['wasabi_file_key' => $fileKeyName]);
-                }
-                return Utils::toErrorMessage(500, 'Upload error');
-            default:
-                return Utils::toErrorMessage(501, '?');
+                } while (!isset($result));
+            }
         }
-
     }
 }
