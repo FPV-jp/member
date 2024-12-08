@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Fpv\Middleware;
 
 use Auth0\SDK\Configuration\SdkConfiguration;
-use Auth0\SDK\Auth0;
 use Auth0\SDK\Token;
 use Auth0\SDK\Exception\Auth0Exception;
 
@@ -41,20 +40,21 @@ class PermissionMiddleware
             $token = new Token($this->config, $bearer, Token::TYPE_ACCESS_TOKEN);
             $token->verify();
             $token->validate();
+
+            $decodedToken = $token->toArray();
+            $userScopes = explode(' ', $decodedToken['scope'] ?? '');
+
+            foreach ($this->requiredScopes as $scope) {
+                if (!in_array($scope, $userScopes, true)) {
+                    return Utils::toErrorMessage(403, 'Missing required scope: ' . $scope);
+                }
+            }
+
+            $request = $request->withAttribute('token', $decodedToken);
         } catch (Auth0Exception $e) {
             return Utils::toErrorMessage(403, 'Invalid: ' . $e->getMessage());
         }
 
-        $auth0 = new Auth0($this->config);
-        $decodedToken = $auth0->decode($bearer)->toArray();
-        $userScopes = explode(' ', $decodedToken['scope'] ?? '');
-        foreach ($this->requiredScopes as $scope) {
-            if (!in_array($scope, $userScopes, true)) {
-                return Utils::toErrorMessage(403, 'Missing required scope: ' . $scope);
-            }
-        }
-
-        $request = $request->withAttribute('token', $decodedToken);
         return $handler->handle($request);
     }
 }
