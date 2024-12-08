@@ -8,7 +8,6 @@ function DisplayUsers() {
   return data?.users.map(({ id, email, registered_at }, i) => (
     <tr key={i}>
       <td>{id}</td>
-      <td>{name}</td>
       <td>{email}</td>
       <td>{registered_at}</td>
     </tr>
@@ -41,7 +40,6 @@ export function Users2() {
         <thead>
           <tr>
             <th scope='col'>ID</th>
-            <th scope='col'>Name</th>
             <th scope='col'>Email</th>
             <th scope='col'>RegisteredAt</th>
           </tr>

@@ -13,18 +13,12 @@ function isLocalhost() {
 
 export function EnvProvider({ children }) {
   const [env, setEnv] = useState(null)
-  const envApi = isLocalhost() ? 'http://localhost:8000/api/env' : '/api/env'
   useEffect(() => {
-    fetch(envApi)
+    fetch(isLocalhost() ? 'http://localhost:8000/api/env' : '/api/env')
       .then((res) => res.json())
-      .then((data) => {
-        setEnv(data)
-      })
-      .catch((err) => {
-        console.error('Failed to load environment variables:', err)
-      })
+      .then((data) => setEnv(data))
+      .catch((err) => console.error('Failed to load environment variables:', err))
   }, [])
-
   return <EnvContext.Provider value={env}>{env ? children : <Loading />}</EnvContext.Provider>
 }
 
@@ -66,22 +60,11 @@ export const ApolloProviderWithToken = ({ children }) => {
     const accessToken = await getAccessTokenSilently({
       authorizationParams: { audience: env.audience, scope: env.scope },
     })
-    // const response = await fetch('https://fpv.jp.auth0.com/userinfo', {
-    //   method: 'GET',
-    //   headers: {
-    //     Authorization: `Bearer ${accessToken}`,
-    //   },
-    // });
-    // const userInfo = await response.json();
-    // console.log(userInfo);
     return { headers: { ...headers, authorization: `Bearer ${accessToken}` } }
   })
   const client = useRef()
   if (!client.current) {
-    client.current = new ApolloClient({
-      link: authLink.concat(httpLink),
-      cache: new InMemoryCache(),
-    })
+    client.current = new ApolloClient({ link: authLink.concat(httpLink), cache: new InMemoryCache() })
   }
   return <ApolloProvider client={client.current}>{children}</ApolloProvider>
 }
@@ -96,7 +79,7 @@ export const useApi = (api, options) => {
     data: null,
   })
   useEffect(() => {
-    ;(async () => {
+    ; (async () => {
       try {
         const accessToken = await getAccessTokenSilently({
           authorizationParams: { audience: env.audience, scope: env.scope },

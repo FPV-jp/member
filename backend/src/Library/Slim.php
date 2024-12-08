@@ -67,6 +67,13 @@ final class Slim implements ServiceProvider
             );
         });
 
+        $c->set(WasabiHandler::class, static function (ContainerInterface $c): RequestHandlerInterface {
+            return new WasabiHandler(
+                $c->get(EntityManager::class),
+                $c->get(S3Client::class),
+            );
+        });
+
         $c->set(GraphQLHandler::class, static function (ContainerInterface $c): RequestHandlerInterface {
             return new GraphQLHandler(
                 $c->get(EntityManager::class),
@@ -142,7 +149,7 @@ final class Slim implements ServiceProvider
             // ------------------------------------------------------------------
             $app->get('/api/wasabi', WasabiHandler::class);
             $app->get('/api/wasabi/user', WasabiHandler::class)->add($requiresAuth);
-            $app->post('/api/wasabi/upload', WasabiHandler::class)->add($requiresAuth);
+            $app->post('/api/wasabi/upload/user', WasabiHandler::class)->add($requiresAuth);
 
             $errorMiddleware = $app->addErrorMiddleware(
                 $settings['slim']['displayErrorDetails'],

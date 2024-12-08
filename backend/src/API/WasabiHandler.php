@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Fpv\API;
 
+use Doctrine\ORM\EntityManager;
+
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -21,10 +23,12 @@ use Fpv\Library\Utils;
 // --------------------------------------------------------------------
 final class WasabiHandler implements RequestHandlerInterface
 {
+    private EntityManager $em;
     private S3Client $wasabi;
 
-    public function __construct(S3Client $wasabi)
+    public function __construct(EntityManager $em, S3Client $wasabi)
     {
+        $this->em = $em;
         $this->wasabi = $wasabi;
     }
 
@@ -33,23 +37,25 @@ final class WasabiHandler implements RequestHandlerInterface
         Utils::requestLog();
 
         $userinfo = $request->getAttribute('userinfo');
-        Utils::argsDump($userinfo);
+        // Utils::argsDump($userinfo);
 
         $data = $request->getParsedBody();
+        // Utils::argsDump($data);
 
+        // return Utils::toResponse(200, ['userinfo' => 'xxxxx']);
 
         switch ($_SERVER['REQUEST_URI']) {
                 // Public access -------------------------
             case '/api/wasabi':
                 $result = $this->wasabi->getObject([
-                    'Bucket' => `jpv.jp`,
+                    'Bucket' => 'fpv.jp',
                     'Key' => 'public/' . $data['fileName'],
                 ]);
                 return Utils::toResourceResponse($result);
                 // Private access -------------------------
             case '/api/wasabi/user':
                 $result = $this->wasabi->getObject([
-                    'Bucket' => `jpv.jp`,
+                    'Bucket' => 'fpv.jp',
                     'Key' => 'user/' . $userinfo['email'] . '/' . $data['fileName'],
                 ]);
                 return Utils::toResourceResponse($result);
@@ -62,6 +68,8 @@ final class WasabiHandler implements RequestHandlerInterface
 
                     $fileKeyName = 'user/' . $userinfo['email'] . '/' . $file->getClientFilename();
 
+                    error_log($fileKeyName);
+
                     $mediaType = $file->getClientMediaType();
                     if (strpos($mediaType, 'video/') === 0 || strpos($mediaType, 'image/') === 0) {
                         // $thumbnailFile = $files['thumbnail'];
@@ -73,7 +81,7 @@ final class WasabiHandler implements RequestHandlerInterface
                     if ($file->getSize() < 100 * 1024 * 1024) {
                         // Upload -------------------------
                         $this->wasabi->putObject([
-                            'Bucket' => `jpv.jp`,
+                            'Bucket' => 'fpv.jp',
                             'Key' => $fileKeyName,
                             'Body' => file_get_contents($file->getStream()->getMetadata('uri')),
                         ]);
@@ -83,7 +91,7 @@ final class WasabiHandler implements RequestHandlerInterface
                             $this->wasabi,
                             $file->getStream()->getMetadata('uri'),
                             [
-                                'Bucket' => `jpv.jp`,
+                                'Bucket' => 'fpv.jp',
                                 'Key' => $fileKeyName,
                             ]
                         );
@@ -109,5 +117,6 @@ final class WasabiHandler implements RequestHandlerInterface
             default:
                 return Utils::toErrorMessage(501, '?');
         }
+
     }
 }

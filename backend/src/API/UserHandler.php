@@ -45,6 +45,7 @@ final class UserHandler implements RequestHandlerInterface
         $userRepo = $this->em->getRepository(User::class);
 
         switch ($_SERVER['REQUEST_URI']) {
+
             case '/api/user':
                 $id = htmlspecialchars($_GET["id"]);
                 $user = $userRepo->find($id);
@@ -55,6 +56,8 @@ final class UserHandler implements RequestHandlerInterface
                 return Utils::toResponse(200, $users);
 
             case '/api/createUser':
+                $data = $request->getParsedBody();
+                Utils::argsDump($data);
                 $input = json_decode(file_get_contents('php://input'), true);
                 $newRandomUser = new User($input['email'], $input['password']);
                 $this->em->persist($newRandomUser);

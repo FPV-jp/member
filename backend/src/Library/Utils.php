@@ -51,12 +51,12 @@ class Utils
                 break;
             case 'POST':
                 error_log($_SERVER['REQUEST_METHOD'] . ' ' . $_SERVER['REQUEST_URI'], 0);
-                $input = json_decode(file_get_contents('php://input'), true);
-                if (json_last_error() === JSON_ERROR_NONE) {
-                    Utils::argsDump($input);
-                } else {
-                    error_log('Invalid JSON body :' . json_last_error());
-                }
+                // $input = json_decode(file_get_contents('php://input'), true);
+                // if (json_last_error() === JSON_ERROR_NONE) {
+                //     Utils::argsDump($input);
+                // } else {
+                //     error_log('Invalid JSON body :' . json_last_error());
+                // }
                 break;
             default:
         }

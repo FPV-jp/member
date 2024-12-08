@@ -1,5 +1,6 @@
 import { useApi } from './use-api'
 import { Loading, Error } from './Components'
+import FileUpload from './FileUpload'
 
 export function Users() {
   const { loading, error, data: users = [] } = useApi('/api/users', {})
@@ -22,20 +23,19 @@ export function Users() {
   }
   return (
     <>
+      <FileUpload />
       <table className='table'>
         <thead>
           <tr>
             <th scope='col'>ID</th>
-            <th scope='col'>Name</th>
             <th scope='col'>Email</th>
             <th scope='col'>RegisteredAt</th>
           </tr>
         </thead>
         <tbody>
-          {users.map(({ id, name, email, registered_at }, i) => (
+          {users.map(({ id, email, registered_at }, i) => (
             <tr key={i}>
               <td>{id}</td>
-              <td>{name}</td>
               <td>{email}</td>
               <td>{registered_at}</td>
             </tr>
