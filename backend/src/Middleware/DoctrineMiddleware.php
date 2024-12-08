@@ -2,22 +2,21 @@
 
 namespace Fpv\Middleware;
 
-use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Doctrine\DBAL\Platforms\MariaDB1060Platform;
+use Doctrine\DBAL\Platforms;
 use Doctrine\DBAL\Driver;
 use Doctrine\DBAL\ServerVersionProvider;
 
 // --------------------------------------------------------------------
 // 
 // --------------------------------------------------------------------
-class MariaDBPlatform extends MariaDB1060Platform {}
+class MariaDBPlatform extends Platforms\MariaDB1060Platform {}
 
 // --------------------------------------------------------------------
 // 
 // --------------------------------------------------------------------
 class DoctrineMariaDBDriver extends Driver\Middleware\AbstractDriverMiddleware implements Driver
 {
-    public function getDatabasePlatform(ServerVersionProvider $versionProvider): AbstractPlatform
+    public function getDatabasePlatform(ServerVersionProvider $versionProvider): Platforms\AbstractPlatform
     {
         return new MariaDBPlatform();
     }
