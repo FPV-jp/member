@@ -1,6 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App'
+// import App from './App'
+import Dashboard from './Dashboard'
+import './output.css'
 import { BrowserRouter } from 'react-router-dom'
 import { Auth0ProviderWithRedirectCallback, ApolloProviderWithToken, EnvProvider } from './use-api'
 
@@ -10,7 +12,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <BrowserRouter>
         <Auth0ProviderWithRedirectCallback>
           <ApolloProviderWithToken>
-            <App />
+            <Dashboard />
           </ApolloProviderWithToken>
         </Auth0ProviderWithRedirectCallback>
       </BrowserRouter>
