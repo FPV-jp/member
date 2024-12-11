@@ -1,10 +1,15 @@
-import { USERS_QUERY, CREATE_USER_MUTATION } from './gql/User'
 import { useMutation, useQuery } from '@apollo/client'
+import { USERS_QUERY, CREATE_USER_MUTATION } from './gql/User'
+import { Loading, Error } from './Components'
 
 function DisplayUsers() {
-  const { loading, error, data } = useQuery(USERS_QUERY)
-  if (loading) return <div>Loading...</div>
-  if (error) return <div>Error: {error.message}</div>
+  const { loading, error, data, refetch } = useQuery(USERS_QUERY)
+  if (loading) {
+    return <Loading />
+  }
+  if (error) {
+    return <Error message={error.message} />
+  }
   return data?.users.map(({ id, email, registered_at }, i) => (
     <tr key={i}>
       <td>{id}</td>
@@ -15,20 +20,16 @@ function DisplayUsers() {
 }
 
 function CreateUserComponent() {
-  const [createUser] = useMutation(CREATE_USER_MUTATION)
-  const handleCreateUser = () => {
-    const options = {
-      variables: {
-        user: {
-          email: 'example@example.com',
-          password: 'password123',
-        },
-      },
+  const [createUser] = useMutation(CREATE_USER_MUTATION);
+  const handleCreateUser = async () => {
+    try {
+      const options = { variables: { user: { email: 'example@example.com', password: 'password123' } } }
+      const response = await createUser(options)
+      console.log('response:', response.data)
+    } catch (error) {
+      console.log('error:', error)
     }
-    createUser(options)
-      .then((response) => console.log('response:', response.data))
-      .catch((error) => console.log('error:', error))
-  }
+  };
   return <button onClick={handleCreateUser}>Create User</button>
 }
 

@@ -4,6 +4,12 @@ import FileUpload from './FileUpload'
 
 export function Users() {
   const { loading, error, data: users = [] } = useApi('/api/users', {})
+  if (loading) {
+    return <Loading />
+  }
+  if (error) {
+    return <Error message={error.message} />
+  }
   //   const { loadingx, errox, datax } = useApi('/api/createUser', {
   //   method: 'POST',
   //   headers: {
@@ -15,12 +21,7 @@ export function Users() {
   //   }),
   // })
 
-  if (loading) {
-    return <Loading />
-  }
-  if (error) {
-    return <Error message={error.message} />
-  }
+
   return (
     <>
       <FileUpload />
