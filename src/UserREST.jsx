@@ -2,7 +2,7 @@ import { useApi } from './use-api'
 import { Loading, Error } from './Components'
 import FileUpload from './FileUpload'
 
-export function Users() {
+export default function UserREST() {
   const { loading, error, data: users = [] } = useApi('/api/users', {})
   if (loading) {
     return <Loading />

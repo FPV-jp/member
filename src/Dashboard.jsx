@@ -1,24 +1,27 @@
 import { Disclosure, DisclosurePanel } from '@headlessui/react'
 import { DesktopNavigationMenu, DesktopNavigationUserMenu, MobileNavigationMenu, MobileNavigationUserMenu, Button, IndigoButton, IconButton, MobileIconButton, HamburgerButton } from './DashboardMenu'
 import { useAuth0, withAuthenticationRequired } from '@auth0/auth0-react'
-import { Route, Routes, useLocation } from 'react-router-dom'
+import { Route, Routes, Navigate, useLocation } from 'react-router-dom'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { KeyIcon } from '@heroicons/react/20/solid'
 import { Loading, Error } from './Components'
 
-import { Users } from './Users'
-import { Users2 } from './Users2'
+import NotFound from './NotFound'
+import UserREST from './UserREST'
+import UserGraphQL from './UserGraphQL'
 import FileUpload from './FileUpload'
 import Simple from './Simple'
+import Form from './Form'
 
 // import { useEffect } from 'react'
 
 const navigation = [
-  { name: 'Dashboard', href: '/', current: true },
-  { name: 'Users', href: '/users', current: false },
-  { name: 'Users2', href: '/users2', current: false },
-  { name: 'Wasabi', href: '/wasabi', current: false },
-  { name: 'simple', href: '/Simple', current: false },
+  { name: 'Dashboard', href: '/', title: 'Dashboard' },
+  { name: 'UserREST', href: '/userrest', title: 'Example REST API', current: false },
+  { name: 'UserGraphQL', href: '/usergraphql', title: 'Example GraphQL', current: false },
+  { name: 'Wasabi', href: '/wasabi', title: 'Example GraphQL', current: false },
+  { name: 'Simple', href: '/simple', title: 'Example GraphQL', current: false },
+  { name: 'Form', href: '/form', title: 'Example GraphQL', current: false },
 ]
 
 const userNavigation = [
@@ -27,10 +30,11 @@ const userNavigation = [
   { name: 'Sign out', href: '#' },
 ]
 
-const ProtectedUsers = withAuthenticationRequired(Users)
-const ProtectedUsers2 = withAuthenticationRequired(Users2)
+const ProtectedUserREST = withAuthenticationRequired(UserREST)
+const ProtectedUserGraphQL = withAuthenticationRequired(UserGraphQL)
 const ProtectedFileUpload = withAuthenticationRequired(FileUpload)
 const ProtectedSimple = withAuthenticationRequired(Simple)
+const ProtectedForm = withAuthenticationRequired(Form)
 
 export default function Dashboard() {
   const { isLoading, error, isAuthenticated, user, loginWithRedirect, logout } = useAuth0()
@@ -52,19 +56,24 @@ export default function Dashboard() {
           <DesktopNavigation user={user} pathname={pathname} navigation={navigation} userNavigation={userNavigation} isAuthenticated={isAuthenticated} loginWithRedirect={loginWithRedirect} logout={logout} />
           <MobileNavigation user={user} navigation={navigation} userNavigation={userNavigation} isAuthenticated={isAuthenticated} logout={logout} />
         </Disclosure>
-        <header className="bg-white shadow">
-          <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-            <h1 className="text-3xl font-bold tracking-tight text-gray-900">{pathname}</h1>
-          </div>
-        </header>
+        {navigation.find((nav) => nav.href === pathname) &&
+          <header className="bg-white shadow">
+            <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+              <h1 className="text-3xl font-bold tracking-tight text-gray-900">{navigation.find((nav) => nav.href === pathname).title}</h1>
+            </div>
+          </header>
+        }
         <main>
           <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
             <Routes>
               <Route path='/' />
-              <Route path='/users' element={<ProtectedUsers />} />
-              <Route path='/users2' element={<ProtectedUsers2 />} />
+              <Route path='/userrest' element={<ProtectedUserREST />} />
+              <Route path='/usergraphql' element={<ProtectedUserGraphQL />} />
               <Route path='/wasabi' element={<ProtectedFileUpload />} />
               <Route path='/simple' element={<ProtectedSimple />} />
+              <Route path='/form' element={<ProtectedForm />} />
+              <Route path="/404" element={<NotFound />} />
+              <Route path="*" element={<Navigate to="/404" replace />} />
             </Routes>
           </div>
         </main>
