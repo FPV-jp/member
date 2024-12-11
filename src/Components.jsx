@@ -1,12 +1,10 @@
-export function Loading() {
-  return (
-    <div className='text-center'>
-      <div className='spinner-border' role='status'>
-        <span className='sr-only'>Loading...</span>
-      </div>
-    </div>
-  )
-}
+import loading from './assets/loading.svg'
+
+export const Loading = () => (
+  <div className='spinner'>
+    <img src={loading} alt='Loading...' />
+  </div>
+)
 
 /* eslint-disable react/prop-types */
 export function Error({ message }) {

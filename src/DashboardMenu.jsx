@@ -82,9 +82,9 @@ export function DesktopNavigationUserMenu({ user, userNavigation, logout }) {
       <MenuItems transition className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in">
         {userNavigation.map((item) => (
           <MenuItem key={item.name}>
-            <a href={item.href} onClick={logout} className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none">
+            <Link href={item.href} onClick={logout} className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none">
               {item.name}
-            </a>
+            </Link>
           </MenuItem>
         ))}
       </MenuItems>
@@ -97,7 +97,7 @@ export function MobileNavigationMenu({ navigation }) {
   return (
     <div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
       {navigation.map((item) => (
-        <DisclosureButton key={item.name} as="a" href={item.href} aria-current={item.current ? 'page' : undefined}
+        <DisclosureButton key={item.name} as={Link} to={item.href} aria-current={item.current ? 'page' : undefined}
           className={classNames(
             item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'block rounded-md px-3 py-2 text-base font-medium'
           )}>
@@ -113,7 +113,7 @@ export function MobileNavigationUserMenu({ userNavigation, logout }) {
   return (
     <div className="mt-3 space-y-1 px-2">
       {userNavigation.map((item) => (
-        <DisclosureButton key={item.name} as="a" href={item.href} onClick={logout}
+        <DisclosureButton key={item.name} as={Link} to={item.href} onClick={logout}
           className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white">
           {item.name}
         </DisclosureButton>
@@ -121,4 +121,3 @@ export function MobileNavigationUserMenu({ userNavigation, logout }) {
     </div>
   )
 }
-
