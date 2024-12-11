@@ -8,6 +8,8 @@ import { Loading, Error } from './Components'
 
 import { Users } from './Users'
 import { Users2 } from './Users2'
+import FileUpload from './FileUpload'
+import Simple from './Simple'
 
 // import { useEffect } from 'react'
 
@@ -15,6 +17,8 @@ const navigation = [
   { name: 'Dashboard', href: '/', current: true },
   { name: 'Users', href: '/users', current: false },
   { name: 'Users2', href: '/users2', current: false },
+  { name: 'Wasabi', href: '/wasabi', current: false },
+  { name: 'simple', href: '/Simple', current: false },
 ]
 
 const userNavigation = [
@@ -25,6 +29,8 @@ const userNavigation = [
 
 const ProtectedUsers = withAuthenticationRequired(Users)
 const ProtectedUsers2 = withAuthenticationRequired(Users2)
+const ProtectedFileUpload = withAuthenticationRequired(FileUpload)
+const ProtectedSimple = withAuthenticationRequired(Simple)
 
 export default function Dashboard() {
   const { isLoading, error, isAuthenticated, user, loginWithRedirect, logout } = useAuth0()
@@ -57,6 +63,8 @@ export default function Dashboard() {
               <Route path='/' />
               <Route path='/users' element={<ProtectedUsers />} />
               <Route path='/users2' element={<ProtectedUsers2 />} />
+              <Route path='/wasabi' element={<ProtectedFileUpload />} />
+              <Route path='/simple' element={<ProtectedSimple />} />
             </Routes>
           </div>
         </main>

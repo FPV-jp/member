@@ -1,4 +1,5 @@
 import loading from './assets/loading.svg'
+import './assets/loading.css';
 
 export const Loading = () => (
   <div className='spinner'>
@@ -9,8 +10,9 @@ export const Loading = () => (
 /* eslint-disable react/prop-types */
 export function Error({ message }) {
   return (
-    <div className='alert alert-danger' role='alert'>
-      Oops... {message}
+    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+      <strong className="font-bold">Error: </strong>
+      <span className="block sm:inline">{message}</span>
     </div>
   )
 }
