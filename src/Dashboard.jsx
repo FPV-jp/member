@@ -1,16 +1,15 @@
-import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react'
-
+import { Disclosure, DisclosurePanel } from '@headlessui/react'
 import { DesktopNavigationMenu, DesktopNavigationUserMenu, MobileNavigationMenu, MobileNavigationUserMenu, Button, IndigoButton, IconButton, MobileIconButton, HamburgerButton } from './DashboardMenu'
 import { useAuth0, withAuthenticationRequired } from '@auth0/auth0-react'
-import { Route, Routes, useLocation, Link } from 'react-router-dom'
-import { useEffect } from 'react'
-
+import { Route, Routes, useLocation } from 'react-router-dom'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { KeyIcon } from '@heroicons/react/20/solid'
 import { Loading, Error } from './Components'
 
 import { Users } from './Users'
 import { Users2 } from './Users2'
+
+// import { useEffect } from 'react'
 
 const navigation = [
   { name: 'Dashboard', href: '/', current: true },
@@ -45,7 +44,7 @@ export default function Dashboard() {
       <div className="min-h-full">
         <Disclosure as="nav" className="bg-gray-800">
           <DesktopNavigation user={user} pathname={pathname} navigation={navigation} userNavigation={userNavigation} isAuthenticated={isAuthenticated} loginWithRedirect={loginWithRedirect} logout={logout} />
-          <MobileNavigation user={user} pathname={pathname} navigation={navigation} userNavigation={userNavigation} isAuthenticated={isAuthenticated} logout={logout} />
+          <MobileNavigation user={user} navigation={navigation} userNavigation={userNavigation} isAuthenticated={isAuthenticated} logout={logout} />
         </Disclosure>
         <header className="bg-white shadow">
           <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
@@ -119,7 +118,7 @@ function DesktopNavigation({ user, pathname, navigation, userNavigation, isAuthe
 }
 
 /* eslint-disable react/prop-types */
-function MobileNavigation({ user, pathname, navigation, userNavigation, isAuthenticated, logout }) {
+function MobileNavigation({ user, navigation, userNavigation, isAuthenticated, logout }) {
   return (
     <DisclosurePanel className="md:hidden">
       <MobileNavigationMenu navigation={navigation} />

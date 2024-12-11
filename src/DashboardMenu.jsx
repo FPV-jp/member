@@ -1,5 +1,5 @@
 import { DisclosureButton, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
-import { Route, Routes, useLocation, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -56,12 +56,9 @@ export function DesktopNavigationMenu({ pathname, navigation }) {
     <div className="hidden md:block">
       <div className="ml-10 flex items-baseline space-x-4">
         {navigation.map((item) => (
-          <Link
-            key={item.name}
-            to={item.href}
-            aria-current={pathname === item.href ? 'page' : undefined}
+          <Link key={item.name} to={item.href} aria-current={pathname === item.href ? 'page' : undefined}
             className={classNames(
-              pathname === item.href ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'rounded-md px-3 py-2 text-sm font-medium',
+              pathname === item.href ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'rounded-md px-3 py-2 text-sm font-medium'
             )}>
             {item.name}
           </Link>
@@ -101,8 +98,9 @@ export function MobileNavigationMenu({ navigation }) {
     <div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
       {navigation.map((item) => (
         <DisclosureButton key={item.name} as="a" href={item.href} aria-current={item.current ? 'page' : undefined}
-          className={classNames(item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'block rounded-md px-3 py-2 text-base font-medium')}
-        >
+          className={classNames(
+            item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'block rounded-md px-3 py-2 text-base font-medium'
+          )}>
           {item.name}
         </DisclosureButton>
       ))}
