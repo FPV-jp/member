@@ -19,7 +19,18 @@ const FileUpload = () => {
     const accessToken = await getAccessTokenSilently({ authorizationParams: { audience: env.audience, scope: env.scope } })
     const response = await fetch(isLocalhost() ? URL + api : api, { headers: { Authorization: `Bearer ${accessToken}` } })
     if (!response.ok) { throw new Error('Failed to download file') }
-    return window.URL.createObjectURL(await response.blob())
+    const blob = await response.blob()
+    //  if (blob.type.match('video.*')) {
+    //  if (blob.type.match('image.*')) {
+    //  if (blob.type.match('audio.*')) {
+    return {
+      src: window.URL.createObjectURL(blob),
+      alt: isLocalhost() ? URL + api : api,
+      size: blob.size,
+      type: blob.type,
+      name: api.split('/').pop(),
+    }
+
   }
 
   const WasabiFileToObjectURLs = async (response) => {
@@ -27,6 +38,7 @@ const FileUpload = () => {
     for (const url of await response.json()) {
       objectURLs.push(await WasabiFileToObjectURL(url))
     }
+    console.log('objectURLs:', JSON.stringify(objectURLs, null, 2));
     return objectURLs
   }
 
@@ -43,10 +55,6 @@ const FileUpload = () => {
 
   const fileInputChange = (event) => {
     const selectedFiles = Array.from(event.target.files)
-    //  const fileBlob = files[objectURL]
-    //  if (fileBlob.type.match('video.*')) {
-    //  if (fileBlob.type.match('image.*')) {
-    //  if (fileBlob.type.match('audio.*')) {
     setFiles(selectedFiles)
   }
 
@@ -61,10 +69,7 @@ const FileUpload = () => {
         {files.map((file, index) => <li key={index}>{file.name}</li>)}
       </ul>
       <ul>
-        {uploadedFiles.map((file, index) => <li key={index}>
-          <img src={file} />
-        </li>
-        )}
+        {uploadedFiles.map((file, index) => <li key={index}><img src={file.src} alt={file.alt} /></li>)}
       </ul>
     </div>
   )
