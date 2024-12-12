@@ -10,7 +10,6 @@ import NotFound from './NotFound'
 import UserREST from './UserREST'
 import UserGraphQL from './UserGraphQL'
 import FileUpload from './FileUpload'
-import Simple from './Simple'
 import Form from './Form'
 
 // import { useEffect } from 'react'
@@ -20,7 +19,6 @@ const navigation = [
   { name: 'UserREST', href: '/userrest', title: 'Example REST API', current: false },
   { name: 'UserGraphQL', href: '/usergraphql', title: 'Example GraphQL', current: false },
   { name: 'Wasabi', href: '/wasabi', title: 'Example GraphQL', current: false },
-  { name: 'Simple', href: '/simple', title: 'Example GraphQL', current: false },
   { name: 'Form', href: '/form', title: 'Example GraphQL', current: false },
 ]
 
@@ -33,7 +31,6 @@ const userNavigation = [
 const ProtectedUserREST = withAuthenticationRequired(UserREST)
 const ProtectedUserGraphQL = withAuthenticationRequired(UserGraphQL)
 const ProtectedFileUpload = withAuthenticationRequired(FileUpload)
-const ProtectedSimple = withAuthenticationRequired(Simple)
 const ProtectedForm = withAuthenticationRequired(Form)
 
 export default function Dashboard() {
@@ -70,7 +67,6 @@ export default function Dashboard() {
               <Route path='/userrest' element={<ProtectedUserREST />} />
               <Route path='/usergraphql' element={<ProtectedUserGraphQL />} />
               <Route path='/wasabi' element={<ProtectedFileUpload />} />
-              <Route path='/simple' element={<ProtectedSimple />} />
               <Route path='/form' element={<ProtectedForm />} />
               <Route path="/404" element={<NotFound />} />
               <Route path="*" element={<Navigate to="/404" replace />} />

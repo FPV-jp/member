@@ -30,7 +30,6 @@ const FileUpload = () => {
       type: blob.type,
       name: api.split('/').pop(),
     }
-
   }
 
   const WasabiFileToObjectURLs = async (response) => {
@@ -59,19 +58,31 @@ const FileUpload = () => {
   }
 
   return (
-    <div>
+    <>
       <img src='http://localhost:8000/api/wasabi/public/taifuu_top.png' />
       <input id='file-input' type='file' multiple onChange={fileInputChange} />
       <button type='button' onClick={() => WasabiUploadFiles()}>
         Upload
       </button>
-      <ul>
-        {files.map((file, index) => <li key={index}>{file.name}</li>)}
-      </ul>
-      <ul>
-        {uploadedFiles.map((file, index) => <li key={index}><img src={file.src} alt={file.alt} /></li>)}
-      </ul>
-    </div>
+      <div className="bg-white">
+        <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+          <h2 className="sr-only">Wasabi</h2>
+          <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+            {uploadedFiles.map((uploadedFile, i) => (
+              <a key={i} href={uploadedFile.alt} className="group">
+                <img
+                  alt={uploadedFile.alt}
+                  src={uploadedFile.src}
+                  className="aspect-square w-full rounded-lg bg-gray-200 object-cover group-hover:opacity-75 xl:aspect-[7/8]"
+                />
+                <h3 className="mt-4 text-sm text-gray-700">{uploadedFile.name}</h3>
+                <p className="mt-1 text-lg font-medium text-gray-900">{uploadedFile.size}</p>
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    </>
   )
 }
 
