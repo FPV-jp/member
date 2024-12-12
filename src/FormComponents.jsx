@@ -3,8 +3,6 @@ import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
 
 /* eslint-disable react/prop-types */
 export function TextInput({ label, htmlFor, ...props }) {
-  console.log(props)
-  const { autoComplete } = props
   return (
     <>
       <label htmlFor={htmlFor} className="block text-sm/6 font-medium text-gray-900">
@@ -15,9 +13,8 @@ export function TextInput({ label, htmlFor, ...props }) {
           id={htmlFor}
           name={htmlFor}
           type="text"
-          autoComplete={autoComplete}
-          // defaultValue={defaultValue}
           className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+          {...props}
         />
       </div>
     </>
@@ -25,8 +22,7 @@ export function TextInput({ label, htmlFor, ...props }) {
 }
 
 /* eslint-disable react/prop-types */
-export function MultiTextInput({ label, htmlFor, ...props }) {
-  console.log(props)
+export function Textarea({ label, htmlFor, ...props }) {
   return (
     <>
       <label htmlFor={htmlFor} className="block text-sm/6 font-medium text-gray-900">
@@ -36,9 +32,8 @@ export function MultiTextInput({ label, htmlFor, ...props }) {
         <textarea
           id={htmlFor}
           name={htmlFor}
-          rows={3}
           className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-          defaultValue={''}
+          {...props}
         />
       </div>
     </>
@@ -95,47 +90,42 @@ export function RadioInput({ label, htmlFor, name }) {
 }
 
 /* eslint-disable react/prop-types */
-export function Select({ label, htmlFor, option, autoComplete }) {
+export function Select({ label, htmlFor, option, ...props }) {
   return (
     <>
       <label htmlFor={htmlFor} className="block text-sm/6 font-medium text-gray-900">
         {label}
       </label>
       <div className="mt-2 grid grid-cols-1">
-        <select
-          id={htmlFor}
-          name={htmlFor}
-          autoComplete={autoComplete}
+        <select id={htmlFor} name={htmlFor}
           className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+          {...props}
         >
           {option.map((op) => { return <option key={op}>{op}</option> })}
         </select>
-        <ChevronDownIcon
-          aria-hidden="true"
-          className="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4"
-        />
+        <ChevronDownIcon aria-hidden="true" className="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4" />
       </div>
     </>
   )
 }
 
 /* eslint-disable react/prop-types */
-export function CustomTextInput({ ...props }) {
-  console.log(props)
+export function CustomTextInput({ label, htmlFor, ...props }) {
+  // console.log(props)
   return (
     <>
       <label htmlFor="username" className="block text-sm/6 font-medium text-gray-900">
-        Username
+        {label}
       </label>
       <div className="mt-2">
         <div className="flex items-center rounded-md bg-white pl-3 outline outline-1 -outline-offset-1 outline-gray-300 focus-within:outline focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
           <div className="shrink-0 select-none text-base text-gray-500 sm:text-sm/6">workcation.com/</div>
           <input
-            id="username"
-            name="username"
+            id={htmlFor}
+            name={htmlFor}
             type="text"
-            placeholder="janesmith"
             className="block min-w-0 grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-sm/6"
+            {...props}
           />
         </div>
       </div>
@@ -145,7 +135,7 @@ export function CustomTextInput({ ...props }) {
 
 /* eslint-disable react/prop-types */
 export function PhotoChange({ ...props }) {
-  console.log(props)
+  // console.log(props)
   return (
     <>
       <label htmlFor="photo" className="block text-sm/6 font-medium text-gray-900">
@@ -165,7 +155,7 @@ export function PhotoChange({ ...props }) {
 }
 
 /* eslint-disable react/prop-types */
-export function FileUpload({ label, htmlFor }) {
+export function FileUpload({ label, htmlFor, ...props }) {
   return (
     <>
       <label htmlFor={htmlFor} className="block text-sm/6 font-medium text-gray-900">
@@ -178,7 +168,7 @@ export function FileUpload({ label, htmlFor }) {
             <label htmlFor="file-upload"
               className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500" >
               <span>Upload a file</span>
-              <input id="file-upload" name="file-upload" type="file" className="sr-only" />
+              <input id="file-upload" name="file-upload" type="file" multiple className="sr-only" {...props} />
             </label>
             <p className="pl-1">or drag and drop</p>
           </div>

@@ -1,17 +1,22 @@
-import { TextInput, MultiTextInput, CheckboxInput, RadioInput, Select, CustomTextInput, PhotoChange, FileUpload } from './FormComponents'
+import { TextInput, Textarea, CheckboxInput, RadioInput, Select, CustomTextInput, PhotoChange, FileUpload } from './FormComponents'
 import { useEffect, useState } from 'react'
 
 const initialFormValue = {
-  latitude: 0.0,
-  longitude: 0.0,
-  title: '',
-  markerImage: null,
+  // latitude: 0.0,
+  // longitude: 0.0,
+  // title: '',
+  // markerImage: null,
 }
 
 const option = ["United States", "Canada", "Mexico"]
 
 export default function Form() {
   const [formData, setFormData] = useState({ ...initialFormValue })
+  useEffect(() => {
+    // if (!selectPoint) return
+    // setFormData((prevFormData) => ({ ...prevFormData, ...selectPoint }))
+    console.log(formData)
+  }, [formData])
 
   function inputChange(event) {
     const { name, value } = event.target
@@ -20,7 +25,7 @@ export default function Form() {
 
   function fileInputChange(event) {
     const { name, files } = event.target
-    setFormData({ ...formData, [name]: files[0] })
+    setFormData({ ...formData, [name]: files })
   }
 
   async function submit(event) {
@@ -38,11 +43,11 @@ export default function Form() {
 
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             <div className="sm:col-span-4">
-              <CustomTextInput />
+              <CustomTextInput label={"Username"} htmlFor={"username"} onChange={inputChange} placeholder="janesmith" />
             </div>
 
             <div className="col-span-full">
-              <MultiTextInput label={"About"} htmlFor={"about"} />
+              <Textarea label={"About"} htmlFor={"about"} rows={3} onChange={inputChange} defaultValue={'xxx'} />
               <p className="mt-3 text-sm/6 text-gray-600">Write a few sentences about yourself.</p>
             </div>
 
@@ -51,7 +56,7 @@ export default function Form() {
             </div>
 
             <div className="col-span-full">
-              <FileUpload label={"Cover photo"} htmlFor={"cover-photo"} />
+              <FileUpload label={"Cover photo"} htmlFor={"cover-photo"} onChange={fileInputChange} />
             </div>
           </div>
         </div>
@@ -62,35 +67,35 @@ export default function Form() {
 
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             <div className="sm:col-span-3">
-              <TextInput label={"First name"} htmlFor={"first-name"} autoComplete={"given-name"} />
+              <TextInput label={"First name"} htmlFor={"first-name"} onChange={inputChange} autoComplete={"given-name"} />
             </div>
 
             <div className="sm:col-span-3">
-              <TextInput label={"Last name"} htmlFor={"last-name"} autoComplete={"family-name"} />
+              <TextInput label={"Last name"} htmlFor={"last-name"} onChange={inputChange} autoComplete={"family-name"} />
             </div>
 
             <div className="sm:col-span-4">
-              <TextInput label={"Email address"} htmlFor={"email"} autoComplete={"email"} />
+              <TextInput label={"Email address"} htmlFor={"email"} onChange={inputChange} autoComplete={"email"} />
             </div>
 
             <div className="sm:col-span-3">
-              <Select label={"Country"} htmlFor={"country"} option={option} autoComplete={"country-name"} />
+              <Select label={"Country"} htmlFor={"country"} option={option} onChange={inputChange} autoComplete={"country-name"} />
             </div>
 
             <div className="col-span-full">
-              <TextInput label={"Street address"} htmlFor={"street-address"} autoComplete={"street-address"} />
+              <TextInput label={"Street address"} htmlFor={"street-address"} onChange={inputChange} autoComplete={"street-address"} />
             </div>
 
             <div className="sm:col-span-2 sm:col-start-1">
-              <TextInput label={"City"} htmlFor={"city"} autoComplete={"address-level2"} />
+              <TextInput label={"City"} htmlFor={"city"} onChange={inputChange} autoComplete={"address-level2"} />
             </div>
 
             <div className="sm:col-span-2">
-              <TextInput label={"State / Province"} htmlFor={"region"} autoComplete={"address-level1"} />
+              <TextInput label={"State / Province"} htmlFor={"region"} onChange={inputChange} autoComplete={"address-level1"} />
             </div>
 
             <div className="sm:col-span-2">
-              <TextInput label={"ZIP / Postal code"} htmlFor={"postal-code"} autoComplete={"postal-code"} />
+              <TextInput label={"ZIP / Postal code"} htmlFor={"postal-code"} onChange={inputChange} autoComplete={"postal-code"} />
             </div>
           </div>
         </div>
