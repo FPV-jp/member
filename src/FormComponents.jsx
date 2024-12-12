@@ -1,0 +1,112 @@
+import { ChevronDownIcon } from '@heroicons/react/16/solid'
+
+/* eslint-disable react/prop-types */
+export function TextInput({ label, htmlFor, autoComplete }) {
+  return (
+    <>
+      <label htmlFor={htmlFor} className="block text-sm/6 font-medium text-gray-900">
+        {label}
+      </label>
+      <div className="mt-2">
+        <input
+          id={htmlFor}
+          name={htmlFor}
+          type="text"
+          autoComplete={autoComplete}
+          className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+        />
+      </div>
+    </>
+  )
+}
+
+/* eslint-disable react/prop-types */
+export function CheckboxInput({ label, defaultChecked, htmlFor, description }) {
+  return (
+    <div className="flex gap-3">
+      <div className="flex h-6 shrink-0 items-center">
+        <div className="group grid size-4 grid-cols-1">
+          <input
+            defaultChecked={defaultChecked}
+            id={htmlFor}
+            name={htmlFor}
+            type="checkbox"
+            aria-describedby={`${htmlFor}-description`}
+            className="col-start-1 row-start-1 appearance-none rounded border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto"
+          />
+          <svg
+            fill="none"
+            viewBox="0 0 14 14"
+            className="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-[:disabled]:stroke-gray-950/25"
+          >
+            <path
+              d="M3 8L6 11L11 3.5"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="opacity-0 group-has-[:checked]:opacity-100"
+            />
+            <path
+              d="M3 7H11"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="opacity-0 group-has-[:indeterminate]:opacity-100"
+            />
+          </svg>
+        </div>
+      </div>
+      <div className="text-sm/6">
+        <label htmlFor={htmlFor} className="font-medium text-gray-900">
+          {label}
+        </label>
+        <p id={`${htmlFor}-description`} className="text-gray-500">
+          {description}
+        </p>
+      </div>
+    </div>
+  )
+}
+
+/* eslint-disable react/prop-types */
+export function RadioInput({ label, htmlFor, name }) {
+  return (
+    <div className="flex items-center gap-x-3">
+      <input
+        id={htmlFor}
+        name={name}
+        type="radio"
+        className="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 forced-colors:appearance-auto forced-colors:before:hidden [&:not(:checked)]:before:hidden"
+      />
+      <label htmlFor={htmlFor} className="block text-sm/6 font-medium text-gray-900">
+        {label}
+      </label>
+    </div>
+  )
+}
+
+
+/* eslint-disable react/prop-types */
+export function Select({ label, htmlFor, option, autoComplete }) {
+  return (
+    <>
+      <label htmlFor={htmlFor} className="block text-sm/6 font-medium text-gray-900">
+        {label}
+      </label>
+      <div className="mt-2 grid grid-cols-1">
+        <select
+          id={htmlFor}
+          name={htmlFor}
+          autoComplete={autoComplete}
+          className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+        >
+          {option.map((op) => { return <option key={op}>{op}</option> })}
+        </select>
+        <ChevronDownIcon
+          aria-hidden="true"
+          className="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4"
+        />
+      </div>
+    </>
+  )
+}
