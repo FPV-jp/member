@@ -1,4 +1,5 @@
 import { ChevronDownIcon } from '@heroicons/react/16/solid'
+import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
 
 /* eslint-disable react/prop-types */
 export function TextInput({ label, htmlFor, autoComplete }) {
@@ -34,25 +35,9 @@ export function CheckboxInput({ label, defaultChecked, htmlFor, description }) {
             aria-describedby={`${htmlFor}-description`}
             className="col-start-1 row-start-1 appearance-none rounded border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto"
           />
-          <svg
-            fill="none"
-            viewBox="0 0 14 14"
-            className="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-[:disabled]:stroke-gray-950/25"
-          >
-            <path
-              d="M3 8L6 11L11 3.5"
-              strokeWidth={2}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="opacity-0 group-has-[:checked]:opacity-100"
-            />
-            <path
-              d="M3 7H11"
-              strokeWidth={2}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="opacity-0 group-has-[:indeterminate]:opacity-100"
-            />
+          <svg fill="none" viewBox="0 0 14 14" className="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-[:disabled]:stroke-gray-950/25" >
+            <path d="M3 8L6 11L11 3.5" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="opacity-0 group-has-[:checked]:opacity-100" />
+            <path d="M3 7H11" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="opacity-0 group-has-[:indeterminate]:opacity-100" />
           </svg>
         </div>
       </div>
@@ -85,7 +70,6 @@ export function RadioInput({ label, htmlFor, name }) {
   )
 }
 
-
 /* eslint-disable react/prop-types */
 export function Select({ label, htmlFor, option, autoComplete }) {
   return (
@@ -106,6 +90,31 @@ export function Select({ label, htmlFor, option, autoComplete }) {
           aria-hidden="true"
           className="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4"
         />
+      </div>
+    </>
+  )
+}
+
+/* eslint-disable react/prop-types */
+export function FileUpload({ label, htmlFor }) {
+  return (
+    <>
+      <label htmlFor={htmlFor} className="block text-sm/6 font-medium text-gray-900">
+        {label}
+      </label>
+      <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
+        <div className="text-center">
+          <PhotoIcon aria-hidden="true" className="mx-auto size-12 text-gray-300" />
+          <div className="mt-4 flex text-sm/6 text-gray-600">
+            <label htmlFor="file-upload"
+              className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500" >
+              <span>Upload a file</span>
+              <input id="file-upload" name="file-upload" type="file" className="sr-only" />
+            </label>
+            <p className="pl-1">or drag and drop</p>
+          </div>
+          <p className="text-xs/5 text-gray-600">PNG, JPG, GIF up to 10MB</p>
+        </div>
       </div>
     </>
   )
