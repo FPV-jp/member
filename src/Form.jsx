@@ -1,5 +1,5 @@
 import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
-import { TextInput, CheckboxInput, RadioInput, Select, FileUpload } from './FormComponents'
+import { TextInput, MultiTextInput, CheckboxInput, RadioInput, Select, FileUpload } from './FormComponents'
 import { Fragment, useEffect, useState } from 'react'
 
 const initialFormValue = {
@@ -9,12 +9,27 @@ const initialFormValue = {
   markerImage: null,
 }
 
+const option = ["United States", "Canada", "Mexico"]
+
 export default function Form() {
   const [formData, setFormData] = useState({ ...initialFormValue })
-  const option = ["United States", "Canada", "Mexico"]
+
+  function inputChange(event) {
+    const { name, value } = event.target
+    setFormData({ ...formData, [name]: value })
+  }
+
+  function fileInputChange(event) {
+    const { name, files } = event.target
+    setFormData({ ...formData, [name]: files[0] })
+  }
+  
+  async function submit(event) {
+    event.preventDefault()
+  }
 
   return (
-    <form>
+    <form onSubmit={submit}>
       <div className="space-y-12">
         <div className="border-b border-gray-900/10 pb-12">
           <h2 className="text-base/7 font-semibold text-gray-900">Profile</h2>
@@ -42,18 +57,7 @@ export default function Form() {
             </div>
 
             <div className="col-span-full">
-              <label htmlFor="about" className="block text-sm/6 font-medium text-gray-900">
-                About
-              </label>
-              <div className="mt-2">
-                <textarea
-                  id="about"
-                  name="about"
-                  rows={3}
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                  defaultValue={''}
-                />
-              </div>
+              <MultiTextInput label={"About"} htmlFor={"about"} />
               <p className="mt-3 text-sm/6 text-gray-600">Write a few sentences about yourself.</p>
             </div>
 

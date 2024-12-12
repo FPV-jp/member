@@ -2,7 +2,9 @@ import { ChevronDownIcon } from '@heroicons/react/16/solid'
 import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
 
 /* eslint-disable react/prop-types */
-export function TextInput({ label, htmlFor, autoComplete }) {
+export function TextInput({ label, htmlFor, ...props }) {
+  console.log(props)
+  const { autoComplete } = props
   return (
     <>
       <label htmlFor={htmlFor} className="block text-sm/6 font-medium text-gray-900">
@@ -14,7 +16,29 @@ export function TextInput({ label, htmlFor, autoComplete }) {
           name={htmlFor}
           type="text"
           autoComplete={autoComplete}
+          // defaultValue={defaultValue}
           className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+        />
+      </div>
+    </>
+  )
+}
+
+/* eslint-disable react/prop-types */
+export function MultiTextInput({ label, htmlFor, ...props }) {
+  console.log(props)
+  return (
+    <>
+      <label htmlFor={htmlFor} className="block text-sm/6 font-medium text-gray-900">
+        {label}
+      </label>
+      <div className="mt-2">
+        <textarea
+          id={htmlFor}
+          name={htmlFor}
+          rows={3}
+          className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+          defaultValue={''}
         />
       </div>
     </>
