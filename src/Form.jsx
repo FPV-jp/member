@@ -1,6 +1,5 @@
-import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
-import { TextInput, MultiTextInput, CheckboxInput, RadioInput, Select, FileUpload } from './FormComponents'
-import { Fragment, useEffect, useState } from 'react'
+import { TextInput, MultiTextInput, CheckboxInput, RadioInput, Select, CustomTextInput, PhotoChange, FileUpload } from './FormComponents'
+import { useEffect, useState } from 'react'
 
 const initialFormValue = {
   latitude: 0.0,
@@ -23,7 +22,7 @@ export default function Form() {
     const { name, files } = event.target
     setFormData({ ...formData, [name]: files[0] })
   }
-  
+
   async function submit(event) {
     event.preventDefault()
   }
@@ -39,21 +38,7 @@ export default function Form() {
 
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             <div className="sm:col-span-4">
-              <label htmlFor="username" className="block text-sm/6 font-medium text-gray-900">
-                Username
-              </label>
-              <div className="mt-2">
-                <div className="flex items-center rounded-md bg-white pl-3 outline outline-1 -outline-offset-1 outline-gray-300 focus-within:outline focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
-                  <div className="shrink-0 select-none text-base text-gray-500 sm:text-sm/6">workcation.com/</div>
-                  <input
-                    id="username"
-                    name="username"
-                    type="text"
-                    placeholder="janesmith"
-                    className="block min-w-0 grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-sm/6"
-                  />
-                </div>
-              </div>
+              <CustomTextInput />
             </div>
 
             <div className="col-span-full">
@@ -62,18 +47,7 @@ export default function Form() {
             </div>
 
             <div className="col-span-full">
-              <label htmlFor="photo" className="block text-sm/6 font-medium text-gray-900">
-                Photo
-              </label>
-              <div className="mt-2 flex items-center gap-x-3">
-                <UserCircleIcon aria-hidden="true" className="size-12 text-gray-300" />
-                <button
-                  type="button"
-                  className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                >
-                  Change
-                </button>
-              </div>
+              <PhotoChange />
             </div>
 
             <div className="col-span-full">
@@ -154,10 +128,7 @@ export default function Form() {
         <button type="button" className="text-sm/6 font-semibold text-gray-900">
           Cancel
         </button>
-        <button
-          type="submit"
-          className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        >
+        <button type="submit" className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
           Save
         </button>
       </div>
