@@ -1,27 +1,28 @@
 import { useEffect, useState } from 'react'
+import * as Components from '../component/Components'
 
 export default function Example() {
   const [settings, setSettings] = useState()
 
-  console.log(window.navigator)
-  console.log(navigator)
+  // console.log(window.navigator)
+  // console.log(navigator)
   useEffect(() => {
     const newSettings = {}
     const fetchData = async () => {
-      // const battery = await window.navigator.getBattery()
-      // newSettings.battery = {
-      //   charging: battery.charging,
-      //   chargingTime: battery.chargingTime,
-      //   dischargingTime: battery.dischargingTime,
-      //   level: battery.level,
-      // }
-      // const adapter = await window.navigator.gpu.requestAdapter()
-      // newSettings.gpu = {
-      //   architecture: adapter.info.architecture,
-      //   description: adapter.info.description,
-      //   device: adapter.info.device,
-      //   vendor: adapter.info.vendor,
-      // }
+      const battery = await window.navigator.getBattery()
+      newSettings.battery = {
+        charging: battery.charging,
+        chargingTime: battery.chargingTime,
+        dischargingTime: battery.dischargingTime,
+        level: battery.level,
+      }
+      const adapter = await window.navigator.gpu.requestAdapter()
+      newSettings.gpu = {
+        architecture: adapter.info.architecture,
+        description: adapter.info.description,
+        device: adapter.info.device,
+        vendor: adapter.info.vendor,
+      }
       const FullHD = { framerate: 30, width: 1920, height: 1080 }
       const UltraHD = { framerate: 60, width: 3840, height: 2160 }
       newSettings.decodingSupport = [
@@ -42,8 +43,15 @@ export default function Example() {
 
     window.navigator.geolocation.getCurrentPosition(
       (position) => {
-        console.log(position)
-        newSettings.geolocation = position
+        newSettings.geolocation = {
+          accuracy: position.coords.accuracy,
+          altitude: position.coords.altitude,
+          altitudeAccuracy: position.coords.altitudeAccuracy,
+          heading: position.coords.heading,
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          speed: position.coords.speed,
+        }
         setSettings((prevSettings) => ({ ...prevSettings, ...newSettings }))
       },
       (err) => console.warn(`ERROR(${err.code}): ${err.message}`),
@@ -54,18 +62,26 @@ export default function Example() {
       hardwareConcurrency: window.navigator.hardwareConcurrency,
       deviceMemory: window.navigator.deviceMemory,
     }
-    // if (window.navigator.connection) {
-    //   newSettings.network = {
-    //     downlink: window.navigator.connection.downlink,
-    //     downlinkMax: window.navigator.connection.downlinkMax,
-    //     effectiveType: window.navigator.connection.effectiveType,
-    //     rtt: window.navigator.connection.rtt,
-    //     saveData: window.navigator.connection.saveData,
-    //     type: window.navigator.connection.type,
-    //   }
-    // }
+    if (window.navigator.connection) {
+      newSettings.network = {
+        downlink: window.navigator.connection.downlink,
+        downlinkMax: window.navigator.connection.downlinkMax,
+        effectiveType: window.navigator.connection.effectiveType,
+        rtt: window.navigator.connection.rtt,
+        saveData: window.navigator.connection.saveData,
+        type: window.navigator.connection.type,
+      }
+    }
     setSettings((prevSettings) => ({ ...prevSettings, ...newSettings }))
   }, [])
+
+  useEffect(() => {
+    console.log(settings)
+  }, [settings])
+
+  if (!settings) {
+    return <Components.Loading />
+  }
 
   return (
     <div>
@@ -125,7 +141,7 @@ export default function Example() {
             <dd className='mt-2 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
               <ul role='list' className='divide-y divide-gray-100 rounded-md border border-gray-200'>
                 {settings?.geolocation &&
-                  Object.entries(settings.geolocation.coords).map(([key, val]) => (
+                  Object.entries(settings.geolocation).map(([key, val]) => (
                     <li key={key} className='flex items-center justify-between py-4 pl-4 pr-5 text-sm/6'>
                       <div className='flex w-0 flex-1 items-center'>
                         {key}

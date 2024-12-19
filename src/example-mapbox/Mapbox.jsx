@@ -1,45 +1,56 @@
 // import { useEffect, useRef } from 'react';
 // import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css'
+// import 'mapbox-gl/dist/mapbox-gl.css'
 // import { useEffect, useState } from 'react'
-import Map, { Marker, Popup } from 'react-map-gl'
-
+// import Map, { Marker, Popup } from 'react-map-gl'
+import { useState, useEffect } from 'react';
+import Map from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 export default function MapboxExample() {
-  // const mapContainerRef = useRef();
-  // const mapRef = useRef();
+  const [location, setLocation] = useState(null)
+  const [error, setError] = useState(null)
 
-  // useEffect(() => {
-  //   mapboxgl.accessToken = 'pk.eyJ1IjoicmVsaWNzOSIsImEiOiJjbHMzNHlwbDIwNDczMmtvM2xhNWR0ZzVtIn0.whCzeh6XW7ju4Ja6DR0imw';
+  useEffect(() => {
+    window.navigator.geolocation.getCurrentPosition((position) => {
+      setLocation({
+        accuracy: position.coords.accuracy,
+        altitude: position.coords.altitude,
+        altitudeAccuracy: position.coords.altitudeAccuracy,
+        heading: position.coords.heading,
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+        speed: position.coords.speed,
+      })
+    },
+      (err) => {
+        setError(`ERROR(${err.code}): ${err.message}`);
+      },
+      { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 },
+    );
+  }, [])
 
-  //   mapRef.current = new mapboxgl.Map({
-  //     container: mapContainerRef.current,
-  //     center: [-74.5, 40], // starting position [lng, lat]
-  //     zoom: 9 // starting zoom
-  //   });
-  // });
+  if (error) {
+    return <p>位置情報の取得に失敗しました: {error}</p>
+  }
+
+  if (!location) {
+    return <p>位置情報を取得中...</p>
+  }
 
   return (
     <Map
       initialViewState={{
-        latitude: 35.7030639,
-        longitude: 139.7690916,
+        latitude: location.latitude,
+        longitude: location.longitude,
         zoom: 16,
       }}
       style={{ width: '100%', height: '78vh' }}
-      mapStyle='mapbox://styles/mapbox/streets-v11'
-      // mapStyle='mapbox://styles/mapbox/satellite-v11'
-      // mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
-      mapboxAccessToken='pk.eyJ1IjoicmVsaWNzOSIsImEiOiJjbHMzNHlwbDIwNDczMmtvM2xhNWR0ZzVtIn0.whCzeh6XW7ju4Ja6DR0imw'
-    // onClick={(event) => {
-    //   // setSelectMarker(null)
-    //   editMode &&
-    //     setSelectPoint({
-    //       latitude: event.lngLat.lat,
-    //       longitude: event.lngLat.lng,
-    //     })
-    // }}
+      mapStyle="mapbox://styles/mapbox/streets-v11"
+      mapboxAccessToken="pk.eyJ1IjoicmVsaWNzOSIsImEiOiJjbHMzNHlwbDIwNDczMmtvM2xhNWR0ZzVtIn0.whCzeh6XW7ju4Ja6DR0imw"
+      onClick={(event) => {
+        console.log(event);
+      }}
     >
       {/* {!editMode &&
             data?.allFlightPoints.map((flightPoint) => {
