@@ -42,7 +42,11 @@ export default function MapboxExample() {
         zoom: 16,
       }}
       style={{ width: '100%', height: '78vh' }}
-      mapStyle="mapbox://styles/mapbox/streets-v11"
+      // mapStyle="mapbox://styles/mapbox/standard"
+      mapStyle='mapbox://styles/mapbox/streets-v12'
+      // mapStyle="mapbox://styles/mapbox/streets-v11"
+      // mapStyle='mapbox://styles/mapbox/outdoors-v12'
+      //mapStyle='mapbox://styles/mapbox/dark-v11'
       mapboxAccessToken="pk.eyJ1IjoicmVsaWNzOSIsImEiOiJjbHMzNHlwbDIwNDczMmtvM2xhNWR0ZzVtIn0.whCzeh6XW7ju4Ja6DR0imw"
       onClick={(event) => {
         console.log(event);
