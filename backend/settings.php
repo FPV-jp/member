@@ -62,11 +62,11 @@ return [
             'password' => $_ENV['MAIL_PASSWORD'],
         ],
 
-        'cloudinary' => [
-            'cloudname' => $_ENV['CLOUDINARY_CLOUD_NAME'],
-            'apikey'    => $_ENV['CLOUDINARY_API_KEY'],
-            'apisecret' => $_ENV['CLOUDINARY_API_SECRET'],
-        ],
+        // 'cloudinary' => [
+        //     'cloudname' => $_ENV['CLOUDINARY_CLOUD_NAME'],
+        //     'apikey'    => $_ENV['CLOUDINARY_API_KEY'],
+        //     'apisecret' => $_ENV['CLOUDINARY_API_SECRET'],
+        // ],
 
         'wasabi' => [
             'apikey'    => $_ENV['WASABI_API_KEY'],

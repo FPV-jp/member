@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 
+use Fpv\Middleware\DoctrineMariaDBDriver;
 use Fpv\Middleware\DoctrineMiddleware;
 
 require_once __DIR__ . '/vendor/autoload.php';
@@ -33,7 +34,8 @@ $container->set(EntityManager::class, static function (Container $c): EntityMana
     $config->setProxyDir(sys_get_temp_dir());
     $config->setProxyNamespace('DoctrineProxies');
     $config->setAutoGenerateProxyClasses($isDevMode);
-    // $config->setMetadataDriverImpl(new AttributeDriver($paths));
+    $config->setMetadataDriverImpl(new AttributeDriver($paths));
+    // $config->setMetadataDriverImpl(new DoctrineMariaDBDriver());
 
     $connection = DriverManager::getConnection($connect, $config);
     return new EntityManager($connection, $config);

@@ -10,6 +10,8 @@ import Bento from './Bento'
 import UserREST from '../example-user/UserREST'
 import UserGraphQL from '../example-user/UserGraphQL'
 import Wasabi from '../example-wasabi/Wasabi'
+import Mapbox from '../example-mapbox/Mapbox'
+
 import Form from '../example-form/Form'
 
 import Profile from '../user-menu/Profile'
@@ -19,6 +21,7 @@ import Notification from '../user-menu/Notification'
 const ProtectedUserREST = withAuthenticationRequired(UserREST)
 const ProtectedUserGraphQL = withAuthenticationRequired(UserGraphQL)
 const ProtectedWasabi = withAuthenticationRequired(Wasabi)
+const ProtectedMapbox = withAuthenticationRequired(Mapbox)
 
 const ProtectedProfile = withAuthenticationRequired(Profile)
 const ProtectedNotification = withAuthenticationRequired(Notification)
@@ -32,7 +35,8 @@ export default function Dashboard() {
     { name: 'Dashboard', path: '/', title: 'Dashboard' },
     { name: 'UserREST', path: '/example-user-rest', title: 'REST API Example', current: false },
     { name: 'UserGraphQL', path: '/example-user-graphql', title: 'GraphQL Example', current: false },
-    { name: 'Wasabi(S3)', path: '/example-wasabi', title: 'Wasabi Example', current: false },
+    { name: 'Wasabi', path: '/example-wasabi', title: 'Wasabi Example', current: false },
+    { name: 'Mapbox', path: '/example-mapbox', title: 'Mapbox Example', current: false },
     { name: 'Form', path: '/example-form', title: 'Form Example', current: false },
   ]
 
@@ -86,6 +90,7 @@ export default function Dashboard() {
               <ReactRouter.Route path='/example-user-rest' element={<ProtectedUserREST />} />
               <ReactRouter.Route path='/example-user-graphql' element={<ProtectedUserGraphQL />} />
               <ReactRouter.Route path='/example-wasabi' element={<ProtectedWasabi />} />
+              <ReactRouter.Route path='/example-mapbox' element={<ProtectedMapbox />} />
               <ReactRouter.Route path='/example-form' element={<Form />} />
               <ReactRouter.Route path='/profile' element={<ProtectedProfile />} />
               <ReactRouter.Route path='/settings' element={<Settings />} />

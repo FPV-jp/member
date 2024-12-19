@@ -7,7 +7,7 @@ import * as User from './User'
 //--------------------------------------------------
 // UserGraphQL
 //--------------------------------------------------
-export default function UserGraphQL() {
+export default function UserGraphQLExample() {
   const [open, setOpen] = useState(false)
   const [user, setUser] = useState()
 

@@ -6,7 +6,7 @@ import * as User from './User'
 //--------------------------------------------------
 // UserREST
 //--------------------------------------------------
-export default function UserREST() {
+export default function UserRESTExample() {
   const [open, setOpen] = useState(false)
   const [user, setUser] = useState()
 

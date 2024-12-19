@@ -9,7 +9,7 @@ const initialFormValue = {
   pushNotifications: 'push-everything',
 }
 
-export default function Form() {
+export default function FormExamle() {
   const [formData, setFormData] = useState({ ...initialFormValue })
   useEffect(() => {
     // setFormData((prevFormData) => ({ ...prevFormData, ...initialFormValue }))
