@@ -15,11 +15,12 @@ const isLocalhost = () => window.location.hostname === 'localhost'
 export const endpoint = (api) => (isLocalhost() ? URL + api : api)
 
 export const useProfile = () => {
-  const { getIdTokenClaims } = useAuth0()
+  const env = useEnv()
+  const { getIdTokenClaims, getAccessTokenSilently } = useAuth0()
   return async () => {
     const token = (await getIdTokenClaims()).__raw
     const decodedToken = jwtDecode(token)
-    decodedToken.token = token
+    decodedToken.token = await getAccessTokenSilently({ authorizationParams: { audience: env.audience, scope: env.scope } })
     return decodedToken
   }
 }

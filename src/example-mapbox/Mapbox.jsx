@@ -3,17 +3,17 @@
 // import 'mapbox-gl/dist/mapbox-gl.css'
 // import { useEffect, useState } from 'react'
 // import Map, { Marker, Popup } from 'react-map-gl'
-import { useState, useEffect } from 'react';
-import Map from 'react-map-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
+import { useState, useEffect } from 'react'
+import Map from 'react-map-gl'
+import 'mapbox-gl/dist/mapbox-gl.css'
 
 export default function MapboxExample() {
   const [location, setLocation] = useState(null)
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    window.navigator.geolocation.
-      getCurrentPosition((position) => {
+    window.navigator.geolocation.getCurrentPosition(
+      (position) => {
         setLocation({
           accuracy: position.coords.accuracy,
           altitude: position.coords.altitude,
@@ -23,7 +23,10 @@ export default function MapboxExample() {
           longitude: position.coords.longitude,
           speed: position.coords.speed,
         })
-      }, (err) => setError(`ERROR(${err.code}): ${err.message}`), { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 })
+      },
+      (err) => setError(`ERROR(${err.code}): ${err.message}`),
+      { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 },
+    )
   }, [])
 
   if (error) {
@@ -47,9 +50,9 @@ export default function MapboxExample() {
       // mapStyle="mapbox://styles/mapbox/streets-v11"
       // mapStyle='mapbox://styles/mapbox/outdoors-v12'
       //mapStyle='mapbox://styles/mapbox/dark-v11'
-      mapboxAccessToken="pk.eyJ1IjoicmVsaWNzOSIsImEiOiJjbHMzNHlwbDIwNDczMmtvM2xhNWR0ZzVtIn0.whCzeh6XW7ju4Ja6DR0imw"
+      mapboxAccessToken='pk.eyJ1IjoicmVsaWNzOSIsImEiOiJjbHMzNHlwbDIwNDczMmtvM2xhNWR0ZzVtIn0.whCzeh6XW7ju4Ja6DR0imw'
       onClick={(event) => {
-        console.log(event);
+        console.log(event)
       }}
     >
       {/* {!editMode &&
@@ -85,5 +88,5 @@ export default function MapboxExample() {
             </Popup>
           )} */}
     </Map>
-  );
-};
+  )
+}

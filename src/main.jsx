@@ -4,6 +4,12 @@ import * as core from './core'
 import Dashboard from './dashboard/Dashboard'
 import './output.css'
 
+const originalWarn = console.warn
+console.warn = (...args) => {
+  if (typeof args[0] === 'string' && args[0].includes('React Router Future Flag Warning')) return
+  originalWarn(...args)
+}
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <core.EnvProvider>
     <ReactRouter.BrowserRouter>
