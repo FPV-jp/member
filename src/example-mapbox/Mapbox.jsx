@@ -12,22 +12,18 @@ export default function MapboxExample() {
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    window.navigator.geolocation.getCurrentPosition((position) => {
-      setLocation({
-        accuracy: position.coords.accuracy,
-        altitude: position.coords.altitude,
-        altitudeAccuracy: position.coords.altitudeAccuracy,
-        heading: position.coords.heading,
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude,
-        speed: position.coords.speed,
-      })
-    },
-      (err) => {
-        setError(`ERROR(${err.code}): ${err.message}`);
-      },
-      { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 },
-    );
+    window.navigator.geolocation.
+      getCurrentPosition((position) => {
+        setLocation({
+          accuracy: position.coords.accuracy,
+          altitude: position.coords.altitude,
+          altitudeAccuracy: position.coords.altitudeAccuracy,
+          heading: position.coords.heading,
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          speed: position.coords.speed,
+        })
+      }, (err) => setError(`ERROR(${err.code}): ${err.message}`), { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 })
   }, [])
 
   if (error) {

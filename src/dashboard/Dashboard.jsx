@@ -73,9 +73,24 @@ export default function Dashboard() {
           }} />
         </Disclosure>
         {navigation.find((nav) => nav.path === currentpath) && (
-          <header className='bg-white shadow'>
-            <div className='mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8'>
-              <h1 className='text-3xl font-bold tracking-tight text-gray-900'>{navigation.find((nav) => nav.path === currentpath).title}</h1>
+          <header className="bg-white shadow">
+            <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 flex items-center justify-between">
+              <h1 className="text-3xl font-bold tracking-tight text-gray-900">
+                {navigation.find((nav) => nav.path === currentpath).title}
+              </h1>
+              {'/example-mapbox' == currentpath &&
+                <div className="inline-flex rounded-md shadow-sm" role="group">
+                  <button type="button" className="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-l-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700">
+                    Left
+                  </button>
+                  <button type="button" className="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 -ml-px hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700" >
+                    Middle
+                  </button>
+                  <button type="button" className="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 -ml-px rounded-r-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700" >
+                    Right
+                  </button>
+                </div>
+              }
             </div>
           </header>
         )}
