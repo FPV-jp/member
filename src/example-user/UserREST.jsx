@@ -16,16 +16,17 @@ export default function UserRESTExample() {
   }
 
   const deleteUser = useFetchMutation()
-  const [deleteUserError, setDeleteUserError] = useState()
+  const [notify, setNotify] = useState({ show: false, title: '', message: '' })
 
   async function onDeleteUser(id) {
-    setDeleteUserError(null)
     const body = JSON.stringify({ id })
     const response = await deleteUser('/api/deleteUser', { method: 'POST', body })
     if (response.ok) {
       refetch()
+      setNotify({ show: true, title: 'ok', message: 'xxxxxx' })
     } else {
-      setDeleteUserError({ message: (await response.json()).error || 'API request failed' })
+      const message = (await response.json()).error || 'API request failed'
+      setNotify({ show: true, title: 'error', message: message })
     }
   }
 
@@ -42,7 +43,7 @@ export default function UserRESTExample() {
 
   return (
     <>
-      {deleteUserError && <Components.Error message={deleteUserError.message} />}
+      <Components.Notify {...{ notify, setNotify }} />
       <CreateUserComponent {...{ refetch }} />
       <UpdateUserComponent {...{ user, open, setOpen, refetch }} />
       <User.DisplayUsers users={data} {...{ onUpdateUser, onDeleteUser }} />

@@ -23,8 +23,8 @@ export default function UserGraphQLExample() {
     try {
       const options = { variables: { id } }
       await deleteUser(options)
-      setNotify({ show: true, title: 'ok', message: 'xxxxxx' })
       refetch()
+      setNotify({ show: true, title: 'ok', message: 'xxxxxx' })
     } catch (e) {
       setNotify({ show: true, title: 'error', message: e.message })
     }
