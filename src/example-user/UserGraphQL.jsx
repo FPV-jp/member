@@ -107,19 +107,18 @@ function UpdateUserComponent({ user, open, setOpen, refetch }) {
   }
 
   const [updateUser] = useMutation(schema.UPDATE_USER_MUTATION)
-  const [updateUserError, setUpdateUserError] = useState()
+  const [notify, setNotify] = useState({ show: false, title: '', message: '' })
 
   async function submit(event) {
     event.preventDefault()
     try {
-      setUpdateUserError(null)
       const options = { variables: { user: { ...formData } } }
-      const response = await updateUser(options)
-      console.log('response:', JSON.stringify(response, null, 2))
+      await updateUser(options)
       refetch()
       setOpen(false)
+      setNotify({ show: true, title: 'ok', message: 'xxxxxx' })
     } catch (e) {
-      setUpdateUserError(e)
+      setNotify({ show: true, title: 'error', message: e.message })
     }
   }
 
@@ -133,7 +132,7 @@ function UpdateUserComponent({ user, open, setOpen, refetch }) {
 
   return (
     <>
-      {updateUserError && <Components.Error message={updateUserError.message} />}
+      <Components.Notify {...{ notify, setNotify }} />
       <User.UpdateUserForm defaultValue={user} {...{ open, setOpen, inputChange, submit }} />
     </>
   )
