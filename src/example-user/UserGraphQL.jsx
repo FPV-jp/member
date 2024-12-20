@@ -72,24 +72,23 @@ function CreateUserComponent({ refetch }) {
   }
 
   const [createUser] = useMutation(schema.CREATE_USER_MUTATION)
-  const [createUserError, setCreateUserError] = useState()
+  const [notify, setNotify] = useState({ show: false, title: '', message: '' })
 
   async function submit(event) {
     event.preventDefault()
     try {
-      setCreateUserError(null)
       const options = { variables: { user: { ...formData } } }
-      const response = await createUser(options)
-      console.log('response:', JSON.stringify(response, null, 2))
+      await createUser(options)
+      setNotify({ show: true, title: 'ok', message: 'xxxxxx' })
       refetch()
     } catch (e) {
-      setCreateUserError(e)
+      setNotify({ show: true, title: 'error', message: e.message })
     }
   }
 
   return (
     <>
-      {createUserError && <Components.Error message={createUserError.message} />}
+      <Components.Notify {...{ notify, setNotify }} />
       <User.CreateUserForm {...{ formData, inputChange, submit }} />
     </>
   )

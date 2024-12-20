@@ -30,7 +30,6 @@ export default function Dashboard() {
   const { isLoading, error, isAuthenticated, user, loginWithRedirect, logout } = useAuth0()
   const { pathname: currentpath } = ReactRouter.useLocation()
   const [notificationOpen, setNotificationOpen] = useState(false)
-  const [showNotify, setShowNotify] = useState(false)
 
   const navigation = [
     { name: 'Dashboard', path: '/', title: 'Dashboard' },
@@ -94,7 +93,6 @@ export default function Dashboard() {
                   </button>
                 </div>
               )}
-              <Components.Notify {...{ showNotify, setShowNotify }} />
             </div>
           </header>
         )}
