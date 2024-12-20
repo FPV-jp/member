@@ -7,18 +7,17 @@ import * as User from './User'
 // UserREST
 //--------------------------------------------------
 export default function UserRESTExample() {
-  const [open, setOpen] = useState(false)
-  const [user, setUser] = useState()
 
-  function onUpdateUser(user) {
-    setUser(user)
-    setOpen(true)
+  const [updateForm, setUpdateForm] = useState({ open: false, user: null })
+
+  function onUpdateHandle(user) {
+    setUpdateForm({ open: true, user })
   }
 
   const deleteUser = useFetchMutation()
   const [notify, setNotify] = useState({ show: false, title: '', message: '' })
 
-  async function onDeleteUser(id) {
+  async function onDeleteHandle(id) {
     const body = JSON.stringify({ id })
     const response = await deleteUser('/api/deleteUser', { method: 'POST', body })
     if (response.ok) {
@@ -45,8 +44,8 @@ export default function UserRESTExample() {
     <>
       <Components.Notify {...{ notify, setNotify }} />
       <CreateUserComponent {...{ refetch, setNotify }} />
-      <UpdateUserComponent {...{ user, open, setOpen, refetch, setNotify }} />
-      <User.DisplayUsers users={data} {...{ onUpdateUser, onDeleteUser }} />
+      <UpdateUserComponent {...{ updateForm, setUpdateForm, refetch, setNotify }} />
+      <User.DisplayUsers users={data} {...{ onUpdateHandle, onDeleteHandle }} />
     </>
   )
 }
@@ -63,7 +62,6 @@ const initialFormValue = {
 /* eslint-disable react/prop-types */
 function CreateUserComponent({ refetch, setNotify }) {
   const [formData, setFormData] = useState({ ...initialFormValue })
-
   const createUser = useFetchMutation()
 
   async function submit(event) {
@@ -88,9 +86,8 @@ function CreateUserComponent({ refetch, setNotify }) {
 // UpdateUserComponent
 //--------------------------------------------------
 // * eslint-disable react/prop-types */
-function UpdateUserComponent({ user, open, setOpen, refetch, setNotify }) {
+function UpdateUserComponent({ updateForm, setUpdateForm, refetch, setNotify }) {
   const [formData, setFormData] = useState({})
-
   const updateUser = useFetchMutation()
 
   async function submit(event) {
@@ -100,7 +97,7 @@ function UpdateUserComponent({ user, open, setOpen, refetch, setNotify }) {
       const response = await updateUser('/api/updateUser', { method: 'POST', body })
       if (response.ok) {
         // refetch()
-        setOpen(false)
+        setUpdateForm((prevState) => ({ ...prevState, open: false }))
         setNotify({ show: true, title: 'ok', message: 'xxxxxx' })
       } else {
         const message = (await response.json()).error || 'API request failed'
@@ -112,12 +109,12 @@ function UpdateUserComponent({ user, open, setOpen, refetch, setNotify }) {
   }
 
   useEffect(() => {
-    if (user && open) {
-      setFormData((prevState) => ({ ...prevState, ...user }))
+    if (updateForm.user && updateForm.open) {
+      setFormData((prevState) => ({ ...prevState, ...updateForm.user }))
     }
-  }, [user, open])
+  }, [updateForm])
 
   return (
-    <User.UpdateUserForm {...{ user, open, setOpen, formData, setFormData, submit }} />
+    <User.UpdateUserForm {...{ updateForm, setUpdateForm, formData, setFormData, submit }} />
   )
 }

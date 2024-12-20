@@ -8,18 +8,17 @@ import * as User from './User'
 // UserGraphQL
 //--------------------------------------------------
 export default function UserGraphQLExample() {
-  const [open, setOpen] = useState(false)
-  const [user, setUser] = useState()
 
-  function onUpdateUser(user) {
-    setUser(user)
-    setOpen(true)
+  const [updateForm, setUpdateForm] = useState({ open: false, user: null })
+
+  function onUpdateHandle(user) {
+    setUpdateForm({ open: true, user })
   }
 
   const [deleteUser] = useMutation(schema.DELETE_USER_MUTATION)
   const [notify, setNotify] = useState({ show: false, title: '', message: '' })
 
-  async function onDeleteUser(id) {
+  async function onDeleteHandle(id) {
     try {
       const options = { variables: { id } }
       await deleteUser(options)
@@ -46,8 +45,8 @@ export default function UserGraphQLExample() {
     <>
       <Components.Notify {...{ notify, setNotify }} />
       <CreateUserComponent {...{ refetch, setNotify }} />
-      <UpdateUserComponent {...{ user, open, setOpen, refetch, setNotify }} />
-      <User.DisplayUsers users={data.users} {...{ onUpdateUser, onDeleteUser }} />
+      <UpdateUserComponent {...{ updateForm, setUpdateForm, refetch, setNotify }} />
+      <User.DisplayUsers users={data.users} {...{ onUpdateHandle, onDeleteHandle }} />
     </>
   )
 }
@@ -64,8 +63,6 @@ const initialFormValue = {
 /* eslint-disable react/prop-types */
 function CreateUserComponent({ refetch, setNotify }) {
   const [formData, setFormData] = useState({ ...initialFormValue })
-
-
   const [createUser] = useMutation(schema.CREATE_USER_MUTATION)
 
   async function submit(event) {
@@ -89,9 +86,8 @@ function CreateUserComponent({ refetch, setNotify }) {
 // UpdateUserComponent
 //--------------------------------------------------
 // * eslint-disable react/prop-types */
-function UpdateUserComponent({ user, open, setOpen, refetch, setNotify }) {
+function UpdateUserComponent({ updateForm, setUpdateForm, refetch, setNotify }) {
   const [formData, setFormData] = useState({})
-
   const [updateUser] = useMutation(schema.UPDATE_USER_MUTATION)
 
   async function submit(event) {
@@ -100,7 +96,7 @@ function UpdateUserComponent({ user, open, setOpen, refetch, setNotify }) {
       const options = { variables: { user: { ...formData } } }
       await updateUser(options)
       refetch()
-      setOpen(false)
+      setUpdateForm((prevState) => ({ ...prevState, open: false }))
       setNotify({ show: true, title: 'ok', message: 'xxxxxx' })
     } catch (e) {
       setNotify({ show: true, title: 'error', message: e.message })
@@ -108,14 +104,14 @@ function UpdateUserComponent({ user, open, setOpen, refetch, setNotify }) {
   }
 
   useEffect(() => {
-    if (user && open) {
+    if (updateForm.user && updateForm.open) {
       // eslint-disable-next-line no-unused-vars
-      const { __typename, registered_at, ...filtered } = user
+      const { __typename, registered_at, ...filtered } = updateForm.user
       setFormData((prevState) => ({ ...prevState, ...filtered }))
     }
-  }, [user, open])
+  }, [updateForm])
 
   return (
-    <User.UpdateUserForm {...{ user, open, setOpen, formData, setFormData, submit }} />
+    <User.UpdateUserForm {...{ updateForm, setUpdateForm, formData, setFormData, submit }} />
   )
 }

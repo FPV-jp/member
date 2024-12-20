@@ -4,7 +4,7 @@ import * as Components from '../component/Components'
 import * as FormComponents from '../component/FormComponents'
 
 /* eslint-disable react/prop-types */
-export function DisplayUsers({ users, onUpdateUser, onDeleteUser }) {
+export function DisplayUsers({ users, onUpdateHandle, onDeleteHandle }) {
   return (
     <div className='overflow-x-auto'>
       <table className='min-w-full border-collapse border border-gray-300'>
@@ -26,10 +26,10 @@ export function DisplayUsers({ users, onUpdateUser, onDeleteUser }) {
                 <td className='border border-gray-300 px-4 py-2'>{email}</td>
                 <td className='border border-gray-300 px-4 py-2'>{registered_at}</td>
                 <td className='border border-gray-300 px-4 py-2'>
-                  <Components.ButtonChange onClick={() => onUpdateUser(user)}>Update</Components.ButtonChange>
+                  <Components.ButtonChange onClick={() => onUpdateHandle(user)}>Update</Components.ButtonChange>
                 </td>
                 <td className='border border-gray-300 px-4 py-2'>
-                  <Components.ButtonChange onClick={() => onDeleteUser(id)}>Delete</Components.ButtonChange>
+                  <Components.ButtonChange onClick={() => onDeleteHandle(id)}>Delete</Components.ButtonChange>
                 </td>
               </tr>
             )
@@ -72,7 +72,7 @@ export function CreateUserForm({ formData, setFormData, submit }) {
 }
 
 /* eslint-disable react/prop-types */
-export function UpdateUserForm({ user, open, setOpen, formData, setFormData, submit }) {
+export function UpdateUserForm({ updateForm, setUpdateForm, formData, setFormData, submit }) {
 
   function inputChange(event) {
     const { name, value } = event.target
@@ -80,7 +80,7 @@ export function UpdateUserForm({ user, open, setOpen, formData, setFormData, sub
   }
 
   return (
-    <Components.ModalDialog open={open} onClose={setOpen}>
+    <Components.ModalDialog open={updateForm.open} onClose={(open) => { setUpdateForm((prevState) => ({ ...prevState, open: open })) }}>
       <form onSubmit={submit}>
         <div className='bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4'>
           <div className='sm:flex sm:items-start'>
@@ -89,17 +89,17 @@ export function UpdateUserForm({ user, open, setOpen, formData, setFormData, sub
                 Update user
               </DialogTitle>
               <div className='mt-2'>
-                <FormComponents.Input type='text' label={'Email address'} htmlFor={'email'} onChange={inputChange} defaultValue={user?.email} autoComplete={'email'} />
+                <FormComponents.Input type='text' label={'Email address'} htmlFor={'email'} onChange={inputChange} defaultValue={updateForm.user?.email} autoComplete={'email'} />
               </div>
               <div className='mt-2'>
-                <FormComponents.Input type='password' label={'Password'} htmlFor={'password'} onChange={inputChange} defaultValue={user?.password} autoComplete={'password'} />
+                <FormComponents.Input type='password' label={'Password'} htmlFor={'password'} onChange={inputChange} defaultValue={updateForm.user?.password} autoComplete={'password'} />
               </div>
             </div>
           </div>
         </div>
         <div className='bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6'>
           <Components.ButtonDeactivate type='sumbit'>Update</Components.ButtonDeactivate>
-          <Components.ButtonCancel2 type='button' data-autofocus onClick={() => setOpen(false)}>
+          <Components.ButtonCancel2 type='button' data-autofocus onClick={() => setUpdateForm((prevState) => ({ ...prevState, open: false }))}>
             Cancel
           </Components.ButtonCancel2>
         </div>
