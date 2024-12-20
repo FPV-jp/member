@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef, createContext, useContext } from 'react'
+import { useEffect, useState, useCallback, useRef, createContext, useContext, useMemo } from 'react'
 import { Auth0Provider, useAuth0 } from '@auth0/auth0-react'
 import { ApolloClient, ApolloProvider, HttpLink, InMemoryCache } from '@apollo/client'
 import { useNavigate } from 'react-router-dom'
@@ -128,7 +128,7 @@ export const useFetchQuery = (api, options) => {
   const env = useEnv()
   const { getAccessTokenSilently } = useAuth0()
   const [state, setState] = useState({ data: null, error: null, loading: true })
-  const fetchApi = useCallback(async () => {
+  const refetch = async ()=>{
     setState({ data: null, error: null, loading: true })
     try {
       const response = await fetchCall(api, options, env, getAccessTokenSilently)
@@ -141,9 +141,9 @@ export const useFetchQuery = (api, options) => {
     } catch (error) {
       setState({ ...state, error, loading: false })
     }
+  }
+  useMemo(() => {
+    refetch()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    fetchApi()
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
-  return { ...state, refetch: fetchApi }
+  return { ...state, refetch }
 }

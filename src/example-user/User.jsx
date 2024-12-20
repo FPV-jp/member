@@ -80,7 +80,7 @@ export function UpdateUserForm({ updateForm, setUpdateForm, formData, setFormDat
   }
 
   return (
-    <Components.ModalDialog open={updateForm.open} onClose={(open) => { setUpdateForm((prevState) => ({ ...prevState, open: open })) }}>
+    <Components.ModalDialog open={updateForm.open} onClose={(open) => { setUpdateForm((prevState) => ({ ...prevState, open })) }}>
       <form onSubmit={submit}>
         <div className='bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4'>
           <div className='sm:flex sm:items-start'>

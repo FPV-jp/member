@@ -69,7 +69,7 @@ function CreateUserComponent({ refetch, setNotify }) {
     const body = JSON.stringify(formData)
     const response = await createUser('/api/createUser', { method: 'POST', body })
     if (response.ok) {
-      // refetch()
+      refetch()
       setNotify({ show: true, title: 'ok', message: 'xxxxxx' })
     } else {
       const message = (await response.json()).error || 'API request failed'
@@ -96,7 +96,7 @@ function UpdateUserComponent({ updateForm, setUpdateForm, refetch, setNotify }) 
       const body = JSON.stringify(formData)
       const response = await updateUser('/api/updateUser', { method: 'POST', body })
       if (response.ok) {
-        // refetch()
+        refetch()
         setUpdateForm((prevState) => ({ ...prevState, open: false }))
         setNotify({ show: true, title: 'ok', message: 'xxxxxx' })
       } else {
