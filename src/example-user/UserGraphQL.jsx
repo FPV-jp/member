@@ -45,8 +45,8 @@ export default function UserGraphQLExample() {
   return (
     <>
       <Components.Notify {...{ notify, setNotify }} />
-      <CreateUserComponent {...{ refetch }} />
-      <UpdateUserComponent {...{ user, open, setOpen, refetch }} />
+      <CreateUserComponent {...{ refetch, setNotify }} />
+      <UpdateUserComponent {...{ user, open, setOpen, refetch, setNotify }} />
       <User.DisplayUsers users={data.users} {...{ onUpdateUser, onDeleteUser }} />
     </>
   )
@@ -62,7 +62,7 @@ const initialFormValue = {
 }
 
 /* eslint-disable react/prop-types */
-function CreateUserComponent({ refetch }) {
+function CreateUserComponent({ refetch, setNotify }) {
   const [formData, setFormData] = useState({ ...initialFormValue })
 
   function inputChange(event) {
@@ -71,7 +71,6 @@ function CreateUserComponent({ refetch }) {
   }
 
   const [createUser] = useMutation(schema.CREATE_USER_MUTATION)
-  const [notify, setNotify] = useState({ show: false, title: '', message: '' })
 
   async function submit(event) {
     event.preventDefault()
@@ -86,10 +85,7 @@ function CreateUserComponent({ refetch }) {
   }
 
   return (
-    <>
-      <Components.Notify {...{ notify, setNotify }} />
-      <User.CreateUserForm {...{ formData, inputChange, submit }} />
-    </>
+    <User.CreateUserForm {...{ formData, inputChange, submit }} />
   )
 }
 
@@ -97,7 +93,7 @@ function CreateUserComponent({ refetch }) {
 // UpdateUserComponent
 //--------------------------------------------------
 // * eslint-disable react/prop-types */
-function UpdateUserComponent({ user, open, setOpen, refetch }) {
+function UpdateUserComponent({ user, open, setOpen, refetch, setNotify }) {
   const [formData, setFormData] = useState({})
 
   function inputChange(event) {
@@ -106,7 +102,6 @@ function UpdateUserComponent({ user, open, setOpen, refetch }) {
   }
 
   const [updateUser] = useMutation(schema.UPDATE_USER_MUTATION)
-  const [notify, setNotify] = useState({ show: false, title: '', message: '' })
 
   async function submit(event) {
     event.preventDefault()
@@ -130,9 +125,6 @@ function UpdateUserComponent({ user, open, setOpen, refetch }) {
   }, [user, open])
 
   return (
-    <>
-      <Components.Notify {...{ notify, setNotify }} />
-      <User.UpdateUserForm defaultValue={user} {...{ open, setOpen, inputChange, submit }} />
-    </>
+    <User.UpdateUserForm defaultValue={user} {...{ open, setOpen, inputChange, submit }} />
   )
 }

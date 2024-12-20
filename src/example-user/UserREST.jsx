@@ -44,8 +44,8 @@ export default function UserRESTExample() {
   return (
     <>
       <Components.Notify {...{ notify, setNotify }} />
-      <CreateUserComponent {...{ refetch }} />
-      <UpdateUserComponent {...{ user, open, setOpen, refetch }} />
+      <CreateUserComponent {...{ refetch, setNotify }} />
+      <UpdateUserComponent {...{ user, open, setOpen, refetch, setNotify }} />
       <User.DisplayUsers users={data} {...{ onUpdateUser, onDeleteUser }} />
     </>
   )
@@ -61,7 +61,7 @@ const initialFormValue = {
 }
 
 /* eslint-disable react/prop-types */
-function CreateUserComponent({ refetch }) {
+function CreateUserComponent({ refetch, setNotify }) {
   const [formData, setFormData] = useState({ ...initialFormValue })
 
   function inputChange(event) {
@@ -70,25 +70,22 @@ function CreateUserComponent({ refetch }) {
   }
 
   const createUser = useFetchMutation()
-  const [createUserError, setCreateUserError] = useState()
 
   async function submit(event) {
     event.preventDefault()
-    setCreateUserError(null)
     const body = JSON.stringify(formData)
     const response = await createUser('/api/createUser', { method: 'POST', body })
     if (response.ok) {
-      refetch()
+      // refetch()
+      setNotify({ show: true, title: 'ok', message: 'xxxxxx' })
     } else {
-      setCreateUserError({ message: (await response.json()).error || 'API request failed' })
+      const message = (await response.json()).error || 'API request failed'
+      setNotify({ show: true, title: 'error', message: message })
     }
   }
 
   return (
-    <>
-      {createUserError && <Components.Error message={createUserError.message} />}
-      <User.CreateUserForm {...{ formData, inputChange, submit }} />
-    </>
+    <User.CreateUserForm {...{ formData, inputChange, submit }} />
   )
 }
 
@@ -96,7 +93,7 @@ function CreateUserComponent({ refetch }) {
 // UpdateUserComponent
 //--------------------------------------------------
 // * eslint-disable react/prop-types */
-function UpdateUserComponent({ user, open, setOpen, refetch }) {
+function UpdateUserComponent({ user, open, setOpen, refetch, setNotify }) {
   const [formData, setFormData] = useState({})
 
   function inputChange(event) {
@@ -114,13 +111,15 @@ function UpdateUserComponent({ user, open, setOpen, refetch }) {
       const body = JSON.stringify(formData)
       const response = await updateUser('/api/updateUser', { method: 'POST', body })
       if (response.ok) {
-        refetch()
+        // refetch()
         setOpen(false)
+        setNotify({ show: true, title: 'ok', message: 'xxxxxx' })
       } else {
-        setUpdateUserError({ message: (await response.json()).error || 'API request failed' })
+        const message = (await response.json()).error || 'API request failed'
+        setNotify({ show: true, title: 'error', message: message })
       }
     } catch (e) {
-      setUpdateUserError(e)
+      setNotify({ show: true, title: 'error', message: e.message })
     }
   }
 

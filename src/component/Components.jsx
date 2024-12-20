@@ -138,12 +138,11 @@ export function NotFound() {
 
 export function Notify({ notify, setNotify }) {
   useEffect(() => {
-    console.log(notify)
     if (notify.show) {
       const timer = setTimeout(() => setNotify({ ...notify, show: false }), 3000)
       return () => clearTimeout(timer)
     }
-  }, [notify.show])
+  }, [notify.show])// eslint-disable-line react-hooks/exhaustive-deps
 
   if (!notify.show) return null
 
