@@ -1,22 +1,28 @@
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
+import jaLocale from '@fullcalendar/core/locales/ja'
+import interactionPlugin from '@fullcalendar/interaction'
+import listPlugin from '@fullcalendar/list'
+import timeGridPlugin from '@fullcalendar/timegrid'
 
 const events = [
   { title: 'Meeting', start: new Date() }
 ]
 
-export default function DemoApp() {
+export default function ExampleFullCalendar() {
   return (
-    <div>
-      <h1>Demo App</h1>
-      <FullCalendar
-        plugins={[dayGridPlugin]}
-        initialView='dayGridMonth'
-        weekends={false}
-        events={events}
-        eventContent={renderEventContent}
-      />
-    </div>
+    <FullCalendar
+      plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
+      locales={[jaLocale]}
+      locale='ja'
+      initialView='dayGridMonth'
+      editable={true}
+      selectable={true}
+      selectMirror={true}
+      dayMaxEvents={true}
+      events={events}
+      eventContent={renderEventContent}
+    />
   )
 }
 
