@@ -41,7 +41,13 @@ export function DisplayUsers({ users, onUpdateUser, onDeleteUser }) {
 }
 
 /* eslint-disable react/prop-types */
-export function CreateUserForm({ formData, inputChange, submit }) {
+export function CreateUserForm({ formData, setFormData, submit }) {
+
+  function inputChange(event) {
+    const { name, value } = event.target
+    setFormData({ ...formData, [name]: value })
+  }
+
   return (
     <form onSubmit={submit}>
       <div className='space-y-12'>
@@ -66,7 +72,13 @@ export function CreateUserForm({ formData, inputChange, submit }) {
 }
 
 /* eslint-disable react/prop-types */
-export function UpdateUserForm({ open, setOpen, defaultValue, inputChange, submit }) {
+export function UpdateUserForm({ user, open, setOpen, formData, setFormData, submit }) {
+
+  function inputChange(event) {
+    const { name, value } = event.target
+    setFormData({ ...formData, [name]: value })
+  }
+
   return (
     <Components.ModalDialog open={open} onClose={setOpen}>
       <form onSubmit={submit}>
@@ -77,10 +89,10 @@ export function UpdateUserForm({ open, setOpen, defaultValue, inputChange, submi
                 Update user
               </DialogTitle>
               <div className='mt-2'>
-                <FormComponents.Input type='text' label={'Email address'} htmlFor={'email'} onChange={inputChange} defaultValue={defaultValue?.email} autoComplete={'email'} />
+                <FormComponents.Input type='text' label={'Email address'} htmlFor={'email'} onChange={inputChange} defaultValue={user?.email} autoComplete={'email'} />
               </div>
               <div className='mt-2'>
-                <FormComponents.Input type='password' label={'Password'} htmlFor={'password'} onChange={inputChange} defaultValue={defaultValue?.password} autoComplete={'password'} />
+                <FormComponents.Input type='password' label={'Password'} htmlFor={'password'} onChange={inputChange} defaultValue={user?.password} autoComplete={'password'} />
               </div>
             </div>
           </div>

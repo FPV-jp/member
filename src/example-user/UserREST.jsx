@@ -31,7 +31,7 @@ export default function UserRESTExample() {
   }
 
   // eslint-disable-next-line no-unused-vars
-  const { loading: isLoading, error: fetchError, data: userData } = useFetchQuery('/api/user/11', { method: 'GET' })
+  // const { loading: isLoading, error: fetchError, data: userData } = useFetchQuery('/api/user/11', { method: 'GET' })
 
   const { loading, error, data, refetch } = useFetchQuery('/api/users', { method: 'GET' })
   if (loading) {
@@ -64,11 +64,6 @@ const initialFormValue = {
 function CreateUserComponent({ refetch, setNotify }) {
   const [formData, setFormData] = useState({ ...initialFormValue })
 
-  function inputChange(event) {
-    const { name, value } = event.target
-    setFormData({ ...formData, [name]: value })
-  }
-
   const createUser = useFetchMutation()
 
   async function submit(event) {
@@ -85,7 +80,7 @@ function CreateUserComponent({ refetch, setNotify }) {
   }
 
   return (
-    <User.CreateUserForm {...{ formData, inputChange, submit }} />
+    <User.CreateUserForm {...{ formData, setFormData, submit }} />
   )
 }
 
@@ -96,18 +91,11 @@ function CreateUserComponent({ refetch, setNotify }) {
 function UpdateUserComponent({ user, open, setOpen, refetch, setNotify }) {
   const [formData, setFormData] = useState({})
 
-  function inputChange(event) {
-    const { name, value } = event.target
-    setFormData({ ...formData, [name]: value })
-  }
-
   const updateUser = useFetchMutation()
-  const [updateUserError, setUpdateUserError] = useState()
 
   async function submit(event) {
     event.preventDefault()
     try {
-      setUpdateUserError(null)
       const body = JSON.stringify(formData)
       const response = await updateUser('/api/updateUser', { method: 'POST', body })
       if (response.ok) {
@@ -125,14 +113,11 @@ function UpdateUserComponent({ user, open, setOpen, refetch, setNotify }) {
 
   useEffect(() => {
     if (user && open) {
-      setFormData((prevFormData) => ({ ...prevFormData, ...user }))
+      setFormData((prevState) => ({ ...prevState, ...user }))
     }
   }, [user, open])
 
   return (
-    <>
-      {updateUserError && <Components.Error message={updateUserError.message} />}
-      <User.UpdateUserForm defaultValue={user} {...{ open, setOpen, inputChange, submit }} />
-    </>
+    <User.UpdateUserForm {...{ user, open, setOpen, formData, setFormData, submit }} />
   )
 }

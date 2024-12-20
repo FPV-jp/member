@@ -30,9 +30,9 @@ export default function UserGraphQLExample() {
     }
   }
 
-  const options = { variables: { id: 11 } }
-  // eslint-disable-next-line no-unused-vars
-  const { loading: isLoading, error: fetchError, data: userData } = useQuery(schema.USER_QUERY, options)
+  // const options = { variables: { id: 11 } }
+  // // eslint-disable-next-line no-unused-vars
+  // const { loading: isLoading, error: fetchError, data: userData } = useQuery(schema.USER_QUERY, options)
 
   const { loading, error, data, refetch } = useQuery(schema.USERS_QUERY)
   if (loading) {
@@ -65,10 +65,6 @@ const initialFormValue = {
 function CreateUserComponent({ refetch, setNotify }) {
   const [formData, setFormData] = useState({ ...initialFormValue })
 
-  function inputChange(event) {
-    const { name, value } = event.target
-    setFormData({ ...formData, [name]: value })
-  }
 
   const [createUser] = useMutation(schema.CREATE_USER_MUTATION)
 
@@ -85,7 +81,7 @@ function CreateUserComponent({ refetch, setNotify }) {
   }
 
   return (
-    <User.CreateUserForm {...{ formData, inputChange, submit }} />
+    <User.CreateUserForm {...{ formData, setFormData, submit }} />
   )
 }
 
@@ -95,11 +91,6 @@ function CreateUserComponent({ refetch, setNotify }) {
 // * eslint-disable react/prop-types */
 function UpdateUserComponent({ user, open, setOpen, refetch, setNotify }) {
   const [formData, setFormData] = useState({})
-
-  function inputChange(event) {
-    const { name, value } = event.target
-    setFormData({ ...formData, [name]: value })
-  }
 
   const [updateUser] = useMutation(schema.UPDATE_USER_MUTATION)
 
@@ -120,11 +111,11 @@ function UpdateUserComponent({ user, open, setOpen, refetch, setNotify }) {
     if (user && open) {
       // eslint-disable-next-line no-unused-vars
       const { __typename, registered_at, ...filtered } = user
-      setFormData((prevFormData) => ({ ...prevFormData, ...filtered }))
+      setFormData((prevState) => ({ ...prevState, ...filtered }))
     }
   }, [user, open])
 
   return (
-    <User.UpdateUserForm defaultValue={user} {...{ open, setOpen, inputChange, submit }} />
+    <User.UpdateUserForm {...{ user, open, setOpen, formData, setFormData, submit }} />
   )
 }

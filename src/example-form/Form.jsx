@@ -12,7 +12,7 @@ const initialFormValue = {
 export default function FormExamle() {
   const [formData, setFormData] = useState({ ...initialFormValue })
   useEffect(() => {
-    // setFormData((prevFormData) => ({ ...prevFormData, ...initialFormValue }))
+    // setFormData((prevState) => ({ ...prevState, ...initialFormValue }))
     console.log('formData:', JSON.stringify(formData, null, 2))
   }, [formData])
 
