@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef, createContext, useContext, useMemo } from 'react'
+import { useEffect, useState, useRef, createContext, useCallback, useContext, useMemo } from 'react'
 import { Auth0Provider, useAuth0 } from '@auth0/auth0-react'
 import { ApolloClient, ApolloProvider, HttpLink, InMemoryCache } from '@apollo/client'
 import { useNavigate } from 'react-router-dom'
@@ -128,20 +128,22 @@ export const useFetchQuery = (api, options) => {
   const env = useEnv()
   const { getAccessTokenSilently } = useAuth0()
   const [state, setState] = useState({ data: null, error: null, loading: true })
-  const refetch = async ()=>{
-    setState({ data: null, error: null, loading: true })
-    try {
-      const response = await fetchCall(api, options, env, getAccessTokenSilently)
-      const data = await response.json()
-      if (response.ok) {
-        setState({ ...state, data, error: null, loading: false })
-      } else {
-        setState({ ...state, data: null, error: new Error(data.error || 'API request failed'), loading: false })
+  const refetch = useCallback(
+    async () => {
+      setState({ data: null, error: null, loading: true })
+      try {
+        const response = await fetchCall(api, options, env, getAccessTokenSilently)
+        const data = await response.json()
+        if (response.ok) {
+          setState({ ...state, data, error: null, loading: false })
+        } else {
+          setState({ ...state, data: null, error: new Error(data.error || 'API request failed'), loading: false })
+        }
+      } catch (error) {
+        setState({ ...state, error, loading: false })
       }
-    } catch (error) {
-      setState({ ...state, error, loading: false })
-    }
-  }
+    }, [api, env, getAccessTokenSilently, options, state]
+  )
   useMemo(() => {
     refetch()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
