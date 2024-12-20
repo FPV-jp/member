@@ -17,17 +17,16 @@ export default function UserGraphQLExample() {
   }
 
   const [deleteUser] = useMutation(schema.DELETE_USER_MUTATION)
-  const [deleteUserError, setDeleteUserError] = useState()
+  const [notify, setNotify] = useState({ show: false, title: '', message: '' })
 
   async function onDeleteUser(id) {
     try {
-      setDeleteUserError(null)
       const options = { variables: { id } }
-      const response = await deleteUser(options)
-      console.log('response:', JSON.stringify(response, null, 2))
+      await deleteUser(options)
+      setNotify({ show: true, title: 'ok', message: 'xxxxxx' })
       refetch()
     } catch (e) {
-      setDeleteUserError(e)
+      setNotify({ show: true, title: 'error', message: e.message })
     }
   }
 
@@ -45,7 +44,7 @@ export default function UserGraphQLExample() {
 
   return (
     <>
-      {deleteUserError && <Components.Error message={deleteUserError.message} />}
+      <Components.Notify {...{ notify, setNotify }} />
       <CreateUserComponent {...{ refetch }} />
       <UpdateUserComponent {...{ user, open, setOpen, refetch }} />
       <User.DisplayUsers users={data.users} {...{ onUpdateUser, onDeleteUser }} />
