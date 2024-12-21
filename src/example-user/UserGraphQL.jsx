@@ -8,7 +8,6 @@ import * as User from './User'
 // UserGraphQL
 //--------------------------------------------------
 export default function UserGraphQLExample() {
-
   const [updateForm, setUpdateForm] = useState({ open: false, user: null })
 
   function onUpdateHandle(user) {
@@ -77,9 +76,7 @@ function CreateUserComponent({ refetch, setNotify }) {
     }
   }
 
-  return (
-    <User.CreateUserForm {...{ formData, setFormData, submit }} />
-  )
+  return <User.CreateUserForm {...{ formData, setFormData, submit }} />
 }
 
 //--------------------------------------------------
@@ -111,7 +108,5 @@ function UpdateUserComponent({ updateForm, setUpdateForm, refetch, setNotify }) 
     }
   }, [updateForm])
 
-  return (
-    <User.UpdateUserForm {...{ updateForm, setUpdateForm, formData, setFormData, submit }} />
-  )
+  return <User.UpdateUserForm {...{ updateForm, setUpdateForm, formData, setFormData, submit }} />
 }

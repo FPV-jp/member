@@ -42,7 +42,6 @@ export function DisplayUsers({ users, onUpdateHandle, onDeleteHandle }) {
 
 /* eslint-disable react/prop-types */
 export function CreateUserForm({ formData, setFormData, submit }) {
-
   function inputChange(event) {
     const { name, value } = event.target
     setFormData({ ...formData, [name]: value })
@@ -73,14 +72,18 @@ export function CreateUserForm({ formData, setFormData, submit }) {
 
 /* eslint-disable react/prop-types */
 export function UpdateUserForm({ updateForm, setUpdateForm, formData, setFormData, submit }) {
-
   function inputChange(event) {
     const { name, value } = event.target
     setFormData({ ...formData, [name]: value })
   }
 
   return (
-    <Components.ModalDialog open={updateForm.open} onClose={(open) => { setUpdateForm((prevState) => ({ ...prevState, open })) }}>
+    <Components.ModalDialog
+      open={updateForm.open}
+      onClose={(open) => {
+        setUpdateForm((prevState) => ({ ...prevState, open }))
+      }}
+    >
       <form onSubmit={submit}>
         <div className='bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4'>
           <div className='sm:flex sm:items-start'>

@@ -1,39 +1,83 @@
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
-import { useEffect, useRef } from 'react'
+import { useEffect, useState, useRef } from 'react'
+
+// const getWeekRange = (date) => {
+//   const startOfWeek = new Date(date);
+//   startOfWeek.setDate(date.getDate() - date.getDay()); // 日曜日
+
+//   const endOfWeek = new Date(startOfWeek);
+//   endOfWeek.setDate(startOfWeek.getDate() + 6); // 土曜日
+
+//   return [startOfWeek, endOfWeek];
+// };
+
+Date.prototype.getWeek = function () {
+  const firstDayOfYear = new Date(this.getFullYear(), 0, 1)
+  const pastDaysOfYear = Math.floor((this - firstDayOfYear) / 86400000) + 1
+  return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay()) / 7)
+}
+
+function getWeekRangeByWeekNumber(year, weekNumber) {
+  // 年の最初の木曜日を探す（ISO 8601に基づく）
+  const jan4 = new Date(year, 0, 4) // 1月4日
+  const firstWeekStart = new Date(jan4)
+  firstWeekStart.setDate(jan4.getDate() - ((jan4.getDay() + 6) % 7)) // 週の開始日（月曜日）
+
+  // 指定された週番号の開始日を計算
+  const startOfWeek = new Date(firstWeekStart)
+  startOfWeek.setDate(firstWeekStart.getDate() + (weekNumber - 1) * 7)
+
+  // 週の終了日を計算
+  const endOfWeek = new Date(startOfWeek)
+  endOfWeek.setDate(startOfWeek.getDate() + 6)
+  endOfWeek.setHours(23, 59, 59, 999)
+
+  return { start: startOfWeek, end: endOfWeek }
+}
 
 /* eslint-disable react/prop-types */
 export default function ReactCalendar({ calendars, setCalendars }) {
-
-  // const [value, setValue] = useState(new Date())
+  const [innerSelect, setInnerSelect] = useState(calendars.innerSelect || new Date())
   const innerCalendarRef = useRef(null)
 
   useEffect(() => {
     if (innerCalendarRef.current) {
-      console.log("innerCalendarRef: ", calendars.fullViewInfo.view.type)
       setCalendars((prevState) => ({ ...prevState, innerCalendar: innerCalendarRef.current }))
     }
-  }, [innerCalendarRef, calendars, setCalendars])
+  }, [innerCalendarRef]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    setInnerSelect(calendars.innerSelect)
+  }, [calendars.innerSelect])
+
+  const handleDateChange = (selectedDate) => {
+    if (['timeGridWeek', 'listWeek'].includes(calendars.fullViewInfo.view.type)) {
+      const weekNumber = selectedDate.getWeek()
+      const { start, end } = getWeekRangeByWeekNumber(selectedDate.getFullYear(), weekNumber)
+      console.log([start, end])
+      setInnerSelect([start, end])
+      setCalendars((prevState) => ({ ...prevState, innerSelect: [start, end] }))
+    } else {
+      setInnerSelect(selectedDate)
+      setCalendars((prevState) => ({ ...prevState, innerSelect: selectedDate }))
+    }
+  }
 
   return (
     <div style={{ display: 'flex', width: '100%', justifyContent: 'flex-end' }}>
       <Calendar
         ref={innerCalendarRef}
-        // showNavigation
-        // selectRange
         showDoubleView={['timeGridWeek'].includes(calendars.fullViewInfo.view.type)}
         showWeekNumbers={['timeGridWeek', 'listWeek'].includes(calendars.fullViewInfo.view.type)}
-        // showFixedNumberOfWeeks
-        // showNeighboringMonth
-        value={calendars.innerSelect}
-        onChange={(innerSelect) => {
-          setCalendars((prevState) => ({ ...prevState, innerSelect }))
-          // console.log("===onChange value ===", innerSelect)
-          // setValue(value)
+        goToRangeStartOnSelect={false}
+        // selectRange={['timeGridWeek', 'listWeek'].includes(calendars.fullViewInfo.view.type)}
+        showFixedNumberOfWeeks={['timeGridWeek', 'listWeek'].includes(calendars.fullViewInfo.view.type)}
+        value={innerSelect}
+        onChange={handleDateChange}
+        onClickWeekNumber={(value) => {
+          console.log('===onClickWeekNumber value ===', value)
         }}
-        // onClickWeekNumber={(value) => {
-        //   console.log("===onClickWeekNumber value ===", value)
-        // }}
         // onClickYear={(value) => {
         //   console.log("===onClickYear value ===", value)
         // }}
@@ -42,6 +86,8 @@ export default function ReactCalendar({ calendars, setCalendars }) {
         // }}
         // onClickDay={(value) => {
         //   console.log("===onClickDay value ===", value)
+        //   console.log("===onClickDay value ===", new Date(value))
+        //   // console.log("===onClickDay event ===", event)
         // }}
         // onViewChange={(action) => {
         //   console.log("===onViewChange action ===", action)
@@ -52,10 +98,10 @@ export default function ReactCalendar({ calendars, setCalendars }) {
         // onDrillUp={(action) => {
         //   console.log("===onDrillUp action ===", action)
         // }}
-        // onActiveStartDateChange={(action) => {
-        //   console.log("===onActiveStartDateChange action ===", action)
-        // }}
-        calendarType='gregory'
+        onActiveStartDateChange={(action) => {
+          console.log('===onActiveStartDateChange action ===', action)
+        }}
+        calendarType='iso8601'
       />
     </div>
   )

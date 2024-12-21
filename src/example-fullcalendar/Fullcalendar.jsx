@@ -10,18 +10,17 @@ import { createRoot } from 'react-dom/client'
 import ReactCalendar from './ReactCalendar'
 
 export default function ExampleFullCalendar() {
-
   const [calendars, setCalendars] = useState({
     fullCalendar: null,
     fullViewInfo: null,
     innerCalendar: null,
-    innerSelect: new Date(),
+    innerSelect: null,
   })
 
   const fullCalendarRef = useRef(null)
   useEffect(() => {
     if (fullCalendarRef.current) {
-      console.log("fullCalendarRef")
+      console.log('fullCalendarRef')
       setCalendars((prevState) => ({ ...prevState, fullCalendar: fullCalendarRef.current.calendar }))
     }
   }, [fullCalendarRef])
@@ -38,10 +37,7 @@ export default function ExampleFullCalendar() {
 
   useEffect(() => {
     if (!calendars.fullCalendar) return
-    recombination(
-      calendars.fullViewInfo.view.type,
-      <ReactCalendar {...{ calendars, setCalendars }} />,
-    )
+    recombination(calendars.fullViewInfo.view.type, <ReactCalendar {...{ calendars, setCalendars }} />)
   }, [calendars])
 
   return (
@@ -116,9 +112,7 @@ function recombination(currentView, calendar) {
   }
 }
 
-const events = [
-  { title: 'Meeting', start: new Date() }
-]
+const events = [{ title: 'Meeting', start: new Date() }]
 
 // a custom render function
 function renderEventContent(eventInfo) {

@@ -142,27 +142,25 @@ export function Notify({ notify, setNotify }) {
       const timer = setTimeout(() => setNotify({ ...notify, show: false }), 3000)
       return () => clearTimeout(timer)
     }
-  }, [notify.show])// eslint-disable-line react-hooks/exhaustive-deps
+  }, [notify.show]) // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!notify.show) return null
 
   const isError = notify.title === 'error'
   const icon = isError ? (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="h-5 w-5 text-red-500">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M4.93 4.93a10.002 10.002 0 0114.14 0M21 12a9.953 9.953 0 01-2.929 7.071M12 21a9.953 9.953 0 01-7.071-2.929M3 12a9.953 9.953 0 012.929-7.071" />
+    <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth='2' stroke='currentColor' className='h-5 w-5 text-red-500'>
+      <path strokeLinecap='round' strokeLinejoin='round' d='M12 9v2m0 4h.01M4.93 4.93a10.002 10.002 0 0114.14 0M21 12a9.953 9.953 0 01-2.929 7.071M12 21a9.953 9.953 0 01-7.071-2.929M3 12a9.953 9.953 0 012.929-7.071' />
     </svg>
   ) : (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="h-5 w-5 text-blue-500">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 20.5c4.142 0 7.5-3.358 7.5-7.5S16.142 5.5 12 5.5 4.5 8.858 4.5 12s3.358 7.5 7.5 7.5z" />
+    <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth='2' stroke='currentColor' className='h-5 w-5 text-blue-500'>
+      <path strokeLinecap='round' strokeLinejoin='round' d='M13 16h-1v-4h-1m1-4h.01M12 20.5c4.142 0 7.5-3.358 7.5-7.5S16.142 5.5 12 5.5 4.5 8.858 4.5 12s3.358 7.5 7.5 7.5z' />
     </svg>
   )
 
   return (
     <div className='fixed right-4 top-4 z-50'>
       <div className='mb-4 flex w-full max-w-sm items-center rounded-lg border border-gray-200 bg-white p-4 shadow-lg'>
-        <div className='flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-500'>
-           {icon}
-        </div>
+        <div className='flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-500'>{icon}</div>
         <div className='ml-3'>
           <p className='text-sm font-medium text-gray-900'>{notify.title}</p>
           <p className='text-sm text-gray-500'>{notify.message}</p>
