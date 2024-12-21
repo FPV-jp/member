@@ -5,17 +5,56 @@ import interactionPlugin from '@fullcalendar/interaction'
 import listPlugin from '@fullcalendar/list'
 import timeGridPlugin from '@fullcalendar/timegrid'
 
-const events = [
-  { title: 'Meeting', start: new Date() }
-]
+import { useEffect, useRef, useState } from 'react'
+import { createRoot } from 'react-dom/client'
+import ReactCalendar from './ReactCalendar'
 
 export default function ExampleFullCalendar() {
+
+  const [calendars, setCalendars] = useState({
+    fullCalendar: null,
+    innerCalendar: null,
+    viewInfo: null,
+  })
+
+  const fullCalendarRef = useRef(null)
+  useEffect(() => {
+    if (fullCalendarRef.current) {
+      setCalendars((prevState) => ({ ...prevState, fullCalendar: fullCalendarRef.current.calendar }))
+    }
+  }, [fullCalendarRef])
+
+  const handleViewChange = (viewInfo) => {
+    if (calendars.viewInfo?.view?.type !== viewInfo.view.type) {
+      setCalendars((prevState) => ({ ...prevState, viewInfo }))
+    }
+  }
+
+  // useEffect(() => {
+  //   console.log(calendars)
+  // }, [calendars])
+
+  useEffect(() => {
+    if (!calendars.fullCalendar) return
+    recombination(
+      calendars.viewInfo.view.type,
+      <ReactCalendar {...{ calendars, setCalendars }} />,
+    )
+  }, [calendars])
+
   return (
     <FullCalendar
+      ref={fullCalendarRef}
       plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
       locales={[jaLocale]}
       locale='ja'
       initialView='dayGridMonth'
+      headerToolbar={{
+        left: 'dayGridYear,dayGridMonth today',
+        center: 'title',
+        right: 'prev,next timeGridWeek listWeek timeGridDay listDay',
+      }}
+      datesSet={handleViewChange}
       editable={true}
       selectable={true}
       selectMirror={true}
@@ -25,6 +64,59 @@ export default function ExampleFullCalendar() {
     />
   )
 }
+
+function recombination(currentView, calendar) {
+  const $ = (query) => document.querySelector(query)
+  let parent
+  let brother
+
+  if (currentView === 'timeGridDay' || currentView === 'timeGridWeek') {
+    parent = $(`div.fc-${currentView}-view.fc-view.fc-timegrid`)
+    brother = $('table.fc-scrollgrid.fc-scrollgrid-liquid')
+  }
+
+  if (currentView === 'listWeek' || currentView === 'listDay') {
+    parent = $(`div.fc-${currentView}-view.fc-view.fc-list.fc-list-sticky`)
+    brother = $('div.fc-scroller.fc-scroller-liquid')
+  }
+
+  const attachCalendar = () => {
+    const innerCalendar = document.createElement('div')
+    innerCalendar.classList.add('innerCalendar')
+    createRoot(innerCalendar).render(calendar)
+    currentView === 'timeGridWeek' ? parent.insertBefore(innerCalendar, parent.firstChild) : parent.appendChild(innerCalendar)
+  }
+
+  if (parent && brother) {
+    if (!$('div.innerCalendar')) {
+      attachCalendar()
+    } else {
+      var index = Array.prototype.indexOf.call(parent.children, $('div.innerCalendar'))
+      if (currentView === 'timeGridWeek' && index === 1) {
+        $('div.innerCalendar').parentNode.removeChild($('div.innerCalendar'))
+        attachCalendar()
+      } else if (currentView === 'timeGridDay' && index === 0) {
+        $('div.innerCalendar').parentNode.removeChild($('div.innerCalendar'))
+        attachCalendar()
+      }
+    }
+
+    if (currentView === 'timeGridWeek') {
+      parent.classList.remove('flex')
+      brother.classList.remove('flex-1')
+      $('div.innerCalendar').classList.remove('flex-1')
+    } else {
+      parent.classList.add('flex')
+      brother.classList.add('flex-1')
+      $('div.innerCalendar').classList.add('flex-1')
+    }
+    return
+  }
+}
+
+const events = [
+  { title: 'Meeting', start: new Date() }
+]
 
 // a custom render function
 function renderEventContent(eventInfo) {
