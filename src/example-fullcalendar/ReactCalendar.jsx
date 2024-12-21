@@ -1,6 +1,6 @@
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 
 /* eslint-disable react/prop-types */
 export default function ReactCalendar({ calendars, setCalendars }) {
@@ -10,6 +10,7 @@ export default function ReactCalendar({ calendars, setCalendars }) {
 
   useEffect(() => {
     if (innerCalendarRef.current) {
+      console.log("innerCalendarRef: ", calendars.fullViewInfo.view.type)
       setCalendars((prevState) => ({ ...prevState, innerCalendar: innerCalendarRef.current }))
     }
   }, [innerCalendarRef, calendars, setCalendars])
@@ -20,8 +21,8 @@ export default function ReactCalendar({ calendars, setCalendars }) {
         ref={innerCalendarRef}
         // showNavigation
         // selectRange
-        // showDoubleView
-        // showWeekNumbers
+        showDoubleView={['timeGridWeek'].includes(calendars.fullViewInfo.view.type)}
+        showWeekNumbers={['timeGridWeek', 'listWeek'].includes(calendars.fullViewInfo.view.type)}
         // showFixedNumberOfWeeks
         // showNeighboringMonth
         value={calendars.innerSelect}

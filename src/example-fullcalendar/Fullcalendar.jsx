@@ -21,6 +21,7 @@ export default function ExampleFullCalendar() {
   const fullCalendarRef = useRef(null)
   useEffect(() => {
     if (fullCalendarRef.current) {
+      console.log("fullCalendarRef")
       setCalendars((prevState) => ({ ...prevState, fullCalendar: fullCalendarRef.current.calendar }))
     }
   }, [fullCalendarRef])
