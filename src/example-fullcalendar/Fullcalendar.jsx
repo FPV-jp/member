@@ -13,8 +13,9 @@ export default function ExampleFullCalendar() {
 
   const [calendars, setCalendars] = useState({
     fullCalendar: null,
+    fullViewInfo: null,
     innerCalendar: null,
-    viewInfo: null,
+    innerSelect: new Date(),
   })
 
   const fullCalendarRef = useRef(null)
@@ -24,20 +25,20 @@ export default function ExampleFullCalendar() {
     }
   }, [fullCalendarRef])
 
-  const handleViewChange = (viewInfo) => {
-    if (calendars.viewInfo?.view?.type !== viewInfo.view.type) {
-      setCalendars((prevState) => ({ ...prevState, viewInfo }))
+  const handleViewChange = (fullViewInfo) => {
+    if (calendars.fullViewInfo?.view?.type !== fullViewInfo.view.type) {
+      setCalendars((prevState) => ({ ...prevState, fullViewInfo }))
     }
   }
 
-  // useEffect(() => {
-  //   console.log(calendars)
-  // }, [calendars])
+  useEffect(() => {
+    console.log(calendars)
+  }, [calendars])
 
   useEffect(() => {
     if (!calendars.fullCalendar) return
     recombination(
-      calendars.viewInfo.view.type,
+      calendars.fullViewInfo.view.type,
       <ReactCalendar {...{ calendars, setCalendars }} />,
     )
   }, [calendars])
