@@ -7,7 +7,7 @@ import * as User from './User'
 //--------------------------------------------------
 // UserGraphQL
 //--------------------------------------------------
-export default function UserGraphQLExample() {
+export default function ExampleUserGraphQL() {
   const [updateForm, setUpdateForm] = useState({ open: false, user: null })
 
   function onUpdateHandle(user) {

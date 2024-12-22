@@ -1,3 +1,29 @@
+
+Date.prototype.getWeek = function () {
+  const firstDayOfYear = new Date(this.getFullYear(), 0, 1)
+  const pastDaysOfYear = Math.floor((this - firstDayOfYear) / 86400000) + 1
+  return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay()) / 7)
+}
+
+export function getWeekRangeByWeekNumber(year, weekNumber) {
+  // Find the first Thursday of the year (based on ISO 8601).
+  const jan4 = new Date(year, 0, 4)
+  const firstWeekStart = new Date(jan4)
+  firstWeekStart.setDate(jan4.getDate() - ((jan4.getDay() + 6) % 7))
+
+  // startOfWeek
+  const startOfWeek = new Date(firstWeekStart)
+  startOfWeek.setDate(firstWeekStart.getDate() + (weekNumber - 1) * 7)
+
+  // endOfWeek
+  const endOfWeek = new Date(startOfWeek)
+  endOfWeek.setDate(startOfWeek.getDate() + 6)
+  endOfWeek.setHours(23, 59, 59, 999)
+
+  return { start: startOfWeek, end: endOfWeek }
+}
+
+
 export const initialState = {
   fullCalendar: null,
   fullViewInfo: null,
@@ -37,8 +63,34 @@ export function calendarReducer(state, action) {
   }
 }
 
+export function closeInnerCalendar(){
+  const $ = (query) => document.querySelector(query)
+  const innerCalendar = $('div.inner-calendar')
+  if (innerCalendar) {
+    innerCalendar.style.display = 'none'
+  }
+}
+
 export function creatInnerCalendarRoot(currentView) {
   const $ = (query) => document.querySelector(query)
+  const $$ = (query) => document.querySelectorAll(query)
+
+  const openButton = 'button.fc-open-button.fc-button.fc-button-primary'
+  if ($(openButton)) $(openButton).parentNode.removeChild($(openButton))
+  if (currentView === 'timeGridWeek') {
+    let toolbars = $$('div.fc-toolbar-chunk')
+    let openButton = document.createElement('button')
+    openButton.classList.add('fc-open-button', 'fc-button', 'fc-button-primary')
+    openButton.title = 'Open'
+    openButton.innerText = 'Open'
+    openButton.onclick = () => {
+      const innerCalendar = $('div.inner-calendar')
+      if (innerCalendar) {
+        innerCalendar.style.display === 'none' ? (innerCalendar.style.display = 'block') : (innerCalendar.style.display = 'none')
+      }
+    }
+    toolbars[2].insertBefore(openButton, toolbars[2].firstChild)
+  }
 
   let parent
   let brother
@@ -53,12 +105,11 @@ export function creatInnerCalendarRoot(currentView) {
     brother = $('div.fc-scroller.fc-scroller-liquid')
   }
 
-  // let innerCalendar = $('div.innerCalendar')
-  // if (innerCalendar) {
-  //   $('div.innerCalendar').parentNode.removeChild($('div.innerCalendar'))
-  // }
   let innerCalendar = document.createElement('div')
-  innerCalendar.classList.add('innerCalendar')
+  innerCalendar.classList.add('inner-calendar')
+  if (currentView === 'timeGridWeek') {
+    innerCalendar.style.display = 'none'
+  }
 
   if (parent && brother) {
     currentView === 'timeGridWeek' ? parent.insertBefore(innerCalendar, parent.firstChild) : parent.appendChild(innerCalendar)

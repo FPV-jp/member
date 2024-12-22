@@ -9,12 +9,28 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 
 // import * as Components from '../component/Components'
 
-export default function MapboxExample() {
+export function MapboxHeader() {
+  return (
+    <div className='inline-flex rounded-md shadow-sm' role='group'>
+      <button type='button' className='rounded-l-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 focus:ring-2 focus:ring-blue-700'>
+        Left
+      </button>
+      <button type='button' className='-ml-px border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 focus:ring-2 focus:ring-blue-700'>
+        Middle
+      </button>
+      <button type='button' className='-ml-px rounded-r-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 focus:ring-2 focus:ring-blue-700'>
+        Right
+      </button>
+    </div>
+  )
+}
+
+export default function ExampleMapbox() {
   const [location, setLocation] = useState(null)
   const [error, setError] = useState(null)
   const [mapStyle, setMapStyle] = useState('mapbox://styles/mapbox/streets-v12')
   const [mapboxAccessToken, setMapboxAccessToken] = useState('pk.eyJ1IjoicmVsaWNzOSIsImEiOiJjbHMzNHlwbDIwNDczMmtvM2xhNWR0ZzVtIn0.whCzeh6XW7ju4Ja6DR0imw')
-  
+
   // mapStyle="mapbox://styles/mapbox/standard"
   // mapStyle="mapbox://styles/mapbox/streets-v11"
   // mapStyle='mapbox://styles/mapbox/outdoors-v12'

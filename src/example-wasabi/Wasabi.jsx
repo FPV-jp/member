@@ -8,7 +8,7 @@ const fileSize = (size) => {
   return size > 1024 ? (size > 1048576 ? Math.round(size / 1048576) + 'MB' : Math.round(size / 1024) + 'KB') : size + 'Byte'
 }
 
-export default function WasabExamle() {
+export default function ExampleWasabi() {
   const wasabi = useFetchMutation()
   const [wasabiError, setWasabiError] = useState()
   const [formData, setFormData] = useState({})

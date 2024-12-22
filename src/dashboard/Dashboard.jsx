@@ -10,7 +10,8 @@ import Bento from './Bento'
 import UserREST from '../example-user/UserREST'
 import UserGraphQL from '../example-user/UserGraphQL'
 import Wasabi from '../example-wasabi/Wasabi'
-import Mapbox from '../example-mapbox/Mapbox'
+import Mapbox, { MapboxHeader } from '../example-mapbox/Mapbox'
+import WebRTC, { WebRTCHeader } from '../example-webrtc/WebRTC'
 import Fullcalendar from '../example-fullcalendar/Fullcalendar'
 
 import Form from '../example-form/Form'
@@ -24,6 +25,7 @@ const ProtectedUserGraphQL = withAuthenticationRequired(UserGraphQL)
 const ProtectedWasabi = withAuthenticationRequired(Wasabi)
 const ProtectedMapbox = withAuthenticationRequired(Mapbox)
 const ProtectedFullcalendar = withAuthenticationRequired(Fullcalendar)
+const ProtectedWebRTC = withAuthenticationRequired(WebRTC)
 
 const ProtectedProfile = withAuthenticationRequired(Profile)
 const ProtectedNotification = withAuthenticationRequired(Notification)
@@ -40,6 +42,7 @@ export default function Dashboard() {
     { name: 'Wasabi', path: '/example-wasabi', title: 'Wasabi Example', current: false },
     { name: 'Mapbox', path: '/example-mapbox', title: 'Mapbox Example', current: false },
     { name: 'Fullcalendar', path: '/example-fullcalendar', title: 'Fullcalendar Example', current: false },
+    { name: 'WebRTC', path: '/example-webrtc', title: 'WebRTC Example', current: false },
     { name: 'Form', path: '/example-form', title: 'Form Example', current: false },
   ]
 
@@ -79,26 +82,18 @@ export default function Dashboard() {
             }}
           />
         </Disclosure>
-        {navigation.find((nav) => nav.path === currentpath) && (
-          <header className='bg-white shadow'>
-            <div className='mx-auto flex max-w-7xl items-center justify-between px-4 py-6 sm:px-6 lg:px-8'>
-              <h1 className='text-3xl font-bold tracking-tight text-gray-900'>{navigation.find((nav) => nav.path === currentpath).title}</h1>
-              {'/example-mapbox' == currentpath && (
-                <div className='inline-flex rounded-md shadow-sm' role='group'>
-                  <button type='button' className='rounded-l-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 focus:ring-2 focus:ring-blue-700'>
-                    Left
-                  </button>
-                  <button type='button' className='-ml-px border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 focus:ring-2 focus:ring-blue-700'>
-                    Middle
-                  </button>
-                  <button type='button' className='-ml-px rounded-r-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 focus:ring-2 focus:ring-blue-700'>
-                    Right
-                  </button>
-                </div>
-              )}
-            </div>
-          </header>
-        )}
+        {navigation.find((nav) => nav.path === currentpath) &&
+          ('/example-fullcalendar' == currentpath ? (
+            <></>
+          ) : (
+            <header className='bg-white shadow'>
+              <div className='mx-auto flex max-w-7xl items-center justify-between px-4 py-6 sm:px-6 lg:px-8'>
+                <h1 className='text-3xl font-bold tracking-tight text-gray-900'>{navigation.find((nav) => nav.path === currentpath).title}</h1>
+                {'/example-mapbox' == currentpath && <MapboxHeader />}
+                {'/example-webrtc' == currentpath && <WebRTCHeader />}
+              </div>
+            </header>
+          ))}
         <main>
           <div className='mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8'>
             <ProtectedNotification
@@ -114,6 +109,7 @@ export default function Dashboard() {
               <ReactRouter.Route path='/example-wasabi' element={<ProtectedWasabi />} />
               <ReactRouter.Route path='/example-mapbox' element={<ProtectedMapbox />} />
               <ReactRouter.Route path='/example-fullcalendar' element={<ProtectedFullcalendar />} />
+              <ReactRouter.Route path='/example-webrtc' element={<ProtectedWebRTC />} />
               <ReactRouter.Route path='/example-form' element={<Form />} />
               <ReactRouter.Route path='/profile' element={<ProtectedProfile />} />
               <ReactRouter.Route path='/settings' element={<Settings />} />

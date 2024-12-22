@@ -4,6 +4,7 @@ import jaLocale from '@fullcalendar/core/locales/ja'
 import interactionPlugin from '@fullcalendar/interaction'
 import listPlugin from '@fullcalendar/list'
 import timeGridPlugin from '@fullcalendar/timegrid'
+import multiMonthPlugin from '@fullcalendar/multimonth'
 
 import { useEffect, useRef, useReducer } from 'react'
 import { createRoot } from 'react-dom/client'
@@ -23,17 +24,16 @@ export default function ExampleFullCalendar() {
   }, [fullCalendarRef])
 
   const handleViewChange = (fullViewInfo) => {
+    console.log(fullViewInfo.view.type)
     if (state.fullViewInfo?.view?.type !== fullViewInfo.view.type) {
       updateState(calendarActions.fullViewInfo, fullViewInfo)
     } else {
       if (['timeGridWeek', 'listWeek'].includes(state.fullViewInfo.view.type)) {
         const { start, end } = fullViewInfo
-        if (state.setInnerSelect)
-          state.setInnerSelect([start, new Date(end.getTime() - 1000)])
+        if (state.setInnerSelect) state.setInnerSelect([start, new Date(end.getTime() - 1000)])
       } else {
         const { start } = fullViewInfo
-        if (state.setInnerSelect)
-          state.setInnerSelect(start)
+        if (state.setInnerSelect) state.setInnerSelect(start)
       }
     }
   }
@@ -64,16 +64,36 @@ export default function ExampleFullCalendar() {
       ref={fullCalendarRef}
       firstDay={1}
       aspectRatio={1.618}
-      height={700}
-      plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
+      height={780}
+      plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin, multiMonthPlugin]}
       locales={[jaLocale]}
       locale='ja'
-      initialView='dayGridMonth'
+      initialView='multiMonthYear'
+      // views={
+      //   {
+      //     multiMonthFourMonth: {
+      //       type: 'multiMonth',
+      //       duration: { months: 6 }
+      //     }
+      //   }
+      // }
       headerToolbar={{
-        left: 'dayGridYear,dayGridMonth today',
+        left: 'multiMonthYear dayGridYear,dayGridMonth today',
         center: 'title',
-        right: 'prev,next timeGridWeek listWeek timeGridDay listDay',
+        right: 'prev,next timeGridWeek,listWeek timeGridDay,listDay',
       }}
+      businessHours={[
+        {
+          daysOfWeek: [1, 2, 3, 4, 5],
+          startTime: '09:00',
+          endTime: '18:00',
+        },
+        {
+          daysOfWeek: [6, 0],
+          startTime: '07:00',
+          endTime: '20:00',
+        },
+      ]}
       dateClick={handleDateChange}
       datesSet={handleViewChange}
       editable={true}

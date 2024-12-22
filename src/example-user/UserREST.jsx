@@ -6,7 +6,7 @@ import * as User from './User'
 //--------------------------------------------------
 // UserREST
 //--------------------------------------------------
-export default function UserRESTExample() {
+export default function ExampleUserREST() {
   const [updateForm, setUpdateForm] = useState({ open: false, user: null })
 
   function onUpdateHandle(user) {
