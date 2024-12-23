@@ -35,6 +35,8 @@ export default function Dashboard() {
   const { pathname: currentpath } = ReactRouter.useLocation()
   const [notificationOpen, setNotificationOpen] = useState(false)
 
+  const [WebRTCState, setWebRTCState] = useState({ url: 'ws://localhost:8080/ws', connect: false })
+
   const navigation = [
     { name: 'Dashboard', path: '/', title: 'Dashboard' },
     { name: 'UserREST', path: '/example-user-rest', title: 'REST API Example', current: false },
@@ -47,8 +49,8 @@ export default function Dashboard() {
   ]
 
   const userNavigation = [
-    { name: 'Your Profile', path: '/profile', onClick: () => {} },
-    { name: 'Settings', path: '/settings', onClick: () => {} },
+    { name: 'Your Profile', path: '/profile', onClick: () => { } },
+    { name: 'Settings', path: '/settings', onClick: () => { } },
     { name: 'Sign out', path: '#', onClick: logout },
   ]
 
@@ -90,7 +92,7 @@ export default function Dashboard() {
               <div className='mx-auto flex max-w-7xl items-center justify-between px-4 py-6 sm:px-6 lg:px-8'>
                 <h1 className='text-3xl font-bold tracking-tight text-gray-900'>{navigation.find((nav) => nav.path === currentpath).title}</h1>
                 {'/example-mapbox' == currentpath && <MapboxHeader />}
-                {'/example-webrtc' == currentpath && <WebRTCHeader />}
+                {'/example-webrtc' == currentpath && <WebRTCHeader {...{ WebRTCState, setWebRTCState }} />}
               </div>
             </header>
           ))}
@@ -109,7 +111,7 @@ export default function Dashboard() {
               <ReactRouter.Route path='/example-wasabi' element={<ProtectedWasabi />} />
               <ReactRouter.Route path='/example-mapbox' element={<ProtectedMapbox />} />
               <ReactRouter.Route path='/example-fullcalendar' element={<ProtectedFullcalendar />} />
-              <ReactRouter.Route path='/example-webrtc' element={<ProtectedWebRTC />} />
+              <ReactRouter.Route path='/example-webrtc' element={<ProtectedWebRTC {...{ WebRTCState, setWebRTCState }} />} />
               <ReactRouter.Route path='/example-form' element={<Form />} />
               <ReactRouter.Route path='/profile' element={<ProtectedProfile />} />
               <ReactRouter.Route path='/settings' element={<Settings />} />

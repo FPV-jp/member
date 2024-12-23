@@ -66,7 +66,7 @@ export default function ExampleFullCalendar() {
       plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin, multiMonthPlugin]}
       locales={[jaLocale]}
       locale='ja'
-      initialView='multiMonthYear'
+      initialView='dayGridMonth'
       // views={
       //   {
       //     multiMonthFourMonth: {

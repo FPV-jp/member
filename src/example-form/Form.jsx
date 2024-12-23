@@ -81,7 +81,7 @@ export default function ExampleForm() {
             </div>
 
             <div className='sm:col-span-3'>
-              <FormComponents.Select label={'Country'} htmlFor={'country'} option={['United States', 'Canada', 'Mexico']} onChange={inputChange} autoComplete={'country-name'} />
+              <FormComponents.Select label={'Country'} htmlFor={'country'} option={['United States', 'Canada', 'Mexico']} defaultValue={'Canada'} onChange={inputChange} autoComplete={'country-name'} />
             </div>
 
             <div className='col-span-full'>

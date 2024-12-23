@@ -1,37 +1,45 @@
 import { useRef, useEffect, useState } from 'react'
 
-export function WebRTCHeader() {
+/* eslint-disable react/prop-types */
+export function WebRTCHeader({ WebRTCState, setWebRTCState }) {
+  function inputChange(event) {
+    const { name, value } = event.target
+    setWebRTCState({ ...WebRTCState, [name]: value })
+  }
   return (
-    <div className='inline-flex rounded-md shadow-sm' role='group'>
-      <button type='button' className='rounded-l-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 focus:ring-2 focus:ring-blue-700'>
-        Left
-      </button>
-      <button type='button' className='-ml-px border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 focus:ring-2 focus:ring-blue-700'>
-        Middle
-      </button>
-      <button type='button' className='-ml-px rounded-r-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 focus:ring-2 focus:ring-blue-700'>
-        Right
+    <div className='inline-flex rounded-md shadow-sm gap-x-6' role='group'>
+      <select id='URL' name='url' onChange={inputChange} className='col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6'>
+        {['ws://localhost:8080/ws', 'ws://localhost:5001'].map((op) => {
+          return <option key={op}>{op}</option>
+        })}
+      </select>
+      <button type='button' onClick={() => { setWebRTCState({ ...WebRTCState, connect: true }) }} className='relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800'>
+        Connect
       </button>
     </div>
   )
 }
 
-export default function ExamleWebRTC() {
+/* eslint-disable react/prop-types */
+export default function ExamleWebRTC({ WebRTCState, setWebRTCState }) {
   const videoRef = useRef(null)
-  const [peerConnection, setPeerConnection] = useState(null)
-  const [url, setUrl] = useState(null)
 
   useEffect(() => {
-    if (url) return
+    // console.log("===== WebRTCState.url ", WebRTCState.url)
+    // console.log("===== WebRTCState.connect ", WebRTCState.connect)
+    // if (WebRTCState.url) return
+    if (!WebRTCState.connect) return
 
+    console.log("===== WebRTCState.url ", WebRTCState.url)
     // WebSocketサーバーへの接続
-    const signalingServer = new WebSocket(url)
+    const signalingServer = new WebSocket(WebRTCState.url)
 
     // 新しいPeerConnectionの作成
     const pc = new RTCPeerConnection({
       iceServers: [{ urls: 'stun:stun.l.google.com:19302' }], // GoogleのSTUNサーバー
     })
-    setPeerConnection(pc)
+
+    // setWebRTCState({ ...WebRTCState, peerConnection: pc })
 
     // ビデオストリームを受信して設定
     pc.ontrack = (event) => {
@@ -69,7 +77,7 @@ export default function ExamleWebRTC() {
       pc.close()
       if (signalingServer) signalingServer.close()
     }
-  }, [url])
+  }, [WebRTCState.connect])
 
   return (
     <div>
