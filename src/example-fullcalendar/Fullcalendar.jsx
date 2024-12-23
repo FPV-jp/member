@@ -5,28 +5,26 @@ import interactionPlugin from '@fullcalendar/interaction'
 import listPlugin from '@fullcalendar/list'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import multiMonthPlugin from '@fullcalendar/multimonth'
-
 import { useEffect, useRef, useReducer } from 'react'
 import { createRoot } from 'react-dom/client'
 import ReactCalendar from './ReactCalendar'
-
-import { creatInnerCalendarRoot, calendarReducer, initialState, calendarActions } from './utils'
+import * as Utils from './utils'
 
 export default function ExampleFullCalendar() {
-  const [state, dispatch] = useReducer(calendarReducer, initialState)
+  const [state, dispatch] = useReducer(Utils.calendarReducer, Utils.initialState)
   const updateState = (type, payload) => dispatch({ type, payload })
 
   const fullCalendarRef = useRef(null)
   useEffect(() => {
     if (fullCalendarRef.current) {
-      updateState(calendarActions.fullCalendar, fullCalendarRef.current.calendar)
+      updateState(Utils.calendarActions.fullCalendar, fullCalendarRef.current.calendar)
     }
   }, [fullCalendarRef])
 
   const handleViewChange = (fullViewInfo) => {
     console.log(fullViewInfo.view.type)
     if (state.fullViewInfo?.view?.type !== fullViewInfo.view.type) {
-      updateState(calendarActions.fullViewInfo, fullViewInfo)
+      updateState(Utils.calendarActions.fullViewInfo, fullViewInfo)
     } else {
       if (['timeGridWeek', 'listWeek'].includes(state.fullViewInfo.view.type)) {
         const { start, end } = fullViewInfo
@@ -40,12 +38,12 @@ export default function ExampleFullCalendar() {
 
   const handleDateChange = (fullSelect) => {
     console.log(fullSelect)
-    updateState(calendarActions.fullSelect, fullSelect)
+    updateState(Utils.calendarActions.fullSelect, fullSelect)
   }
 
   useEffect(() => {
     if (!state.fullCalendar) return
-    const { innerCalendar } = creatInnerCalendarRoot(state.fullViewInfo.view.type)
+    const { innerCalendar } = Utils.creatInnerCalendarRoot(state.fullViewInfo.view.type)
     if (innerCalendar) {
       const root = createRoot(innerCalendar)
       root.render(<ReactCalendar {...{ state, updateState }} />)
