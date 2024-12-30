@@ -6,15 +6,14 @@ import { initialValue, rtc_configuration, default_constraints, websocketServerUR
 
 export function WebRTCHeader() {
   return (
-    <div className='inline-flex rounded-md shadow-sm' role='group'>
-      <button type='button' className='rounded-l-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 focus:ring-2 focus:ring-blue-700'>
-        Left
-      </button>
-      <button type='button' className='-ml-px border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 focus:ring-2 focus:ring-blue-700'>
-        Middle
-      </button>
-      <button type='button' className='-ml-px rounded-r-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 focus:ring-2 focus:ring-blue-700'>
-        Right
+    <div className='mt-6 flex max-w-md gap-x-4'>
+      <label htmlFor='email-address' className='sr-only'>
+        Email address
+      </label>
+      <input id='email-address' name='email' type='email' required placeholder='Enter your email' autoComplete='email' 
+      className='min-w-0 flex-auto rounded-md bg-white/5 px-3.5 py-2 text-base text-white outline outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6' />
+      <button type='submit' className='flex-none rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500'>
+        Subscribe
       </button>
     </div>
   )
