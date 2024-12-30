@@ -254,6 +254,27 @@ export default function ExamleWebRTC() {
 
   return (
     <div>
+      <div>
+        Our ID is <b id='peer-id'>{state['peer-id']}</b>
+      </div>
+
+      <div className='flex h-[70vh] w-full items-center justify-center'>
+        <video ref={receive_video} autoPlay playsInline className='hidden max-h-full max-w-full'>
+          {"Your browser doesn't support video"}
+        </video>
+      </div>
+
+      {/* 
+      <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50'>
+        <div className='relative rounded bg-white p-4 shadow-lg'>
+          <video ref={receive_video} autoPlay playsInline className='max-h-[90vh] max-w-[90vw]'>
+            {"Your browser doesn't support video"}
+          </video>
+        </div>
+      </div> 
+      */}
+
+      {/* 
       <div id='video'>
         <video ref={receive_video} style={{ display: 'none' }} autoPlay playsInline>
           {"Your browser doesn't support video"}
@@ -283,6 +304,7 @@ export default function ExamleWebRTC() {
           <textarea id='constraints' cols={40} rows={4} onChange={inputChange} />
         </div>
       </div>
+      */}
     </div>
   )
 }
