@@ -147,8 +147,8 @@ export default function ExamleWebRTC() {
     }
   }
 
+  // eslint-disable-next-line no-unused-vars
   const createCall = (sdp, ice) => {
-    // eslint-disable-line no-unused-vars
     setState((prevState) => ({ ...prevState, callCreateTriggered: true }))
 
     const send_channel = peer_connection.current.createDataChannel('label', null)
