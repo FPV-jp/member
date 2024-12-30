@@ -257,8 +257,14 @@ export default function ExamleWebRTC() {
       <div>
         Our ID is <b id='peer-id'>{state['peer-id']}</b>
       </div>
-
-      <div className='flex h-[70vh] w-full items-center justify-center'>
+      {/*       
+      <label htmlFor='peer-connect'>Enter peer ID</label>
+      <input id='peer-connect' type='text' onChange={inputChange} onKeyDown={onTextKeyPress} required />
+      <input id='peer-connect-button' type='button' value={state['peer-connect-button']} onClick={onConnectClicked} />
+      <input id='remote-offerer' type='checkbox' onChange={inputChange} autoComplete={'off'} />
+      <span>Remote offerer</span>
+      */}
+      <div className='flex h-[60vh] w-full items-center justify-center'>
         <video ref={receive_video} autoPlay playsInline className='hidden max-h-full max-w-full'>
           {"Your browser doesn't support video"}
         </video>
