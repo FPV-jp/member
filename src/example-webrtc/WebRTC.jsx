@@ -168,8 +168,8 @@ export default function ExamleWebRTC() {
       }
     }
 
+    // eslint-disable-next-line no-unused-vars
     peer_connection.current.ontrack = ({ receiver, streams, track, transceiver }) => {
-      // eslint-disable-line no-unused-vars
       if (!streams || streams.length === 0) return
       const video = receive_video.current
       const { contentHint, enabled, id, kind, label, muted, readyState, stats } = track // eslint-disable-line no-unused-vars
