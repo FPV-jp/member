@@ -1,4 +1,3 @@
-
 Date.prototype.getWeek = function () {
   const firstDayOfYear = new Date(this.getFullYear(), 0, 1)
   const pastDaysOfYear = Math.floor((this - firstDayOfYear) / 86400000) + 1
@@ -22,7 +21,6 @@ export function getWeekRangeByWeekNumber(year, weekNumber) {
 
   return { start: startOfWeek, end: endOfWeek }
 }
-
 
 export const initialState = {
   fullCalendar: null,
@@ -63,7 +61,7 @@ export function calendarReducer(state, action) {
   }
 }
 
-export function closeInnerCalendar(){
+export function closeInnerCalendar() {
   const $ = (query) => document.querySelector(query)
   const innerCalendar = $('div.inner-calendar')
   if (innerCalendar) {

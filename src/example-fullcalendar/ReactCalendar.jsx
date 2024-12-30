@@ -17,7 +17,6 @@ export default function ReactCalendar({ state, updateState }) {
 
   const handleDateChange = (selectedDate) => {
     if (['timeGridWeek', 'listWeek'].includes(state.fullViewInfo.view.type)) {
-
       const weekNumber = selectedDate.getWeek()
       const { start, end } = Utils.getWeekRangeByWeekNumber(selectedDate.getFullYear(), weekNumber)
       setInnerSelect([start, end])
@@ -27,13 +26,10 @@ export default function ReactCalendar({ state, updateState }) {
       if (['timeGridWeek'].includes(state.fullViewInfo.view.type)) {
         Utils.closeInnerCalendar()
       }
-
     } else {
-
       setInnerSelect(selectedDate)
       updateState(Utils.calendarActions.innerSelect, selectedDate)
       state.fullCalendar.gotoDate(selectedDate)
-
     }
   }
 

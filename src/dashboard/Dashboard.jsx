@@ -103,6 +103,7 @@ export default function Dashboard() {
               }}
             />
             <ReactRouter.Routes>
+              <ReactRouter.Route path='/health-check' element={<>OK</>} />
               <ReactRouter.Route path='/' element={<Bento />} />
               <ReactRouter.Route path='/example-user-rest' element={<ProtectedUserREST />} />
               <ReactRouter.Route path='/example-user-graphql' element={<ProtectedUserGraphQL />} />
