@@ -5,9 +5,15 @@ name: Node.js CI
 
 on:
   push:
-    branches: ["main", dev]
+    branches-ignore:
+      - 'main'
+      - 'dev'
+    branches: ["member.fpv.jp", fpv.v2008.coreserver.jp]
   pull_request:
-    branches: ["main", dev]
+    branches-ignore:
+      - 'main'
+      - 'dev'
+    branches: ["member.fpv.jp", fpv.v2008.coreserver.jp]
 
 # permissions:
 #   contents: read
