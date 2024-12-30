@@ -1,6 +1,22 @@
 import { useState, useRef, useEffect } from 'react'
 import { initialValue, rtc_configuration, default_constraints, websocketServerURL, generatePeerId, parseMessage } from './utils'
 
+export function WebRTCHeader() {
+  return (
+    <div className='inline-flex rounded-md shadow-sm' role='group'>
+      <button type='button' className='rounded-l-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 focus:ring-2 focus:ring-blue-700'>
+        Left
+      </button>
+      <button type='button' className='-ml-px border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 focus:ring-2 focus:ring-blue-700'>
+        Middle
+      </button>
+      <button type='button' className='-ml-px rounded-r-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 focus:ring-2 focus:ring-blue-700'>
+        Right
+      </button>
+    </div>
+  )
+}
+
 export default function ExamleWebRTC() {
   const [state, setState] = useState({ ...initialValue })
   function inputChange(event) {
