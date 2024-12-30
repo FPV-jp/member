@@ -1,5 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
-import { initialValue, rtc_configuration, default_constraints, websocketServerURL, generatePeerId, parseMessage } from './utils'
+import { PhoneArrowDownLeftIcon, PhoneArrowUpRightIcon, PhoneXMarkIcon } from '@heroicons/react/20/solid'
+import * as Components from '../component/Components'
+import * as FormComponents from '../component/FormComponents'
+import { initialValue, rtc_configuration, default_constraints, websocketServerURL, generatePeerId, trackStop, parseMessage } from './utils'
 
 export function WebRTCHeader() {
   return (
@@ -39,8 +42,8 @@ export default function ExamleWebRTC() {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const websocketServerConnect = () => {
+    setState((prevState) => ({ ...prevState, connect_attempts: prevState.connect_attempts + 1 }))
     if (state.connect_attempts > 2) {
-      setState((prevState) => ({ ...prevState, connect_attempts: prevState.connect_attempts + 1 }))
       console.error('Too many connection attempts, aborting. Refresh page to try again')
       return
     }
@@ -49,11 +52,12 @@ export default function ExamleWebRTC() {
     let peer_id = generatePeerId()
 
     ws_conn.current = new WebSocket(websocketServerURL())
+
     ws_conn.current.onopen = () => {
-      ws_conn.current.send('HELLO ' + peer_id)
-      // Reset connection attempts because we connected successfully
+      ws_conn.current.send(`HELLO ${peer_id}`)
       setState((prevState) => ({ ...prevState, 'peer-id': peer_id, 'peer-connect-button': 'Connect', connect_attempts: 0 }))
     }
+
     ws_conn.current.onmessage = async ({ type, data }) => {
       switch (data) {
         case 'HELLO':
@@ -127,27 +131,16 @@ export default function ExamleWebRTC() {
         }
       }
     }
+
     ws_conn.current.onclose = async () => {
       console.log('Disconnected from server')
       // Release the webcam and mic
-      if (receive_video.current && receive_video.current.srcObject) {
-        const tracks = receive_video.current.srcObject.getTracks()
-        tracks.forEach((track) => track.stop())
-      }
       const video = receive_video.current
       if (video != null) {
-        if (video.srcObject != null) {
-          for (const track of video.srcObject.getTracks()) {
-            track.stop()
-          }
-        }
+        trackStop(video.srcObject)
         video.style.display = 'none'
       }
-      if (send_video.current) {
-        for (const track of send_video.current.getTracks()) {
-          track.stop()
-        }
-      }
+      trackStop(send_video.current)
       if (peer_connection.current) {
         peer_connection.current.close()
         peer_connection.current = new RTCPeerConnection(rtc_configuration)
@@ -156,6 +149,7 @@ export default function ExamleWebRTC() {
       // Reset after a second
       window.setTimeout(websocketServerConnect, 1000)
     }
+
     ws_conn.current.onerror = () => {
       console.error('Unable to connect to server, did you add an exception for the certificate?')
       // Retry after 3 seconds
@@ -255,15 +249,24 @@ export default function ExamleWebRTC() {
   return (
     <div>
       <div>
-        Our ID is <b id='peer-id'>{state['peer-id']}</b>
+        Currently waiting PeerID is <PhoneArrowDownLeftIcon aria-hidden='true' className='-ml-0.5 mr-1.5 size-5' />
+        <b id='peer-id'>{state['peer-id']}</b>
       </div>
-      {/*       
-      <label htmlFor='peer-connect'>Enter peer ID</label>
-      <input id='peer-connect' type='text' onChange={inputChange} onKeyDown={onTextKeyPress} required />
-      <input id='peer-connect-button' type='button' value={state['peer-connect-button']} onClick={onConnectClicked} />
-      <input id='remote-offerer' type='checkbox' onChange={inputChange} autoComplete={'off'} />
-      <span>Remote offerer</span>
-      */}
+
+      <FormComponents.Input type='text' label={'Enter peer ID'} htmlFor={'peer-connect'} onChange={inputChange} autoComplete={'peer-connect'} />
+
+      <Components.IndigoButton onClick={onConnectClicked}>
+        <PhoneArrowUpRightIcon aria-hidden='true' className='-ml-0.5 mr-1.5 size-5' />
+        {state['peer-connect-button']}
+      </Components.IndigoButton>
+
+      <Components.ButtonDeactivate onClick={onConnectClicked}>
+        <PhoneXMarkIcon aria-hidden='true' className='-ml-0.5 mr-1.5 size-5' />
+        {state['peer-connect-button']}
+      </Components.ButtonDeactivate>
+
+      <FormComponents.CheckboxInput label={'Remote offerer'} htmlFor={'remote-offerer'} onChange={inputChange} description={'Remote offerer'} />
+
       <div className='flex h-[60vh] w-full items-center justify-center'>
         <video ref={receive_video} autoPlay playsInline className='hidden max-h-full max-w-full'>
           {"Your browser doesn't support video"}

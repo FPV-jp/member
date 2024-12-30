@@ -52,6 +52,14 @@ export const generatePeerId = () => {
   return use_peer_id || Math.floor(Math.random() * (9000 - 10) + 10).toString()
 }
 
+export const trackStop = (stream) => {
+  if (stream) {
+    for (const track of stream.getTracks()) {
+      track.stop()
+    }
+  }
+}
+
 const send = WebSocket.prototype.send
 WebSocket.prototype.send = function (data) {
   if (typeof data === 'object' && data !== null) {
