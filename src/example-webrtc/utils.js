@@ -15,7 +15,7 @@ export const initialValue = {
   'remote-offerer': false,
   'peer-id': 'unknown',
 
-  connect_attempts: 0,
+  startTimestamp: 0,
 
   // keep track of some negotiation state to prevent races and errors
   callCreateTriggered: false,
@@ -26,17 +26,12 @@ export const initialValue = {
 const ws_protocol = 'wss'
 const ws_server = 'signalling.hexaforce.io'
 const ws_port = null
-
-// const ws_protocol = 'ws'
-// const ws_server = window.location.hostname
-// const ws_port = '8443'
+const use_peer_id = null
 
 export const websocketServerURL = () => {
   if (ws_port) return `${ws_protocol}://${ws_server}:${ws_port}`
   return `${ws_protocol}://${ws_server}`
 }
-
-const use_peer_id = null
 
 export const generatePeerId = () => {
   return use_peer_id || Math.floor(Math.random() * (9000 - 10) + 10).toString()
