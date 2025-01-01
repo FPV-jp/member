@@ -39,14 +39,19 @@ export default function ExamleWebRTC() {
 
   const [statsData, setStatsData] = useState({ fps: null, bitrate: null, totalBytes: 0, totalFrames: 0, latestTimestamp: 0 })
   const intervalRef = useRef()
+
   useEffect(() => {
     if (!peer_conn.current) return
+
     const updateStats = async () => {
-      if (peer_conn.current.iceConnectionState !== 'connected') return
-      const stats = await peer_conn.current.getStats()
+      const {iceConnectionState, getStats} = peer_conn.current
+      if (iceConnectionState !== 'connected') return
+
+      const stats = await getStats()
       let totalBytes = 0
       let totalFrames = 0
       let latestTimestamp = 0
+
       stats.forEach((report) => {
         const { type, kind } = report
         if (type === 'inbound-rtp' && kind === 'video') {
@@ -62,6 +67,7 @@ export default function ExamleWebRTC() {
         //   latestTimestamp = Math.max(latestTimestamp, timestamp)
         // }
       })
+
       setStatsData((prev) => {
         const timeDiff = latestTimestamp - prev.latestTimestamp
         if (timeDiff <= 0) return prev
@@ -71,6 +77,7 @@ export default function ExamleWebRTC() {
         const fps = framesDiff / (timeDiff / 1000) // frames per second
         return { fps, bitrate, totalBytes, totalFrames, latestTimestamp }
       })
+
     }
 
     intervalRef.current = setInterval(updateStats, 1000)
@@ -78,6 +85,7 @@ export default function ExamleWebRTC() {
   }, [peer_conn.current]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const websocketServerConnect = (connect_attempts = 0, isReconnecting = false) => {
+
     if (connect_attempts > 3) {
       console.error('Too many connection attempts, aborting. Refresh page to try again')
       return
@@ -103,21 +111,22 @@ export default function ExamleWebRTC() {
         case 'HELLO':
           console.log(`receive <<< : ${data}`)
           return
+          
         case 'SESSION_OK':
           console.log(`receive <<< : ${data}`)
           if (state['remote-offerer']) {
             send('OFFER_REQUEST')
             return
           }
-          if (!state.callCreateTriggered) {
-            createCall()
-          }
+          if (!state.callCreateTriggered) createCall()
           return
+
         case 'OFFER_REQUEST':
           console.log(`receive <<< : ${data}`)
           // The peer wants us to set up and then send an offer
           if (!state.callCreateTriggered) createCall()
           return
+
         default: {
           // Handle incoming JSON SDP and ICE messages
           const { sdp, ice } = parseMessage(data)
@@ -160,6 +169,7 @@ export default function ExamleWebRTC() {
               close()
             }
           }
+
           if (ice != null) {
             console.log('receive <<< : ', ice)
             try {
