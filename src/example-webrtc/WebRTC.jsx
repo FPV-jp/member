@@ -2,18 +2,16 @@ import { useState, useRef, useEffect } from 'react'
 import { initialValue, rtc_configuration, default_constraints, websocketServerURL, generatePeerId, parseMessage, trackStop } from './utils'
 import { PhoneArrowDownLeftIcon, PhoneArrowUpRightIcon, PhoneXMarkIcon, PhoneIcon } from '@heroicons/react/16/solid'
 import { Field, Label, Switch } from '@headlessui/react'
-import './output.css'
 
 export function WebRTCHeader() {
   return (
     <div className='mt-6 flex max-w-md gap-x-4'>
-      <input name='email' type='email' required placeholder="The other person's ID" autoComplete='email' 
-      className='block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6' />
+      <input name='email' type='email' required placeholder="The other person's ID" autoComplete='email' className='block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6' />
       <button type='submit' className='flex-none rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500'>
-      {/* <PhoneArrowUpRightIcon aria-hidden='true' className='-ml-0.5 mr-1.5 size-5' /> */}
-      <PhoneArrowDownLeftIcon aria-hidden='true' className='-ml-0.5 mr-1.5 size-5' />
-      connect
-      {/* {state['peer-connect-button']} */}
+        {/* <PhoneArrowUpRightIcon aria-hidden='true' className='-ml-0.5 mr-1.5 size-5' /> */}
+        <PhoneArrowDownLeftIcon aria-hidden='true' className='-ml-0.5 mr-1.5 size-5' />
+        connect
+        {/* {state['peer-connect-button']} */}
       </button>
     </div>
   )
@@ -99,6 +97,8 @@ export default function ExamleWebRTC() {
     }
 
     ws_conn.current.onmessage = async ({ type, data }) => {
+      const { send, close } = ws_conn.current
+
       switch (data) {
         case 'HELLO':
           console.log(`receive <<< : ${data}`)
@@ -106,7 +106,7 @@ export default function ExamleWebRTC() {
         case 'SESSION_OK':
           console.log(`receive <<< : ${data}`)
           if (state['remote-offerer']) {
-            ws_conn.current.send('OFFER_REQUEST')
+            send('OFFER_REQUEST')
             return
           }
           if (!state.callCreateTriggered) {
@@ -123,45 +123,48 @@ export default function ExamleWebRTC() {
           const { sdp, ice } = parseMessage(data)
           if (sdp != null && ice != null) {
             console.error(`Unknown incoming JSON: ${type} <<< ${data}`)
-            ws_conn.current.close()
+            close()
             return
           }
           // Incoming JSON signals the beginning of a call
           if (!state.callCreateTriggered) createCall(sdp, ice)
+
+          const { setRemoteDescription, addTrack, setLocalDescription, addIceCandidate, signalingState } = peer_conn.current
+
           if (sdp != null) {
             console.log('receive <<< : ', sdp)
 
             // An offer may come in while we are busy processing SRD(answer).
             // In this case, we will be in "stable" by the time the offer is processed so it is safe to chain it on our Operations Chain now.
-            const readyForOffer = !state.makingOffer && (peer_conn.current.signalingState == 'stable' || state.isSettingRemoteAnswerPending)
+            const readyForOffer = !state.makingOffer && (signalingState == 'stable' || state.isSettingRemoteAnswerPending)
             const offerCollision = sdp.type == 'offer' && !readyForOffer
             if (offerCollision) {
               return
             }
 
             setState((prevState) => ({ ...prevState, isSettingRemoteAnswerPending: sdp.type == 'answer' }))
-            await peer_conn.current.setRemoteDescription(sdp)
+            await setRemoteDescription(sdp)
             setState((prevState) => ({ ...prevState, isSettingRemoteAnswerPending: false }))
 
             try {
               if (sdp.type == 'offer') {
                 send_video_stream.current = await navigator.mediaDevices.getUserMedia(default_constraints)
                 for (const track of send_video_stream.current.getTracks()) {
-                  peer_conn.current.addTrack(track, send_video_stream.current)
+                  addTrack(track, send_video_stream.current)
                 }
-                await peer_conn.current.setLocalDescription()
-                ws_conn.current.send({ sdp: peer_conn.current.localDescription })
+                await setLocalDescription()
+                send({ sdp: peer_conn.current.localDescription })
               }
             } catch (err) {
               console.error(err)
-              ws_conn.current.close()
+              close()
             }
           }
           if (ice != null) {
             console.log('receive <<< : ', ice)
             try {
               // ICE candidate received from peer, add it to the peer connection
-              await peer_conn.current.addIceCandidate(new RTCIceCandidate(ice))
+              await addIceCandidate(new RTCIceCandidate(ice))
             } catch (err) {
               console.error(err)
             }
