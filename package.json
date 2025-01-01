@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "fmt": "prettier --write \"./**/*.{js,jsx,css}\" --plugin=prettier-plugin-tailwindcss",
+    "fmt": "prettier --write \"./**/*.{js,jsx,css,html}\" --plugin=prettier-plugin-tailwindcss",
     "css": "tailwindcss -i ./src/input.css -o ./src/output.css --watch",
     "preview": "vite preview"
   },
