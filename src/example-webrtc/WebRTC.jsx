@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { initialValue, rtc_configuration, default_constraints, websocketServerURL, generatePeerId, parseMessage, trackStop } from './utils'
 import { PhoneArrowDownLeftIcon, PhoneArrowUpRightIcon, PhoneXMarkIcon, PhoneIcon } from '@heroicons/react/16/solid'
 import { Field, Label, Switch } from '@headlessui/react'
+import adapter from 'webrtc-adapter'
 
 export function WebRTCHeader() {
   return (
@@ -320,6 +321,7 @@ export default function ExamleWebRTC() {
 
   return (
     <main className='grid min-h-full place-items-center bg-white px-6 py-24 sm:py-32 lg:px-8'>
+      {adapter.browserDetails.browser}:{adapter.browserDetails.version}
       <div className='text-center'>
         <div id='video'>
           <video ref={receive_video_tag} style={{ display: 'none' }} autoPlay playsInline>
