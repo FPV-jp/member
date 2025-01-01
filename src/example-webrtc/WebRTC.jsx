@@ -227,7 +227,7 @@ export default function ExamleWebRTC() {
       }
     }
 
-    peer_conn.current.ontrack = ({ receiver, streams, track, transceiver }) => {
+    peer_conn.current.ontrack = ({ streams, track }) => {
       if (!streams || streams.length === 0) return
       const video = receive_video_tag.current
       track.onmute = () => {
@@ -240,13 +240,15 @@ export default function ExamleWebRTC() {
       video.srcObject = streams[0]
     }
 
+    const { send, close } = ws_conn.current
+
     peer_conn.current.onicecandidate = ({ candidate }) => {
       // We have a candidate, send it to the remote party with the same uuid
       if (candidate == null) {
         console.log('ICE Candidate was null, done')
         return
       }
-      ws_conn.current.send({ ice: candidate })
+      send({ ice: candidate })
     }
 
     peer_conn.current.oniceconnectionstatechange = ({ currentTarget }) => {
@@ -263,10 +265,10 @@ export default function ExamleWebRTC() {
       try {
         setState((prevState) => ({ ...prevState, makingOffer: true }))
         await peer_conn.current.setLocalDescription()
-        ws_conn.current.send({ sdp: peer_conn.current.localDescription })
+        send({ sdp: peer_conn.current.localDescription })
       } catch (err) {
         console.error(err)
-        ws_conn.current.close()
+        close()
       } finally {
         setState((prevState) => ({ ...prevState, makingOffer: false }))
       }
@@ -275,8 +277,9 @@ export default function ExamleWebRTC() {
   }
 
   const onConnectClicked = () => {
+    const { send, close } = ws_conn.current
     if (state['peer-connect-button'] == 'Disconnect') {
-      ws_conn.current.close()
+      close()
       return
     }
     var id = state['peer-connect']
@@ -284,7 +287,7 @@ export default function ExamleWebRTC() {
       alert('Peer id must be filled out')
       return
     }
-    ws_conn.current.send('SESSION ' + id)
+    send('SESSION ' + id)
     setState((prevState) => ({ ...prevState, 'peer-connect-button': 'Disconnect' }))
   }
 
