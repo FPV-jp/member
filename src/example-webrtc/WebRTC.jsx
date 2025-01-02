@@ -3,7 +3,6 @@ import { initialValue, rtc_configuration, default_constraints, websocketServerUR
 import { PhoneArrowDownLeftIcon, PhoneArrowUpRightIcon, PhoneXMarkIcon, PhoneIcon } from '@heroicons/react/16/solid'
 import { Field, Label, Switch } from '@headlessui/react'
 import adapter from 'webrtc-adapter'
-import { gstWebRTCAPI, start } from './api/gstwebrtc-api.js'
 
 export function WebRTCHeader() {
   return (
@@ -50,7 +49,7 @@ export default function ExamleWebRTC() {
     if (!peer_conn.current) return
 
     const updateStats = async () => {
-      const {iceConnectionState, getStats} = peer_conn.current
+      const { iceConnectionState, getStats } = peer_conn.current
       if (iceConnectionState !== 'connected') return
 
       const stats = await getStats()
@@ -83,7 +82,6 @@ export default function ExamleWebRTC() {
         const fps = framesDiff / (timeDiff / 1000) // frames per second
         return { fps, bitrate, totalBytes, totalFrames, latestTimestamp }
       })
-
     }
 
     intervalRef.current = setInterval(updateStats, 1000)
@@ -91,7 +89,6 @@ export default function ExamleWebRTC() {
   }, [peer_conn.current]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const websocketServerConnect = (connect_attempts = 0, isReconnecting = false) => {
-
     if (connect_attempts > 3) {
       console.error('Too many connection attempts, aborting. Refresh page to try again')
       return
@@ -117,7 +114,7 @@ export default function ExamleWebRTC() {
         case 'HELLO':
           console.log(`receive <<< : ${data}`)
           return
-          
+
         case 'SESSION_OK':
           console.log(`receive <<< : ${data}`)
           if (state['remote-offerer']) {

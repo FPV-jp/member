@@ -11,7 +11,9 @@ import UserREST from '../example-user/UserREST'
 import UserGraphQL from '../example-user/UserGraphQL'
 import Wasabi from '../example-wasabi/Wasabi'
 import Mapbox, { MapboxHeader } from '../example-mapbox/Mapbox'
-import WebRTC, { WebRTCHeader } from '../example-webrtc/WebRTC'
+// import WebRTC, { WebRTCHeader } from '../example-webrtc/WebRTC'
+import WebRTC from '../example-webrtc/GstWebRTC'
+
 import Fullcalendar from '../example-fullcalendar/Fullcalendar'
 
 import Form from '../example-form/Form'
@@ -90,7 +92,7 @@ export default function Dashboard() {
               <div className='mx-auto flex max-w-7xl items-center justify-between px-4 py-6 sm:px-6 lg:px-8'>
                 <h1 className='text-3xl font-bold tracking-tight text-gray-900'>{navigation.find((nav) => nav.path === currentpath).title}</h1>
                 {'/example-mapbox' == currentpath && <MapboxHeader />}
-                {'/example-webrtc' == currentpath && <WebRTCHeader />}
+                {/* {'/example-webrtc' == currentpath && <WebRTCHeader />} */}
               </div>
             </header>
           ))}

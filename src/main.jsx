@@ -1,4 +1,4 @@
-import {createRoot} from 'react-dom/client'
+import { createRoot } from 'react-dom/client'
 import * as ReactRouter from 'react-router-dom'
 import * as core from './core'
 import Dashboard from './dashboard/Dashboard'
