@@ -3,6 +3,7 @@ import { initialValue, rtc_configuration, default_constraints, websocketServerUR
 import { PhoneArrowDownLeftIcon, PhoneArrowUpRightIcon, PhoneXMarkIcon, PhoneIcon } from '@heroicons/react/16/solid'
 import { Field, Label, Switch } from '@headlessui/react'
 import adapter from 'webrtc-adapter'
+import { gstWebRTCAPI, start } from './api/gstwebrtc-api.js'
 
 export function WebRTCHeader() {
   return (
@@ -32,6 +33,10 @@ export default function ExamleWebRTC() {
 
   useEffect(() => {
     websocketServerConnect()
+    // start({
+    //   meta: { name: `WebClient-${Date.now()}` },
+    //   signalingServerUrl: `ws://${window.location.host}/webrtc`,
+    // })
     return () => {
       if (ws_conn.current) ws_conn.current.close()
       if (peer_conn.current) peer_conn.current.close()
